@@ -1,0 +1,79 @@
+{
+  "name": "numic",
+  "description": "Utility to manage React Native projects.",
+  "version": "0.0.0-development",
+  "repository": "github:tobua/numic",
+  "license": "MIT",
+  "author": "Matthias Giger",
+  "scripts": {
+    "build": "padua build",
+    "postinstall": "skip-local-postinstall dist/installation.js",
+    "start": "padua watch",
+    "test": "vitest run"
+  },
+  "padua": {
+    "entry": [
+      "installation.ts"
+    ],
+    "esbuild": {
+      "platform": "node",
+      "format": "esm",
+      "target": "node16"
+    },
+    "tsconfig": {
+      "compilerOptions": {
+        "target": "es2022"
+      }
+    }
+  },
+  "dependencies": {
+    "deepmerge": "^4.2.2",
+    "is-ci": "^3.0.1",
+    "logua": "^2.1.4",
+    "pakag": "^2.6.0",
+    "parse-gitignore": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react-native": ">= 0.69"
+  },
+  "type": "module",
+  "sideEffects": true,
+  "main": "dist/index.js",
+  "exports": {
+    "default": "./dist/index.js"
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react-native",
+    "patch",
+    "utility",
+    "ios",
+    "android"
+  ],
+  "devDependencies": {
+    "jest-fixture": "^3.0.1",
+    "padua": "^0.6.0",
+    "react-native": "^0.69.0",
+    "vitest": "^0.15.2"
+  },
+  "prettier": "padua/configuration/.prettierrc.json",
+  "eslintConfig": {
+    "extends": "./node_modules/padua/configuration/eslint.cjs"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "./tsconfig.json"
+      }
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  },
+  "engines": {
+    "node": ">= 14"
+  }
+}
