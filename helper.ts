@@ -1,5 +1,6 @@
 import { join } from 'path'
 import { create } from 'logua'
+import arg from 'arg'
 
 export const log = create('numic', 'green')
 
@@ -23,3 +24,18 @@ export const basePath = () => {
 }
 
 export const hashPath = (options) => join('node_modules', 'numic', options().hash)
+
+const optionsSpecificationByScript = {
+  native: {
+    '--version': String,
+    '--debug': Boolean,
+    '--skipInstall': Boolean,
+    '--appName': String,
+  },
+  lint: {},
+  patch: {},
+  apply: {},
+}
+
+export const cliOptions = (script: string) =>
+  arg(optionsSpecificationByScript[script], { permissive: false, argv: process.argv.slice(2) })

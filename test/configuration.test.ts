@@ -20,9 +20,28 @@ test('Properly configures empty project.', async () => {
   expect(contents[0].name).toBe('package.json')
   const packageContents = contents[0].contents as any
 
-  expect(packageContents.scripts.lint).toBeDefined()
+  expect(packageContents.scripts.lint).toBe('numic lint')
+  expect(packageContents.scripts.native).toBe('numic native')
+  expect(packageContents.scripts.apply).toBe('numic apply')
+  expect(packageContents.scripts.patch).toBe('numic patch')
   expect(packageContents.prettier).toContain('prettierrc')
   expect(packageContents.eslintConfig.extends).toContain('eslintrc')
+})
+
+test('Properly configures empty project.', async () => {
+  prepare([packageJson('empty', { scripts: { lint: 'my-custom-eslint', apply: 'my-apply' } })])
+
+  configure()
+
+  const contents = contentsForFilesMatching('*.json')
+  expect(contents[0].name).toBe('package.json')
+  const packageContents = contents[0].contents as any
+
+  expect(packageContents.scripts.lint).not.toContain('numic')
+  expect(packageContents.scripts.native).toContain('numic')
+  expect(packageContents.scripts.apply).not.toContain('numic')
+  expect(packageContents.scripts.patch).toContain('numic')
+  // TODO override eslint and prettier only if they still match initial contents.
 })
 
 test('Adds new entries to gitignore.', async () => {
@@ -66,4 +85,18 @@ test('No duplicates are added.', async () => {
   expect(gitignoreContents).toContain('node_modules')
   const occurrences = gitignoreContents.split('node_modules').length
   expect(occurrences).toBe(2)
+})
+
+test('Properly configures empty project.', async () => {
+  prepare([packageJson('empty'), file('index.js', "console.log('Hello')")])
+
+  configure()
+
+  const contents = contentsForFilesMatching('*.json')
+  expect(contents[0].name).toBe('package.json')
+  const packageContents = contents[0].contents as any
+
+  expect(packageContents.scripts.lint).toBeDefined()
+  expect(packageContents.prettier).toContain('prettierrc')
+  expect(packageContents.eslintConfig.extends).toContain('eslintrc')
 })

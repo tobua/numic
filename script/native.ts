@@ -3,10 +3,26 @@ import { existsSync, mkdirSync, renameSync, rmSync, cpSync } from 'fs'
 import { execSync } from 'child_process'
 import { log, basePath } from '../helper'
 import { initializeRepository } from '../git'
+import { options } from '../options'
 
-type NativeOptions = { skipInstall?: boolean; appName?: string; debug?: boolean }
+type NativeOptions = { skipInstall?: boolean; appName?: string; debug?: boolean; version?: string }
 
-export const native = async (options: NativeOptions = {}) => {
+const getVersion = (nativeOptions: NativeOptions) => {
+  if (nativeOptions.version) {
+    return ` --version ${nativeOptions.version}`
+  }
+
+  const packageVersion = options().reactNativeVersion
+
+  if (packageVersion) {
+    return ` --version ${packageVersion}`
+  }
+
+  return ''
+}
+
+export const native = async (nativeOptions: NativeOptions = {}) => {
+  // TODO get options from args (better in index)
   const folders = {
     numic: join(basePath(), '.numic'),
     user: {
@@ -35,14 +51,15 @@ export const native = async (options: NativeOptions = {}) => {
   log('⌛ Initializing a fresh RN project...')
 
   // TODO is this user relevant? (appName property in pkg.json or inferring from name + App)
-  const appName = options.appName ?? 'NumicApp'
-  const skip = options.skipInstall ? ' --skip-install' : ''
+  const appName = nativeOptions.appName ?? 'NumicApp'
+  const skip = nativeOptions.skipInstall ? ' --skip-install' : ''
+  const version = getVersion(nativeOptions)
 
   // DOC https://github.com/react-native-community/cli/blob/master/packages/cli/src/commands/init/index.ts
-  execSync(`npx react-native init ${appName}${skip}`, {
+  execSync(`npx react-native init ${appName}${skip}${version}`, {
     cwd: folders.numic,
     // Write output to cnosole if in debug mode.
-    stdio: options.debug ? 'inherit' : 'pipe',
+    stdio: nativeOptions.debug ? 'inherit' : 'pipe',
   })
 
   renameSync(join(basePath(), `.numic/${appName}/android`), folders.plugin.android)

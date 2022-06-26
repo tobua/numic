@@ -4,13 +4,10 @@
 
 Utility to manage React Native projects. Commit only the changes made to native code inside `/ios` and `/android` as small patches.
 
-- TypeScript
-- ESLint, Prettier
-- Fully managed native code
-  - Patches
-  - Plugins
+- Fully managed native code through Patches and Plugins
 - Runs during project installation
 - Easily upgrade native code
+- ESLint, Prettier and TypeScript configurations
 
 ## Installation
 
@@ -24,14 +21,18 @@ npm install --save-dev numic
 
 This framework provides the following commands that will be added to `scripts` in `package.json` upon installation.
 
-### `numic lint`
-
-Lints and formats the whole project.
-
 ### `numic native`
 
-Generate or recreate native `/ios` and `/android` folders.
+Generate or recreate native `/ios` and `/android` folders. Use this command to upgrade the native code.
+
+### `numic patch`
+
+Create or updated patches from changes made to native folders.
 
 ### `numic apply`
 
 Apply patches from `/patch` folder to native folders.
+
+### `numic lint`
+
+Lints and formats the whole project.

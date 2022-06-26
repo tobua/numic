@@ -11,11 +11,14 @@ export const packageJson = () => {
   }
 
   if (!options().pkg.scripts) {
-    pkg.scripts = {
-      lint: 'numic lint',
-      patch: 'numic patch',
-    }
+    pkg.scripts = {}
   }
+
+  // Existing scripts will not be overriden.
+  pkg.scripts = Object.assign(
+    { native: 'numic native', patch: 'numic patch', apply: 'numic apply', lint: 'numic lint' },
+    pkg.scripts
+  )
 
   return pkg
 }

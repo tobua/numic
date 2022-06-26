@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 import isCI from 'is-ci'
-import { log } from './helper'
+import { log, cliOptions } from './helper'
 import { configure } from './configure'
 import { lint } from './script/lint'
 import { native } from './script/native'
 import { apply } from './script/apply'
+import { patch } from './script/patch'
 
 const scripts = {
   lint,
   native,
   apply,
+  patch,
 }
 
 const script = process.argv.slice(2)[0]
@@ -24,7 +26,7 @@ if (!Object.keys(scripts).includes(script)) {
 configure()
 
 try {
-  scripts[script]()
+  scripts[script](cliOptions(script))
 } catch (error) {
   log(`Script ${script} exited with an error`)
 

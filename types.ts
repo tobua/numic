@@ -10,4 +10,5 @@ export interface Options {
   pkg: Package
   tsconfig?: Object
   gitignore?: string[]
+  reactNativeVersion?: string
 }

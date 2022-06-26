@@ -27,11 +27,13 @@
     }
   },
   "dependencies": {
+    "arg": "^5.0.2",
     "deepmerge": "^4.2.2",
     "is-ci": "^3.0.1",
     "logua": "^2.1.4",
     "pakag": "^2.6.0",
-    "parse-gitignore": "^2.0.0"
+    "parse-gitignore": "^2.0.0",
+    "skip-local-postinstall": "^2.0.3"
   },
   "peerDependencies": {
     "react-native": ">= 0.69"
@@ -42,6 +44,7 @@
   "exports": {
     "default": "./dist/index.js"
   },
+  "bin": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -57,7 +60,7 @@
     "jest-fixture": "^3.0.1",
     "padua": "^0.6.0",
     "react-native": "^0.69.0",
-    "vitest": "^0.15.2"
+    "vitest": "^0.16.0"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
