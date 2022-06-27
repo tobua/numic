@@ -11,8 +11,10 @@ global.afterEach = afterEach
 
 environment('configuration')
 
+const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')
+
 test('Properly configures empty project.', async () => {
-  prepare([packageJson('empty'), file('index.js', "console.log('Hello')")])
+  prepare([packageJson('empty'), file('index.js', "console.log('Hello')"), reactNativePkg])
 
   configure()
 
@@ -29,7 +31,10 @@ test('Properly configures empty project.', async () => {
 })
 
 test('Properly configures empty project.', async () => {
-  prepare([packageJson('empty', { scripts: { lint: 'my-custom-eslint', apply: 'my-apply' } })])
+  prepare([
+    packageJson('empty', { scripts: { lint: 'my-custom-eslint', apply: 'my-apply' } }),
+    reactNativePkg,
+  ])
 
   configure()
 
@@ -45,7 +50,7 @@ test('Properly configures empty project.', async () => {
 })
 
 test('Adds new entries to gitignore.', async () => {
-  prepare([packageJson('ignore')])
+  prepare([packageJson('ignore'), reactNativePkg])
 
   configure()
 
@@ -59,7 +64,7 @@ test('Adds new entries to gitignore.', async () => {
 })
 
 test('Adds new entries to gitignore.', async () => {
-  prepare([packageJson('ignore-package', { numic: { gitignore: ['my-folder'] } })])
+  prepare([packageJson('ignore-package', { numic: { gitignore: ['my-folder'] } }), reactNativePkg])
 
   configure()
 
@@ -74,6 +79,7 @@ test('No duplicates are added.', async () => {
   prepare([
     packageJson('ignore-duplicates', { numic: { gitignore: ['node_modules'] } }),
     file('.gitignore', `node_modules`),
+    reactNativePkg,
   ])
 
   configure()
@@ -88,7 +94,7 @@ test('No duplicates are added.', async () => {
 })
 
 test('Properly configures empty project.', async () => {
-  prepare([packageJson('empty'), file('index.js', "console.log('Hello')")])
+  prepare([packageJson('empty'), file('index.js', "console.log('Hello')"), reactNativePkg])
 
   configure()
 

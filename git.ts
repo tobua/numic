@@ -2,6 +2,7 @@ import { writeFileSync, existsSync, mkdirSync } from 'fs'
 import { join } from 'path'
 import { spawnSync } from 'child_process'
 import { basePath, log } from './helper'
+import { nativeGitignore } from './configuration/gitignore'
 
 const createGitShell =
   (cwd = join(basePath(), '.numic')) =>
@@ -18,6 +19,8 @@ export const initializeRepository = () => {
   git('init')
   git('config', '--local', 'user.name', 'numic')
   git('config', '--local', 'user.email', 'numic@reactnative.dev')
+
+  writeFileSync(join(basePath(), '.numic/.gitignore'), nativeGitignore)
 
   git('add', '.')
 
@@ -66,4 +69,6 @@ export const applyPatch = () => {
   git('apply', join(basePath(), 'patch/current.patch'))
 
   // TODO remove temporary repository if one created.
+
+  log('Patch successfully applied')
 }

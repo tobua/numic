@@ -17,8 +17,10 @@ global.afterEach = afterEach
 
 environment('native')
 
+const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')
+
 test('Create native project for android and ios.', async () => {
-  prepare([packageJson('native')])
+  prepare([packageJson('native'), reactNativePkg])
 
   await native({ skipInstall: true })
 
@@ -36,7 +38,11 @@ test('Create native project for android and ios.', async () => {
 })
 
 test('Removes existing native files.', async () => {
-  prepare([packageJson('native-remove'), file('ios/hello.js', 'console.log("hello")')])
+  prepare([
+    packageJson('native-remove'),
+    file('ios/hello.js', 'console.log("hello")'),
+    reactNativePkg,
+  ])
 
   expect(existsSync(join(process.cwd(), 'ios/hello.js'))).toBe(true)
 
@@ -46,7 +52,7 @@ test('Removes existing native files.', async () => {
 })
 
 test('Creates patch for simple change in android and ios user folder.', async () => {
-  prepare([packageJson('native')])
+  prepare([packageJson('native'), reactNativePkg])
 
   await native({ skipInstall: true })
 
@@ -96,7 +102,7 @@ test('Creates patch for simple change in android and ios user folder.', async ()
 })
 
 test('Patches nested changes as well as file additions and removals.', async () => {
-  prepare([packageJson('native')])
+  prepare([packageJson('native'), reactNativePkg])
 
   await native({ skipInstall: true })
 

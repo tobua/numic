@@ -36,3 +36,7 @@ Apply patches from `/patch` folder to native folders.
 ### `numic lint`
 
 Lints and formats the whole project.
+
+## Acknowledgements
+
+The approach to create patches using git was inspired by [patch-package](https://npmjs.com/patch-package).

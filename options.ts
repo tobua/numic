@@ -27,11 +27,11 @@ export const options: () => Options = () => {
   let result: Options = defaultOptions(packageContents)
 
   try {
-    // Using require to avoid await options() by using await import(...).
-    // eslint-disable-next-line global-require
-    result.reactNativeVersion = require('react-native/package.json').version
+    result.reactNativeVersion = JSON.parse(
+      readFileSync(join(basePath(), 'node_modules/react-native/package.json'), 'utf8')
+    ).version
   } catch (error) {
-    log('React native not installed', 'warning')
+    log('React native installation not found', 'warning')
   }
 
   if (typeof packageContents.numic === 'object') {

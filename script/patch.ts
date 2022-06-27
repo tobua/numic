@@ -4,8 +4,20 @@ import { createPatch } from '../git'
 import { basePath, log } from '../helper'
 
 export const patch = () => {
-  cpSync(join(basePath(), 'android'), join(basePath(), '.numic/android'), { recursive: true })
-  cpSync(join(basePath(), 'ios'), join(basePath(), '.numic/ios'), { recursive: true })
+  try {
+    cpSync(join(basePath(), 'android'), join(basePath(), '.numic/android'), { recursive: true })
+    cpSync(join(basePath(), 'ios'), join(basePath(), '.numic/ios'), {
+      recursive: true,
+      filter: (source) => {
+        if (source.includes('/ios/Pods')) {
+          return false
+        }
+        return true
+      },
+    })
+  } catch (error) {
+    log('Failed to copy native files', 'error')
+  }
 
   createPatch()
 
