@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { existsSync, mkdirSync, renameSync, rmSync, cpSync } from 'fs'
 import { execSync } from 'child_process'
-import { log, basePath } from '../helper'
+import { log, basePath, getFolders } from '../helper'
 import { initializeRepository } from '../git'
 import { options } from '../options'
 
@@ -22,22 +22,14 @@ const getVersion = (nativeOptions: NativeOptions) => {
 }
 
 export const native = async (nativeOptions: NativeOptions = {}) => {
-  // TODO get options from args (better in index)
-  const folders = {
-    numic: join(basePath(), '.numic'),
-    user: {
-      ios: join(basePath(), 'ios'),
-      android: join(basePath(), 'android'),
-    },
-    plugin: {
-      ios: join(basePath(), '.numic', 'ios'),
-      android: join(basePath(), '.numic', 'android'),
-    },
+  const folders = getFolders()
+
+  if (existsSync(folders.numic)) {
+    // Remove existing repository and installation.
+    rmSync(folders.numic, { recursive: true })
   }
 
-  if (!existsSync(folders.numic)) {
-    mkdirSync(folders.numic, { recursive: true })
-  }
+  mkdirSync(folders.numic, { recursive: true })
 
   log('⚠️  Removing existing /android and /ios folders')
 

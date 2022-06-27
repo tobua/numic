@@ -101,7 +101,7 @@ test('Creates patch for simple change in android and ios user folder.', async ()
   expect(patchedPodfileContents).toContain(':some_other_flag => true')
 })
 
-test('Patches nested changes as well as file additions and removals.', async () => {
+test('Patches nested changes as well as file additions and TODO removals.', async () => {
   prepare([packageJson('native'), reactNativePkg])
 
   await native({ skipInstall: true })
@@ -152,4 +152,40 @@ test('Patches nested changes as well as file additions and removals.', async () 
   expect(readFile(manifestPath)).toContain('android:allowBackup="true"')
   expect(existsSync(join(process.cwd(), 'android/app/config.xml'))).toBe(true)
   // TODO expect(existsSync(keystorePath)).toBe(false)
+})
+
+test('Reverted changes disappear from patch.', async () => {
+  prepare([packageJson('native'), reactNativePkg])
+
+  await native({ skipInstall: true })
+
+  let buildGradleContents = readFile('android/build.gradle')
+  const changedContents = buildGradleContents.replace('mavenCentral()', 'navenUI()')
+
+  writeFile('android/build.gradle', changedContents)
+
+  patch()
+  apply()
+
+  const patchedBuildGradleContents = readFile('android/build.gradle')
+
+  expect(patchedBuildGradleContents).not.toContain('mavenCentral()')
+  expect(patchedBuildGradleContents).toContain('navenUI()')
+
+  const revertedButChangedContentChanges = buildGradleContents.replace(
+    'buildToolsVersion',
+    'customToolsVersion'
+  )
+
+  writeFile('android/build.gradle', revertedButChangedContentChanges)
+
+  patch()
+  apply()
+
+  buildGradleContents = readFile('android/build.gradle')
+
+  expect(buildGradleContents).toContain('mavenCentral()')
+  expect(buildGradleContents).not.toContain('navenUI()')
+  expect(buildGradleContents).toContain('customToolsVersion')
+  expect(buildGradleContents).not.toContain('buildToolsVersion')
 })

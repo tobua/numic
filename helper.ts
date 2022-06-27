@@ -37,5 +37,26 @@ const optionsSpecificationByScript = {
   apply: {},
 }
 
-export const cliOptions = (script: string) =>
-  arg(optionsSpecificationByScript[script], { permissive: false, argv: process.argv.slice(2) })
+export const cliOptions = (script: string) => {
+  const result = {}
+  const parsed = arg(optionsSpecificationByScript[script], {
+    permissive: false,
+    argv: process.argv.slice(3),
+  })
+  Object.keys(parsed).forEach((option) => {
+    result[option.replace('--', '')] = parsed[option]
+  })
+  return result
+}
+
+export const getFolders = () => ({
+  numic: join(basePath(), '.numic'),
+  user: {
+    ios: join(basePath(), 'ios'),
+    android: join(basePath(), 'android'),
+  },
+  plugin: {
+    ios: join(basePath(), '.numic', 'ios'),
+    android: join(basePath(), '.numic', 'android'),
+  },
+})

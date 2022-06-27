@@ -14,7 +14,7 @@ Utility to manage React Native projects. Commit only the changes made to native 
 Run the following in your React Native project and it will automatically add the necessary configurations and commands to your `package.json`.
 
 ```
-npm install --save-dev numic
+npm install numic --save-dev --foreground-scripts
 ```
 
 ## Commands

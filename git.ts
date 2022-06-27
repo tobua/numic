@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync, mkdirSync } from 'fs'
+import { writeFileSync, existsSync, mkdirSync, rmSync } from 'fs'
 import { join } from 'path'
 import { spawnSync } from 'child_process'
 import { basePath, log } from './helper'
@@ -43,16 +43,27 @@ export const createPatch = () => {
     mkdirSync(join(basePath(), 'patch'), { recursive: true })
   }
 
-  writeFileSync(join(basePath(), 'patch/current.patch'), diffResult.stdout)
+  const patchFileName = join(basePath(), 'patch/current.patch')
 
-  // TODO remove added/staged changes again.
+  if (diffResult.stdout) {
+    writeFileSync(patchFileName, diffResult.stdout)
+  } else {
+    if (existsSync(patchFileName)) {
+      rmSync(patchFileName)
+    }
+
+    log('No changes to patch found', 'warning')
+  }
+
+  // Remove staged changes again.
+  git('reset', 'HEAD', '--', '.')
 }
 
 export const applyPatch = () => {
   const git = createGitShell(basePath())
 
   if (!existsSync(join(basePath(), 'patch/current.patch'))) {
-    log('Missing patch', 'error')
+    log('No patch found, run "numic patch" to create a patch', 'error')
     return
   }
 

@@ -1,12 +1,17 @@
-import { join } from 'path'
-import { cpSync } from 'fs'
+import { existsSync, cpSync } from 'fs'
 import { createPatch } from '../git'
-import { basePath, log } from '../helper'
+import { log, getFolders } from '../helper'
 
 export const patch = () => {
+  const folders = getFolders()
+
+  if (!existsSync(folders.user.android) || !existsSync(folders.user.ios)) {
+    log('Missing native folders, run "numic native" to initialize', 'error')
+  }
+
   try {
-    cpSync(join(basePath(), 'android'), join(basePath(), '.numic/android'), { recursive: true })
-    cpSync(join(basePath(), 'ios'), join(basePath(), '.numic/ios'), {
+    cpSync(folders.user.android, folders.plugin.android, { recursive: true })
+    cpSync(folders.user.ios, folders.plugin.ios, {
       recursive: true,
       filter: (source) => {
         if (source.includes('/ios/Pods')) {
