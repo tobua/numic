@@ -9,8 +9,17 @@ const defaultOptions = (pkg: Package) => ({
   pkg,
 })
 
-// TODO memoize
+let cache: Options | undefined
+
+export const resetOptions = () => {
+  cache = undefined
+}
+
 export const options: () => Options = () => {
+  if (cache) {
+    return cache
+  }
+
   let packageContents: Package
 
   try {
@@ -38,6 +47,8 @@ export const options: () => Options = () => {
     // Include project specific overrides
     result = merge(result, packageContents.numic, { clone: false })
   }
+
+  cache = result
 
   return result
 }

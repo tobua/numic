@@ -3,6 +3,7 @@ export interface Package {
   numic?: Object
   dependencies?: Object
   peerDependencies?: Object
+  devDependencies?: Object
   scripts?: Object
 }
 

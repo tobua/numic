@@ -33,9 +33,31 @@ Create or updated patches from changes made to native folders.
 
 Apply patches from `/patch` folder to native folders.
 
+### `numic plugin`
+
+Apply installed plugins.
+
 ### `numic lint`
 
 Lints and formats the whole project.
+
+## Plugins
+
+In order to automate common changes to native folders, reusable plugins can be installed. Any node_module ending in `-numic-plugin` will be treated as such and automatically installed. [icon-numic-plugin](npmjs.com/icon-numic-plugin) is an example of a plugin that will automatically create icons in various sizes for Android and iOS.
+
+### Anatomy of a Plugin
+
+```ts
+import { join } from 'path'
+import type { PluginInput } from 'numic'
+
+export default async ({ cwd, log }: PluginInput) => {
+  const androidFolder = join(cwd, 'android')
+  const iosFolder = join(cwd, 'ios')
+
+  // Do something with ios and android folders.
+}
+```
 
 ## Acknowledgements
 

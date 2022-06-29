@@ -35,6 +35,7 @@ const optionsSpecificationByScript = {
   lint: {},
   patch: {},
   apply: {},
+  plugin: {},
 }
 
 export const cliOptions = (script: string) => {

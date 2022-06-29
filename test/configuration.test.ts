@@ -1,6 +1,7 @@
 import { expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { prepare, environment, packageJson, file, contentsForFilesMatching } from 'jest-fixture'
 import { configure } from '../configure'
+import { resetOptions } from '../options'
 
 // @ts-ignore
 global.jest = { spyOn: vi.spyOn }
@@ -8,6 +9,8 @@ global.jest = { spyOn: vi.spyOn }
 global.beforeEach = beforeEach
 // @ts-ignore
 global.afterEach = afterEach
+
+beforeEach(resetOptions)
 
 environment('configuration')
 

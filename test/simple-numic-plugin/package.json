@@ -1,0 +1,7 @@
+{
+  "name": "simple-numic-plugin",
+  "main": "index.js",
+  "exports": {
+    "default": "./index.js"
+  }
+}

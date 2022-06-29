@@ -6,12 +6,14 @@ import { lint } from './script/lint'
 import { native } from './script/native'
 import { apply } from './script/apply'
 import { patch } from './script/patch'
+import { plugin } from './script/plugin'
 
 const scripts = {
   lint,
   native,
   apply,
   patch,
+  plugin,
 }
 
 const script = process.argv.slice(2)[0]

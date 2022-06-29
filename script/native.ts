@@ -4,6 +4,7 @@ import { execSync } from 'child_process'
 import { log, basePath, getFolders } from '../helper'
 import { initializeRepository } from '../git'
 import { options } from '../options'
+import { plugin } from './plugin'
 
 type NativeOptions = { skipInstall?: boolean; appName?: string; debug?: boolean; version?: string }
 
@@ -62,6 +63,9 @@ export const native = async (nativeOptions: NativeOptions = {}) => {
 
   // Remove temporary project directory.
   rmSync(join(folders.numic, appName), { recursive: true })
+
+  // Install plugins (will not be included in patches).
+  await plugin()
 
   // Initialize bare repository to later diff for changes.
   initializeRepository()

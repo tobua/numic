@@ -5,15 +5,16 @@ import { prepare, environment, packageJson, readFile, writeFile, file } from 'je
 import { native } from '../script/native'
 import { patch } from '../script/patch'
 import { apply } from '../script/apply'
+import { resetOptions } from '../options'
 
 // @ts-ignore
-global.jest = {
-  spyOn: vi.spyOn,
-}
+global.jest = { spyOn: vi.spyOn }
 // @ts-ignore
 global.beforeEach = beforeEach
 // @ts-ignore
 global.afterEach = afterEach
+
+beforeEach(resetOptions)
 
 environment('native')
 
