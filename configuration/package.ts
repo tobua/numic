@@ -16,7 +16,14 @@ export const packageJson = () => {
 
   // Existing scripts will not be overriden.
   pkg.scripts = Object.assign(
-    { native: 'numic native', patch: 'numic patch', apply: 'numic apply', lint: 'numic lint' },
+    {
+      ios: 'numic ios',
+      android: 'numic android',
+      lint: 'numic lint',
+      native: 'numic native',
+      patch: 'numic patch',
+      apply: 'numic apply',
+    },
     pkg.scripts
   )
 

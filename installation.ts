@@ -7,6 +7,6 @@ log('Setting up native installation')
 
 configure()
 await native()
-apply()
+apply({ skipEmpty: true })
 
 log('Setup successful')

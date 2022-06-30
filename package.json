@@ -13,8 +13,7 @@
   },
   "padua": {
     "entry": [
-      "installation.ts",
-      "exports.ts"
+      "installation.ts"
     ],
     "esbuild": {
       "platform": "node",
@@ -41,12 +40,10 @@
   },
   "type": "module",
   "sideEffects": true,
-  "main": "dist/exports.js",
-  "exports": {
-    "default": "./dist/exports.js"
-  },
   "bin": "dist/index.js",
-  "types": "dist/exports.d.ts",
+  "exports": {
+    "package.json": "./package.json"
+  },
   "files": [
     "dist"
   ],

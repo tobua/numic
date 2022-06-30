@@ -90,7 +90,7 @@ test('Creates patch for simple change in android and ios user folder.', async ()
   expect(readFile('android/build.gradle')).toContain('mavenCentral()')
   expect(readFile('ios/Podfile')).not.toContain(':some_other_flag => true')
 
-  apply()
+  apply({})
 
   const patchedBuildGradleContents = readFile('android/build.gradle')
   const patchedPodfileContents = readFile('ios/Podfile')
@@ -148,7 +148,7 @@ test('Patches nested changes as well as file additions and TODO removals.', asyn
   expect(existsSync(join(process.cwd(), 'android/app/config.xml'))).toBe(false)
   // TODO expect(existsSync(keystorePath)).toBe(true)
 
-  apply()
+  apply({})
 
   expect(readFile(manifestPath)).toContain('android:allowBackup="true"')
   expect(existsSync(join(process.cwd(), 'android/app/config.xml'))).toBe(true)
@@ -166,7 +166,7 @@ test('Reverted changes disappear from patch.', async () => {
   writeFile('android/build.gradle', changedContents)
 
   patch()
-  apply()
+  apply({})
 
   const patchedBuildGradleContents = readFile('android/build.gradle')
 
@@ -181,7 +181,7 @@ test('Reverted changes disappear from patch.', async () => {
   writeFile('android/build.gradle', revertedButChangedContentChanges)
 
   patch()
-  apply()
+  apply({})
 
   buildGradleContents = readFile('android/build.gradle')
 

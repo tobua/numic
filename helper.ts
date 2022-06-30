@@ -34,12 +34,19 @@ const optionsSpecificationByScript = {
   },
   lint: {},
   patch: {},
-  apply: {},
+  apply: {
+    '--skipEmpty': Boolean,
+  },
   plugin: {},
 }
 
 export const cliOptions = (script: string) => {
   const result = {}
+
+  if (script === 'ios' || script === 'android') {
+    return result
+  }
+
   const parsed = arg(optionsSpecificationByScript[script], {
     permissive: false,
     argv: process.argv.slice(3),
@@ -60,4 +67,5 @@ export const getFolders = () => ({
     ios: join(basePath(), '.numic', 'ios'),
     android: join(basePath(), '.numic', 'android'),
   },
+  plugins: join(basePath(), 'plugin'),
 })

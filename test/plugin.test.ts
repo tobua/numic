@@ -45,7 +45,7 @@ test('Simple plugin modifies native files.', async () => {
 
 test('Asynchronous plugin modifies native files.', async () => {
   prepare([
-    packageJson('plugin', { dependencies: { 'asynchronous-numic-plugin': 'latest' } }),
+    packageJson('async-plugin', { dependencies: { 'asynchronous-numic-plugin': 'latest' } }),
     reactNativePkg,
   ])
 
@@ -63,4 +63,57 @@ test('Asynchronous plugin modifies native files.', async () => {
   const podfileContents = readFile('ios/Podfile')
 
   expect(podfileContents).toContain('numic_hash')
+})
+
+test('Local plugin modifies native files.', async () => {
+  prepare([
+    packageJson('local-plugin'),
+    file('plugin/plugin.js', readFile(join(initialCwd, 'test/simple-numic-plugin/index.js'))),
+    reactNativePkg,
+  ])
+
+  await native({ skipInstall: true })
+
+  const buildGradleContents = readFile('android/build.gradle')
+
+  expect(buildGradleContents).toContain('com.numic:plugin')
+})
+
+test('Local plugin can be configured.', async () => {
+  prepare([
+    packageJson('modified-plugin', { numic: { 'plugin.js': { name: 'modified' } } }),
+    file('plugin/plugin.js', readFile(join(initialCwd, 'test/simple-numic-plugin/index.js'))),
+    reactNativePkg,
+  ])
+
+  await native({ skipInstall: true })
+
+  const buildGradleContents = readFile('android/build.gradle')
+
+  expect(buildGradleContents).toContain('com.modified:plugin')
+})
+
+test('Npm plugin can be configured.', async () => {
+  prepare([
+    packageJson('plugin', {
+      dependencies: { 'simple-numic-plugin': 'latest' },
+      numic: { 'simple-numic-plugin': { name: 'modified' } },
+    }),
+    reactNativePkg,
+  ])
+
+  // Dynamic import happens in root modules.
+  cpSync(
+    join(initialCwd, 'test/simple-numic-plugin'),
+    join(initialCwd, 'node_modules/simple-numic-plugin'),
+    {
+      recursive: true,
+    }
+  )
+
+  await native({ skipInstall: true })
+
+  const buildGradleContents = readFile('android/build.gradle')
+
+  expect(buildGradleContents).toContain('com.modified:plugin')
 })

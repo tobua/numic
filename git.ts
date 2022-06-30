@@ -59,11 +59,13 @@ export const createPatch = () => {
   git('reset', 'HEAD', '--', '.')
 }
 
-export const applyPatch = () => {
+export const applyPatch = ({ skipEmpty }: { skipEmpty?: boolean }) => {
   const git = createGitShell(basePath())
 
   if (!existsSync(join(basePath(), 'patch/current.patch'))) {
-    log('No patch found, run "numic patch" to create a patch', 'error')
+    if (!skipEmpty) {
+      log('No patch found, run "numic patch" to create a patch', 'error')
+    }
     return
   }
 

@@ -43,15 +43,20 @@ Lints and formats the whole project.
 
 ## Plugins
 
-In order to automate common changes to native folders, reusable plugins can be installed. Any node_module ending in `-numic-plugin` will be treated as such and automatically installed. [icon-numic-plugin](npmjs.com/icon-numic-plugin) is an example of a plugin that will automatically create icons in various sizes for Android and iOS.
+In order to automate common changes to native folders, reusable plugins can be installed. Any node_module ending in `-numic-plugin` will be treated as such and automatically installed. [icon-numic-plugin](https://npmjs.com/icon-numic-plugin) is an example of a plugin that will automatically create icons in various sizes for Android and iOS.
 
 ### Anatomy of a Plugin
 
 ```ts
 import { join } from 'path'
-import type { PluginInput } from 'numic'
 
-export default async ({ cwd, log }: PluginInput) => {
+interface PluginInput {
+  cwd?: string
+  log?: (message: string, type?: 'error' | 'warning') => void
+  options: object
+}
+
+export default async ({ cwd, log, options }: PluginInput) => {
   const androidFolder = join(cwd, 'android')
   const iosFolder = join(cwd, 'ios')
 
@@ -59,6 +64,31 @@ export default async ({ cwd, log }: PluginInput) => {
 }
 ```
 
+Any plugins placed as `.js` files inside `/plugin` or installed node_modules ending in `-numic-plugin` will automatically be run before patches are created or the app is run.
+
+## Configuration
+
+Adding a `numic` property allows to configure script and plugin behaviour.
+
+```json
+{
+  "name": "my-app",
+  "numic": {
+    // Options for local and npm plugins.
+    "my-plugin.js": {
+      "icon": "asset/my-icon.png"
+    },
+    "icon-numic-plugin": {
+      "icon": "image/icon/app-icon.png"
+    }
+  }
+}
+```
+
 ## Acknowledgements
 
 The approach to create patches using git was inspired by [patch-package](https://npmjs.com/patch-package).
+
+## Lifecycle
+
+Upon installation a new React Native template is checked out and the native `/android` and `/ios` folders are duplicated. Once for the user to make edits in the root folder and once inside `.numic` as a separate emtpy git repository. Upon installation existing plugins and patches are applied to both locations.

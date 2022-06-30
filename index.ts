@@ -7,6 +7,8 @@ import { native } from './script/native'
 import { apply } from './script/apply'
 import { patch } from './script/patch'
 import { plugin } from './script/plugin'
+import { android } from './script/android'
+import { ios } from './script/ios'
 
 const scripts = {
   lint,
@@ -14,6 +16,8 @@ const scripts = {
   apply,
   patch,
   plugin,
+  android,
+  ios,
 }
 
 const script = process.argv.slice(2)[0]
