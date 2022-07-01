@@ -1,44 +1,58 @@
 import { options } from '../options'
 
-export const gitignore = () => {
-  let entries = ['node_modules', 'package-lock.json', 'tsconfig.json', '.numic', 'android', 'ios']
+const pluginGitignores = [
+  // XCode
+  'build/',
+  '*.pbxuser',
+  '!default.pbxuser',
+  '*.mode1v3',
+  '!default.mode1v3',
+  '*.mode2v3',
+  '!default.mode2v3',
+  '*.perspectivev3',
+  '!default.perspectivev3',
+  'xcuserdata',
+  '*.xccheckout',
+  '*.moved-aside',
+  'DerivedData',
+  '*.hmap',
+  '*.ipa',
+  '*.xcuserstate',
+  // Android/IntelliJ
+  'build/',
+  '.idea',
+  '.gradle',
+  'local.properties',
+  '*.iml',
+  // Cocoapods (generated with pod install / update)
+  '/ios/Pods/',
+  // Automatically generated along with pods
+  'Podfile.lock',
+]
+
+const userGitignores = [
+  'android',
+  'ios',
+  '.numic',
+  'node_modules',
+  'package-lock.json',
+  'tsconfig.json',
+]
+
+export const userGitignore = () => {
+  let entries = [...userGitignores]
 
   const fromPackage = options().gitignore
 
   if (fromPackage && Array.isArray(fromPackage) && fromPackage.length > 0) {
-    // TODO this bug exists in squak!
     entries = entries.concat(fromPackage)
   }
 
   return entries
 }
 
-export const nativeGitignore = `# Xcode
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
+// Remove unnecessary RN default ignores that apply to native folders that are ignored anyways.
+export const filterPluginIgnores = (input: string[]) =>
+  input.filter((element) => !pluginGitignores.includes(element))
 
-# Android/IntelliJ
-build/
-.idea
-.gradle
-local.properties
-*.iml
-
-# CocoaPods
-/ios/Pods/
-# Automatically generated
-Podfile.lock`
+export const pluginGitignore = () => pluginGitignores.join('\r\n')

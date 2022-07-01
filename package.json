@@ -42,7 +42,7 @@
   "sideEffects": true,
   "main": "dist/index.js",
   "exports": {
-    "package.json": "./package.json"
+    "./package.json": "./package.json"
   },
   "bin": "dist/index.js",
   "types": "dist/index.d.ts",

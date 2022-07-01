@@ -28,6 +28,4 @@ export const patch = () => {
   }
 
   createPatch()
-
-  log('Patch created in patch/current.patch')
 }

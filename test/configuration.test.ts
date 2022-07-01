@@ -96,6 +96,30 @@ test('No duplicates are added.', async () => {
   expect(occurrences).toBe(2)
 })
 
+test('Default native ignores from template are removed.', async () => {
+  prepare([
+    packageJson('ignore-duplicates'),
+    file(
+      '.gitignore',
+      `build/\r\n*.mode1v3\r\nlocal.properties\r\nlocal.properties\r\nnode_modules/`
+    ),
+    reactNativePkg,
+  ])
+
+  configure()
+
+  const contents = contentsForFilesMatching('.*')
+  expect(contents[0].name).toBe('.gitignore')
+  const gitignoreContents = contents[0].contents as any
+
+  expect(gitignoreContents).toContain('node_modules')
+  expect(gitignoreContents).toContain('node_modules/')
+  expect(gitignoreContents).toContain('android')
+  expect(gitignoreContents).not.toContain('build/')
+  expect(gitignoreContents).not.toContain('*.mode1v3')
+  expect(gitignoreContents).not.toContain('local.properties')
+})
+
 test('Properly configures empty project.', async () => {
   prepare([packageJson('empty'), file('index.js', "console.log('Hello')"), reactNativePkg])
 

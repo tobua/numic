@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { existsSync, mkdirSync, renameSync, rmSync, cpSync } from 'fs'
+import { existsSync, mkdirSync, renameSync, rmSync, cpSync, readFileSync } from 'fs'
 import { execSync } from 'child_process'
 import { log, basePath, getFolders } from '../helper'
 import { initializeRepository } from '../git'
@@ -7,6 +7,24 @@ import { options } from '../options'
 import { plugin } from './plugin'
 
 type NativeOptions = { skipInstall?: boolean; appName?: string; debug?: boolean; version?: string }
+
+const getAppJsonName = () => {
+  const appJsonPath = join(basePath(), 'app.json')
+  if (!existsSync(appJsonPath)) {
+    return null
+  }
+
+  try {
+    const contents = JSON.parse(readFileSync(appJsonPath, 'utf-8'))
+    if (typeof contents.name === 'string' && contents.name.length > 0) {
+      return contents.name
+    }
+  } catch (error) {
+    // Ignored
+  }
+
+  return null
+}
 
 const getVersion = (nativeOptions: NativeOptions) => {
   if (nativeOptions.version) {
@@ -44,7 +62,7 @@ export const native = async (nativeOptions: NativeOptions = {}) => {
   log('⌛ Initializing a fresh RN project...')
 
   // TODO is this user relevant? (appName property in pkg.json or inferring from name + App)
-  const appName = nativeOptions.appName ?? 'NumicApp'
+  const appName = nativeOptions.appName ?? getAppJsonName() ?? 'NumicApp'
   const skip = nativeOptions.skipInstall ? ' --skip-install' : ''
   const version = getVersion(nativeOptions)
 

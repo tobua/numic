@@ -238,3 +238,24 @@ test('Patches binary files like images.', async () => {
 
   expect(existsSync(logoPath)).toBe(true)
 })
+
+test('Picks up existing appName from app.json.', async () => {
+  prepare([
+    packageJson('native-app-name'),
+    file('app.json', '{ "name": "ThisReact" }'),
+    reactNativePkg,
+  ])
+
+  await native({ skipInstall: true })
+
+  expect(existsSync(join(process.cwd(), 'ios/ThisReact'))).toBe(true)
+  expect(existsSync(join(process.cwd(), 'ios/ThisReact.xcodeproj'))).toBe(true)
+
+  const settingsGradleContents = readFile('android/settings.gradle')
+
+  expect(settingsGradleContents).toContain(`rootProject.name = 'ThisReact'`)
+
+  const buildGradleContents = readFile('android/app/build.gradle')
+
+  expect(buildGradleContents).toContain('com.thisreact')
+})

@@ -14,7 +14,7 @@ Utility to manage React Native projects. Commit only the changes made to native 
 Run the following in your React Native project and it will automatically add the necessary configurations and commands to your `package.json`.
 
 ```
-npm install numic --save-dev --foreground-scripts
+npm install numic --save-dev --foreground-scripts --legacy-peer-deps
 ```
 
 This will also create fresh `/android` and `/ios` native folders and generate a patch if any changes are found.

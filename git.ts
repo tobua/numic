@@ -2,7 +2,7 @@ import { writeFileSync, existsSync, mkdirSync, rmSync } from 'fs'
 import { join } from 'path'
 import { spawnSync } from 'child_process'
 import { basePath, log } from './helper'
-import { nativeGitignore } from './configuration/gitignore'
+import { pluginGitignore } from './configuration/gitignore'
 
 const createGitShell =
   (cwd = join(basePath(), '.numic')) =>
@@ -20,7 +20,7 @@ export const initializeRepository = () => {
   git('config', '--local', 'user.name', 'numic')
   git('config', '--local', 'user.email', 'numic@reactnative.dev')
 
-  writeFileSync(join(basePath(), '.numic/.gitignore'), nativeGitignore)
+  writeFileSync(join(basePath(), '.numic/.gitignore'), pluginGitignore())
 
   git('add', '.')
 
@@ -51,7 +51,9 @@ export const createPatch = () => {
   const patchContents = diffResult.stdout.toString()
 
   if (patchContents) {
+    const patchUpdated = existsSync(patchFileName)
     writeFileSync(patchFileName, patchContents)
+    log(`Patch ${patchUpdated ? 'updated' : 'created'} in patch/current.patch`)
   } else {
     if (existsSync(patchFileName)) {
       rmSync(patchFileName)

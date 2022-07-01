@@ -5,7 +5,7 @@ import merge from 'deepmerge'
 import parse from 'parse-gitignore'
 import { basePath } from './helper'
 import { options } from './options'
-import { gitignore } from './configuration/gitignore'
+import { userGitignore, filterPluginIgnores } from './configuration/gitignore'
 import { packageJson } from './configuration/package'
 
 export const configureGitignore = () => {
@@ -13,11 +13,12 @@ export const configureGitignore = () => {
   let entries: string[] = []
 
   if (existsSync(gitIgnorePath)) {
-    // TODO apply in squak!
-    entries = entries.concat(parse(readFileSync(gitIgnorePath, 'utf8')).patterns)
+    entries = filterPluginIgnores(
+      entries.concat(parse(readFileSync(gitIgnorePath, 'utf8')).patterns)
+    )
   }
 
-  entries = entries.concat(gitignore())
+  entries = entries.concat(userGitignore())
 
   // Remove duplicates, add empty line at the end.
   entries = Array.from(new Set(entries)).concat('')
