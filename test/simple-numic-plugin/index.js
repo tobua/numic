@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 
-export default ({ cwd, log, options }) => {
-  const buildGradlePath = join(cwd, 'android/build.gradle')
+export default ({ nativePath, log, options }) => {
+  const buildGradlePath = join(nativePath, 'android/build.gradle')
   let buildGradleContents = readFileSync(buildGradlePath, 'utf-8')
 
   buildGradleContents = buildGradleContents.replace(
