@@ -69,3 +69,9 @@ export const getFolders = () => ({
   },
   plugins: join(basePath(), 'plugin'),
 })
+
+export const additionalCliArguments = () =>
+  [...process.argv]
+    .splice(3)
+    .map((item) => `"${item}"`)
+    .join(' ')

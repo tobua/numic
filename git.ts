@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync, mkdirSync, rmSync } from 'fs'
+import { writeFileSync, existsSync, mkdirSync, rmSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { spawnSync } from 'child_process'
 import { basePath, log } from './helper'
@@ -52,14 +52,24 @@ export const createPatch = () => {
 
   if (patchContents) {
     const patchUpdated = existsSync(patchFileName)
-    writeFileSync(patchFileName, patchContents)
-    log(`Patch ${patchUpdated ? 'updated' : 'created'} in patch/current.patch`)
+
+    if (patchUpdated) {
+      const existingPatchContents = readFileSync(patchFileName, 'utf-8')
+
+      if (existingPatchContents !== patchContents) {
+        writeFileSync(patchFileName, patchContents)
+        log('Patch updated in patch/current.patch')
+      }
+    } else {
+      writeFileSync(patchFileName, patchContents)
+      log('Patch created in patch/current.patch')
+    }
   } else {
     if (existsSync(patchFileName)) {
       rmSync(patchFileName)
     }
 
-    log('No changes to patch found', 'warning')
+    log('No changes to patch found')
   }
 
   // Remove staged changes again.

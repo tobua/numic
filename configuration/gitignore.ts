@@ -18,12 +18,16 @@ const pluginGitignores = [
   '*.hmap',
   '*.ipa',
   '*.xcuserstate',
+  'ios/.xcode.env.local',
   // Android/IntelliJ
   'build/',
   '.idea',
   '.gradle',
   'local.properties',
   '*.iml',
+  '*.hprof',
+  '*.keystore',
+  '!debug.keystore',
   // Cocoapods (generated with pod install / update)
   '/ios/Pods/',
   // Automatically generated along with pods

@@ -1,6 +1,6 @@
 import { existsSync } from 'fs'
 import { execSync } from 'child_process'
-import { log, getFolders } from '../helper'
+import { log, getFolders, additionalCliArguments } from '../helper'
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
@@ -24,5 +24,5 @@ export const android = async () => {
   // Update patch.
   patch()
 
-  execSync(`react-native run-android ${process.argv.slice(3)}`, { stdio: 'inherit' })
+  execSync(`react-native run-android ${additionalCliArguments()}`, { stdio: 'inherit' })
 }

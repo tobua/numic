@@ -36,7 +36,7 @@ Run native application on Android device or Emulator. Updates patch first. Alias
 Lints and formats the whole project.
 
 <details>
-  <summary>Lifecycle methods (automatically run during installation and when building native application).</summary>
+  <summary>Lifecycle methods (automatically run during installation and when building the native application).</summary>
   
 ### `numic native`
 
@@ -66,14 +66,16 @@ In order to automate common changes to native folders, reusable plugins can be i
 import { join } from 'path'
 
 interface PluginInput {
-  cwd?: string
-  log?: (message: string, type?: 'error' | 'warning') => void
+  projectPath: string
+  nativePath: string
+  log: (message: string, type?: 'error' | 'warning') => void
   options: object
 }
 
-export default async ({ cwd, log, options }: PluginInput) => {
-  const androidFolder = join(cwd, 'android')
-  const iosFolder = join(cwd, 'ios')
+export default async ({ projectPath, nativePath, log, options }: PluginInput) => {
+  const androidFolder = join(nativePath, 'android')
+  const iosFolder = join(nativePath, 'ios')
+  const appJsonPath = join(projectPath, 'app.json')
 
   // Do something with ios and android folders.
 }
@@ -83,18 +85,17 @@ Any plugins placed as `.js` files inside `/plugin` or installed node_modules end
 
 ## Configuration
 
-Adding a `numic` property allows to configure script and plugin behaviour.
+Adding a `numic` property allows to configure script and plugin behaviour. This is useful for npm plugins but also works for local plugins inside the `/plugin` folder.
 
 ```json
 {
   "name": "my-app",
   "numic": {
-    // Options for local and npm plugins.
-    "my-plugin.js": {
-      "icon": "asset/my-icon.png"
-    },
     "icon-numic-plugin": {
       "icon": "image/icon/app-icon.png"
+    },
+    "my-plugin.js": {
+      "icon": "asset/my-icon.png"
     }
   }
 }

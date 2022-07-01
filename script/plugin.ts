@@ -4,7 +4,8 @@ import { log, getFolders, basePath } from '../helper'
 import { options } from '../options'
 
 export interface PluginInput {
-  cwd?: string
+  projectPath?: string
+  nativePath?: string
   log?: (message: string, type?: 'error' | 'warning') => void
   options: object
 }
@@ -27,7 +28,8 @@ const runPluginsIn = async (plugins: Plugin[], location: string) => {
     }
 
     return runner({
-      cwd: location,
+      projectPath: basePath(),
+      nativePath: location,
       log,
       options: options()[basename(plugin)] ?? {},
     })
