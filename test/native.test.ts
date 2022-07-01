@@ -1,4 +1,4 @@
-import { existsSync, rmSync } from 'fs'
+import { existsSync, rmSync, cpSync, renameSync } from 'fs'
 import { join } from 'path'
 import { expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { prepare, environment, packageJson, readFile, writeFile, file } from 'jest-fixture'
@@ -6,6 +6,8 @@ import { native } from '../script/native'
 import { patch } from '../script/patch'
 import { apply } from '../script/apply'
 import { resetOptions } from '../options'
+
+const initialCwd = process.cwd()
 
 // @ts-ignore
 global.jest = { spyOn: vi.spyOn }
@@ -53,7 +55,7 @@ test('Removes existing native files.', async () => {
 })
 
 test('Creates patch for simple change in android and ios user folder.', async () => {
-  prepare([packageJson('native'), reactNativePkg])
+  prepare([packageJson('native-change'), reactNativePkg])
 
   await native({ skipInstall: true })
 
@@ -102,8 +104,8 @@ test('Creates patch for simple change in android and ios user folder.', async ()
   expect(patchedPodfileContents).toContain(':some_other_flag => true')
 })
 
-test('Patches nested changes as well as file additions and TODO removals.', async () => {
-  prepare([packageJson('native'), reactNativePkg])
+test('Patches nested changes as well as file additions, renames and removals.', async () => {
+  prepare([packageJson('native-nested'), reactNativePkg])
 
   await native({ skipInstall: true })
 
@@ -118,19 +120,32 @@ test('Patches nested changes as well as file additions and TODO removals.', asyn
   // Add new file
   writeFile('android/app/config.xml', changedContents)
 
-  // TODO Remove file
-  // Staging and patching removed files currently doesn't work.
-  // const keystorePath = join(process.cwd(), 'android/app/debug.keystore')
-  // const keystoreContents = readFile(keystorePath)
-  // expect(existsSync(keystorePath)).toBe(true)
-  // rmSync(keystorePath)
-  // expect(existsSync(keystorePath)).toBe(false)
+  // Remove file
+  const stringsXMLPath = join(process.cwd(), 'android/app/src/main/res/values/strings.xml')
+  const stringsXMLContents = readFile(stringsXMLPath)
 
-  // TODO rename file
+  expect(existsSync(stringsXMLPath)).toBe(true)
 
-  // expect(existsSync(keystorePath)).toBe(false)
+  rmSync(stringsXMLPath)
+
+  expect(existsSync(stringsXMLPath)).toBe(false)
+
+  // Rename file (git doesn't really do rename, will result in a remove and an add).
+  const stylesXMLPath = join(process.cwd(), 'android/app/src/main/res/values/styles.xml')
+  const stylesXMLRenamedPath = join(
+    process.cwd(),
+    'android/app/src/main/res/values/styles-renamed.xml'
+  )
+
+  renameSync(stylesXMLPath, stylesXMLRenamedPath)
+  expect(existsSync(stylesXMLPath)).toBe(false)
+  expect(existsSync(stylesXMLRenamedPath)).toBe(true)
 
   patch()
+
+  // Files removed from internal repo.
+  expect(existsSync(stylesXMLPath.replace('/android/', '.numic/android/'))).toBe(false)
+  expect(existsSync(stringsXMLPath.replace('/android/', '.numic/android/'))).toBe(false)
 
   expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(true)
 
@@ -141,22 +156,27 @@ test('Patches nested changes as well as file additions and TODO removals.', asyn
   // Restore initial native folder change.
   writeFile(manifestPath, manifestContents)
   rmSync(join(process.cwd(), 'android/app/config.xml'))
-  // TODO writeFile(keystorePath, keystoreContents)
+  writeFile(stringsXMLPath, stringsXMLContents)
+  renameSync(stylesXMLRenamedPath, stylesXMLPath)
 
   // Check if properly reverted to initial state.
   expect(readFile(manifestPath)).toContain('android:allowBackup="false"')
   expect(existsSync(join(process.cwd(), 'android/app/config.xml'))).toBe(false)
-  // TODO expect(existsSync(keystorePath)).toBe(true)
+  expect(existsSync(stringsXMLPath)).toBe(true)
+  expect(existsSync(stylesXMLPath)).toBe(true)
+  expect(existsSync(stylesXMLRenamedPath)).toBe(false)
 
   apply({})
 
   expect(readFile(manifestPath)).toContain('android:allowBackup="true"')
   expect(existsSync(join(process.cwd(), 'android/app/config.xml'))).toBe(true)
-  // TODO expect(existsSync(keystorePath)).toBe(false)
+  expect(existsSync(stylesXMLPath)).toBe(false)
+  expect(existsSync(stylesXMLRenamedPath)).toBe(true)
+  expect(existsSync(stringsXMLPath)).toBe(false)
 })
 
 test('Reverted changes disappear from patch.', async () => {
-  prepare([packageJson('native'), reactNativePkg])
+  prepare([packageJson('native-revert'), reactNativePkg])
 
   await native({ skipInstall: true })
 
@@ -189,4 +209,32 @@ test('Reverted changes disappear from patch.', async () => {
   expect(buildGradleContents).not.toContain('navenUI()')
   expect(buildGradleContents).toContain('customToolsVersion')
   expect(buildGradleContents).not.toContain('buildToolsVersion')
+})
+
+test('Patches binary files like images.', async () => {
+  prepare([packageJson('native-binary'), reactNativePkg])
+
+  await native({ skipInstall: true })
+
+  patch()
+
+  // Initially nothing to patch.
+  expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(false)
+
+  const logoPath = join(process.cwd(), 'ios/logo.png')
+
+  cpSync(join(initialCwd, 'logo.png'), logoPath)
+
+  patch()
+
+  expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(true)
+
+  rmSync(logoPath)
+
+  expect(existsSync(join(process.cwd(), 'ios'))).toBe(true)
+  expect(existsSync(logoPath)).toBe(false)
+
+  apply({})
+
+  expect(existsSync(logoPath)).toBe(true)
 })

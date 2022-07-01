@@ -40,10 +40,12 @@
   },
   "type": "module",
   "sideEffects": true,
-  "bin": "dist/index.js",
+  "main": "dist/index.js",
   "exports": {
     "package.json": "./package.json"
   },
+  "bin": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],

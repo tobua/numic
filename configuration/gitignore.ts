@@ -13,8 +13,7 @@ export const gitignore = () => {
   return entries
 }
 
-export const nativeGitignore = `
-# Xcode
+export const nativeGitignore = `# Xcode
 build/
 *.pbxuser
 !default.pbxuser
@@ -40,4 +39,6 @@ local.properties
 *.iml
 
 # CocoaPods
-/ios/Pods/`
+/ios/Pods/
+# Automatically generated
+Podfile.lock`

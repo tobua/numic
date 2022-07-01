@@ -30,12 +30,16 @@ export const initializeRepository = () => {
 export const createPatch = () => {
   const git = createGitShell()
 
-  git('add', '.') // Includes new files and content changes.
-  // TODO patch with removes will fail to be applied.
-  // git('rm', '$(git ls-files --deleted)') // Includes removed files, see https://stackoverflow.com/a/34455483.
-  // git('rm', 'android/app/debug.keystore')
+  git('add', '.') // Includes modifications, additions and removals.
 
-  const diffResult = git('diff', '--cached', '--no-color', '--ignore-space-at-eol', '--no-ext-diff')
+  const diffResult = git(
+    'diff',
+    '--cached',
+    '--no-color',
+    '--ignore-space-at-eol',
+    '--no-ext-diff',
+    '--binary'
+  )
 
   // TODO verify diff (no symlinks).
 
@@ -44,9 +48,10 @@ export const createPatch = () => {
   }
 
   const patchFileName = join(basePath(), 'patch/current.patch')
+  const patchContents = diffResult.stdout.toString()
 
-  if (diffResult.stdout) {
-    writeFileSync(patchFileName, diffResult.stdout)
+  if (patchContents) {
+    writeFileSync(patchFileName, patchContents)
   } else {
     if (existsSync(patchFileName)) {
       rmSync(patchFileName)
@@ -59,8 +64,15 @@ export const createPatch = () => {
   git('reset', 'HEAD', '--', '.')
 }
 
-export const applyPatch = ({ skipEmpty }: { skipEmpty?: boolean }) => {
-  const git = createGitShell(basePath())
+export const applyPatch = ({
+  skipEmpty,
+  location = basePath(),
+}: {
+  skipEmpty?: boolean
+  location?: string
+}) => {
+  const git = createGitShell(location)
+  let temporaryGitCreated = false
 
   if (!existsSync(join(basePath(), 'patch/current.patch'))) {
     if (!skipEmpty) {
@@ -69,19 +81,24 @@ export const applyPatch = ({ skipEmpty }: { skipEmpty?: boolean }) => {
     return
   }
 
-  if (!existsSync(join(basePath(), '.git'))) {
-    // TODO just do probably no notice necessary
-    log(`Missing repository in ${basePath()} initializing an empty one`, 'warning')
+  const repositoryPath = join(basePath(), '.git')
 
+  if (!existsSync(repositoryPath)) {
     git('init')
     git('config', '--local', 'user.name', 'numic')
     git('config', '--local', 'user.email', 'numic@reactnative.dev')
+    temporaryGitCreated = true
   }
 
-  // Add '--check' flag to see if patch is valid and can be applied.
+  // TODO Add '--check' flag to see if patch is valid and can be applied.
+  // https://git-scm.com/docs/git-apply#Documentation/git-apply.txt---check
+  // TODO --reject flag to apply possible changes and output fails to .rej file.
+
   git('apply', join(basePath(), 'patch/current.patch'))
 
-  // TODO remove temporary repository if one created.
+  if (temporaryGitCreated) {
+    rmSync(repositoryPath, { recursive: true })
+  }
 
   log('Patch successfully applied')
 }

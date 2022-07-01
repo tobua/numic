@@ -1,4 +1,4 @@
-import { existsSync, cpSync } from 'fs'
+import { existsSync, cpSync, rmSync } from 'fs'
 import { createPatch } from '../git'
 import { log, getFolders } from '../helper'
 
@@ -10,6 +10,9 @@ export const patch = () => {
   }
 
   try {
+    // First remove android and ios folders in order for removals to disappear.
+    rmSync(folders.plugin.android, { recursive: true })
+    rmSync(folders.plugin.ios, { recursive: true })
     cpSync(folders.user.android, folders.plugin.android, { recursive: true })
     cpSync(folders.user.ios, folders.plugin.ios, {
       recursive: true,

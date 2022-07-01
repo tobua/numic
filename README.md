@@ -17,10 +17,27 @@ Run the following in your React Native project and it will automatically add the
 npm install numic --save-dev --foreground-scripts
 ```
 
+This will also create fresh `/android` and `/ios` native folders and generate a patch if any changes are found.
+
 ## Commands
 
 This framework provides the following commands that will be added to `scripts` in `package.json` upon installation.
 
+### `numic ios`
+
+Run native application on iOS device or Simulator. Updates patch and pods first. Alias for `react-native run-ios` where any additional arguments are passed as well.
+
+### `numic android`
+
+Run native application on Android device or Emulator. Updates patch first. Alias for `react-native run-android` where any additional arguments are passed as well.
+
+### `numic lint`
+
+Lints and formats the whole project.
+
+<details>
+  <summary>Lifecycle methods (automatically run during installation and when building native application).</summary>
+  
 ### `numic native`
 
 Generate or recreate native `/ios` and `/android` folders. Use this command to upgrade the native code.
@@ -37,9 +54,7 @@ Apply patches from `/patch` folder to native folders.
 
 Apply installed plugins.
 
-### `numic lint`
-
-Lints and formats the whole project.
+</details>
 
 ## Plugins
 
@@ -92,3 +107,5 @@ The approach to create patches using git was inspired by [patch-package](https:/
 ## Lifecycle
 
 Upon installation a new React Native template is checked out and the native `/android` and `/ios` folders are duplicated. Once for the user to make edits in the root folder and once inside `.numic` as a separate emtpy git repository. Upon installation existing plugins and patches are applied to both locations.
+
+Before running the native application using `numic ios` or `numic android` eventual changes to native folders will be added to the patch and newly installed plugins are applied as well.

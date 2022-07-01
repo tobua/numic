@@ -4,7 +4,6 @@ import { expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { prepare, environment, packageJson, readFile, file } from 'jest-fixture'
 import { native } from '../script/native'
 import { resetOptions } from '../options'
-import { plugin } from '../script/plugin'
 
 const initialCwd = process.cwd()
 
