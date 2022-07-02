@@ -1,12 +1,16 @@
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import { join } from 'path'
 import merge from 'deepmerge'
 import { basePath, log } from './helper'
 import { Options, Package } from './types'
 
+const isTypeScript = (pkg: Package) =>
+  Boolean(pkg.devDependencies?.typescript || existsSync(join(basePath(), 'tsconfig.json')))
+
 // Default options.
 const defaultOptions = (pkg: Package) => ({
   pkg,
+  typescript: isTypeScript(pkg),
 })
 
 let cache: Options | undefined
@@ -46,6 +50,10 @@ export const options: () => Options = () => {
   if (typeof packageContents.numic === 'object') {
     // Include project specific overrides
     result = merge(result, packageContents.numic, { clone: false })
+  }
+
+  if (typeof packageContents.tsconfig === 'object') {
+    result.tsconfig = packageContents.tsconfig
   }
 
   cache = result

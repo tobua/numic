@@ -34,17 +34,14 @@ const pluginGitignores = [
   'Podfile.lock',
 ]
 
-const userGitignores = [
-  'android',
-  'ios',
-  '.numic',
-  'node_modules',
-  'package-lock.json',
-  'tsconfig.json',
-]
+const userGitignores = ['android', 'ios', '.numic', 'node_modules', 'package-lock.json']
 
 export const userGitignore = () => {
   let entries = [...userGitignores]
+
+  if (options().typescript) {
+    entries.push('tsconfig.json')
+  }
 
   const fromPackage = options().gitignore
 

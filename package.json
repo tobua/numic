@@ -42,6 +42,7 @@
   "sideEffects": true,
   "main": "dist/index.js",
   "exports": {
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "bin": "dist/index.js",
@@ -57,6 +58,7 @@
     "android"
   ],
   "devDependencies": {
+    "@tsconfig/react-native": "^2.0.2",
     "jest-fixture": "^3.0.1",
     "padua": "^0.6.1",
     "react-native": "^0.69.1",

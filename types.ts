@@ -1,15 +1,19 @@
 export interface Package {
   name: string
-  numic?: Object
-  dependencies?: Object
-  peerDependencies?: Object
-  devDependencies?: Object
-  scripts?: Object
+  numic?: object
+  dependencies?: object
+  peerDependencies?: object
+  devDependencies?: {
+    typescript?: string
+  }
+  scripts?: object
+  tsconfig?: object
 }
 
 export interface Options {
   pkg: Package
-  tsconfig?: Object
+  tsconfig?: object
   gitignore?: string[]
   reactNativeVersion?: string
+  typescript: boolean
 }

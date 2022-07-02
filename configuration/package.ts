@@ -20,12 +20,18 @@ export const packageJson = () => {
       ios: 'numic ios',
       android: 'numic android',
       lint: 'numic lint',
-      native: 'numic native',
-      patch: 'numic patch',
-      apply: 'numic apply',
     },
     pkg.scripts
   )
+
+  // Essential to plugin lifecycle.
+  if (!pkg.scripts.ios.includes('numic')) {
+    pkg.scripts.ios = 'numic ios'
+  }
+
+  if (!pkg.scripts.android.includes('numic')) {
+    pkg.scripts.android = 'numic android'
+  }
 
   return pkg
 }
