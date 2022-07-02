@@ -1,4 +1,5 @@
 {
+  "name": "app",
   "scripts": {
     "test": "jest"
   },
@@ -34,6 +35,9 @@
       "json",
       "node"
     ],
+    "moduleNameMapper": {
+      "\\.(png|jpg|ico|jpeg|gif|svg|woff|woff2|mp4)$": "<rootDir>/test/ImageMock.tsx"
+    },
     "preset": "react-native"
   }
 }
