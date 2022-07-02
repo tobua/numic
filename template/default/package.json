@@ -1,0 +1,39 @@
+{
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.69.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/runtime": "^7.18.6",
+    "@react-native-community/eslint-config": "^3.0.3",
+    "@tsconfig/react-native": "^2.0.2",
+    "@types/jest": "^28.1.4",
+    "@types/react-native": "^0.69.1",
+    "@types/react-test-renderer": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.3",
+    "@typescript-eslint/parser": "^5.30.3",
+    "babel-jest": "^28.1.2",
+    "eslint": "^8.19.0",
+    "icon-numic-plugin": "^1.2.1",
+    "jest": "^28.1.2",
+    "metro-react-native-babel-preset": "^0.71.2",
+    "numic": "^0.6.1",
+    "react-test-renderer": "18.2.0",
+    "typescript": "^4.7.4"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "preset": "react-native"
+  }
+}

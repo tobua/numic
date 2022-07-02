@@ -61,7 +61,6 @@ export const native = async (nativeOptions: NativeOptions = {}) => {
 
   log('⌛ Initializing a fresh RN project...')
 
-  // TODO is this user relevant? (appName property in pkg.json or inferring from name + App)
   const appName = nativeOptions.appName ?? getAppJsonName() ?? 'NumicApp'
   const skip = nativeOptions.skipInstall ? ' --skip-install' : ''
   const version = getVersion(nativeOptions)
@@ -69,15 +68,17 @@ export const native = async (nativeOptions: NativeOptions = {}) => {
   // DOC https://github.com/react-native-community/cli/blob/master/packages/cli/src/commands/init/index.ts
   execSync(`npx react-native init ${appName}${skip}${version}`, {
     cwd: folders.numic,
-    // Write output to cnosole if in debug mode.
+    // Write output to console if in debug mode.
     stdio: nativeOptions.debug ? 'inherit' : 'pipe',
   })
 
-  renameSync(join(basePath(), `.numic/${appName}/android`), folders.plugin.android)
-  renameSync(join(basePath(), `.numic/${appName}/ios`), folders.plugin.ios)
+  // Move to user folder and copy to repository folder to keep build files intact.
+  // Otherwise crash with iOS build.
+  renameSync(join(basePath(), `.numic/${appName}/android`), folders.user.android)
+  renameSync(join(basePath(), `.numic/${appName}/ios`), folders.user.ios)
 
-  cpSync(folders.plugin.android, folders.user.android, { recursive: true })
-  cpSync(folders.plugin.ios, folders.user.ios, { recursive: true })
+  cpSync(folders.user.android, folders.plugin.android, { recursive: true })
+  cpSync(folders.user.ios, folders.plugin.ios, { recursive: true })
 
   // Remove temporary project directory.
   rmSync(join(folders.numic, appName), { recursive: true })

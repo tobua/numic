@@ -17,7 +17,11 @@ Run the following in your React Native project and it will automatically add the
 npm install numic --save-dev --foreground-scripts --legacy-peer-deps
 ```
 
-This will also create fresh `/android` and `/ios` native folders and generate a patch if any changes are found.
+This will also create fresh `/android` and `/ios` native folders and generate a patch if any changes are found. When **starting from scratch** the following will setup a React Native TypeScript installation with numic preinstalled and much of the default bloat removed.
+
+```
+npm init --yes now numic ./my-app
+```
 
 ## Commands
 
