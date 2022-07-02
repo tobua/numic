@@ -1,5 +1,6 @@
 import { existsSync, readdirSync } from 'fs'
 import { join, basename } from 'path'
+import { commitChanges, resetRepository } from '../git'
 import { log, getFolders, basePath } from '../helper'
 import { options } from '../options'
 
@@ -74,7 +75,9 @@ export const plugin = async () => {
 
   if (installedPlugins.length > 0) {
     await runPluginsIn(installedPlugins, basePath())
+    resetRepository()
     await runPluginsIn(installedPlugins, join(basePath(), '.numic'))
+    commitChanges()
     log(`Ran ${installedPlugins.length} plugins`)
   }
 }

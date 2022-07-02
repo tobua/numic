@@ -70,7 +70,7 @@ export const configureTsConfig = () => {
     configuration.compilerOptions.skipLibCheck = true
   }
 
-  writeFileSync(tsconfigPath, JSON.stringify(configuration))
+  writeFileSync(tsconfigPath, JSON.stringify(configuration, null, 2))
 }
 
 export const configureGitignore = () => {

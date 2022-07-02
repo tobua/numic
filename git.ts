@@ -27,6 +27,19 @@ export const initializeRepository = () => {
   git('commit', '--allow-empty', '-m', 'Initial commit (fresh native Android and iOS folders.')
 }
 
+// Remove uncommitted changes.
+export const resetRepository = () => {
+  const git = createGitShell()
+  git('reset', 'HEAD', '--', '.')
+}
+
+// Commit changes from newly installed plugins.
+export const commitChanges = () => {
+  const git = createGitShell()
+  git('add', '.')
+  git('commit', '--allow-empty', '-m', 'Possible changes.')
+}
+
 export const createPatch = () => {
   const git = createGitShell()
 
@@ -72,8 +85,7 @@ export const createPatch = () => {
     log('No changes to patch found')
   }
 
-  // Remove staged changes again.
-  git('reset', 'HEAD', '--', '.')
+  resetRepository()
 }
 
 export const applyPatch = ({
