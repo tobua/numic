@@ -54,12 +54,6 @@ export const createPatch = () => {
     '--binary'
   )
 
-  // TODO verify diff (no symlinks).
-
-  if (!existsSync(join(basePath(), 'patch'))) {
-    mkdirSync(join(basePath(), 'patch'), { recursive: true })
-  }
-
   const patchFileName = join(basePath(), 'patch/current.patch')
   const patchContents = diffResult.stdout.toString()
 
@@ -74,6 +68,11 @@ export const createPatch = () => {
         log('Patch updated in patch/current.patch')
       }
     } else {
+      const patchFolder = join(basePath(), 'patch')
+      if (!existsSync(patchFolder)) {
+        mkdirSync(patchFolder, { recursive: true })
+      }
+
       writeFileSync(patchFileName, patchContents)
       log('Patch created in patch/current.patch')
     }

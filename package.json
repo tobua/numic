@@ -9,7 +9,7 @@
     "build": "padua build",
     "postinstall": "skip-local-postinstall dist/installation.js",
     "start": "padua watch",
-    "test": "vitest run"
+    "test": "vitest run --dir test"
   },
   "padua": {
     "entry": [
