@@ -34,7 +34,7 @@ export const resetRepository = () => {
   }
 
   const git = createGitShell()
-  git('reset', 'HEAD', '--', '.')
+  git('reset', 'HEAD', '--hard') // Without hard keeps changes unstaged.
 }
 
 // Commit changes from newly installed plugins.

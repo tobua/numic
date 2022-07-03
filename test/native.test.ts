@@ -4,6 +4,7 @@ import { expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { prepare, environment, packageJson, readFile, writeFile, file } from 'jest-fixture'
 import { native } from '../script/native'
 import { patch } from '../script/patch'
+import { plugin } from '../script/plugin'
 import { apply } from '../script/apply'
 import { resetOptions } from '../options'
 
@@ -258,4 +259,31 @@ test('Picks up existing appName from app.json.', async () => {
   const buildGradleContents = readFile('android/app/build.gradle')
 
   expect(buildGradleContents).toContain('com.thisreact')
+})
+
+test('Patch not applied to repository during initialization.', async () => {
+  prepare([packageJson('native-initial-patch'), reactNativePkg])
+
+  cpSync(
+    join(initialCwd, 'test/patch/build-gradle.patch'),
+    join(process.cwd(), 'patch/current.patch'),
+    { recursive: true }
+  )
+
+  // Installation commands.
+  await native({ skipInstall: true })
+  apply({ skipEmpty: true }) // => applies existing patch to native root folders.
+  // Run/build commands.
+  await plugin()
+  patch()
+
+  // Patch is applied to regular native folders
+  const buildGradleContents = readFile('android/build.gradle')
+  expect(buildGradleContents).not.toContain('mavenCentral()')
+  expect(buildGradleContents).toContain('navenUI()')
+
+  // Patch is not applied to repository copy.
+  const repositoryBuildGradleContents = readFile('.numic/android/build.gradle')
+  expect(repositoryBuildGradleContents).toContain('mavenCentral()')
+  expect(repositoryBuildGradleContents).not.toContain('navenUI()')
 })

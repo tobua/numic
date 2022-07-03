@@ -1,0 +1,13 @@
+diff --git a/android/build.gradle b/android/build.gradle
+index c9bc539..eaaabea 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -19,7 +19,7 @@ buildscript {
+     }
+     repositories {
+         google()
+-        mavenCentral()
++        navenUI()
+     }
+     dependencies {
+         classpath("com.android.tools.build:gradle:7.1.1")
