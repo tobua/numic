@@ -29,12 +29,20 @@ export const initializeRepository = () => {
 
 // Remove uncommitted changes.
 export const resetRepository = () => {
+  if (!existsSync(join(basePath(), '.numic', '.git'))) {
+    return
+  }
+
   const git = createGitShell()
   git('reset', 'HEAD', '--', '.')
 }
 
 // Commit changes from newly installed plugins.
 export const commitChanges = () => {
+  if (!existsSync(join(basePath(), '.numic', '.git'))) {
+    return
+  }
+
   const git = createGitShell()
   git('add', '.')
   git('commit', '--allow-empty', '-m', 'Possible changes.')
