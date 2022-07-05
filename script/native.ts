@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { existsSync, mkdirSync, renameSync, rmSync, cpSync, readFileSync } from 'fs'
 import { execSync } from 'child_process'
-import { log, basePath, getFolders } from '../helper'
+import { log, basePath, getFolders, filterAndroid, filterIOS } from '../helper'
 import { initializeRepository } from '../git'
 import { options } from '../options'
 import { plugin } from './plugin'
@@ -77,8 +77,11 @@ export const native = async (nativeOptions: NativeOptions = {}) => {
   renameSync(join(basePath(), `.numic/${appName}/android`), folders.user.android)
   renameSync(join(basePath(), `.numic/${appName}/ios`), folders.user.ios)
 
-  cpSync(folders.user.android, folders.plugin.android, { recursive: true })
-  cpSync(folders.user.ios, folders.plugin.ios, { recursive: true })
+  cpSync(folders.user.android, folders.plugin.android, { recursive: true, filter: filterAndroid })
+  cpSync(folders.user.ios, folders.plugin.ios, {
+    recursive: true,
+    filter: filterIOS,
+  })
 
   // Remove temporary project directory.
   rmSync(join(folders.numic, appName), { recursive: true })

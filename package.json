@@ -48,7 +48,8 @@
   "bin": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "configuration/*.json"
   ],
   "keywords": [
     "react-native",

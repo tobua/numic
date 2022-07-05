@@ -75,3 +75,17 @@ export const additionalCliArguments = () =>
     .splice(3)
     .map((item) => `"${item}"`)
     .join(' ')
+
+export const filterIOS = (source: string) => {
+  if (source.includes('/ios/Pods') || source.includes('/ios/build')) {
+    return false
+  }
+  return true
+}
+
+export const filterAndroid = (source: string) => {
+  if (source.includes('/android/build')) {
+    return false
+  }
+  return true
+}
