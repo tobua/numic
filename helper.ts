@@ -77,14 +77,14 @@ export const additionalCliArguments = () =>
     .join(' ')
 
 export const filterIOS = (source: string) => {
-  if (source.includes('/ios/Pods') || source.includes('/ios/build')) {
+  if (source.includes('/ios/Pods/') || source.includes('/ios/build/')) {
     return false
   }
   return true
 }
 
 export const filterAndroid = (source: string) => {
-  if (source.includes('/android/build')) {
+  if (source.includes('/android/build/')) {
     return false
   }
   return true
