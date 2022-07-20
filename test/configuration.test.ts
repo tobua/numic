@@ -269,3 +269,41 @@ test('tsconfig from package.json is merged in.', async () => {
   expect(tsconfigContents.include).toEqual(['global.d.ts'])
   expect(tsconfigContents.compilerOptions.module).toBe('esm')
 })
+
+test("Tsconfig array properties aren't duplicated upon merge.", async () => {
+  prepare([
+    packageJson('typescript-merge', {
+      devDependencies: { typescript: '^4.4.4' },
+      tsconfig: {
+        compilerOptions: { types: ['node', 'jest'] },
+        include: ['global.d.ts'],
+      },
+    }),
+    file(
+      'tsconfig.json',
+      '{ "compilerOptions": { "types": ["node"] }, "include": [ "global.d.ts", "another.d.ts" ] }'
+    ),
+    reactNativePkg,
+  ])
+
+  mkdirSync(join(process.cwd(), 'node_modules/@tsconfig/react-native'), { recursive: true })
+  cpSync(
+    join(initialCwd, 'node_modules/@tsconfig/react-native'),
+    join(process.cwd(), 'node_modules/@tsconfig/react-native'),
+    { recursive: true }
+  )
+
+  configure()
+
+  const contents = contentsForFilesMatching('*.json')
+  expect(contents[1].name).toBe('tsconfig.json')
+  const tsconfigContents = contents[1].contents as any
+
+  // Always extend RN template config.
+  expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
+  expect(tsconfigContents.compilerOptions.types.length).toBe(2)
+  expect(tsconfigContents.compilerOptions.types).toContain('node')
+  expect(tsconfigContents.compilerOptions.types).toContain('jest')
+  // Extended excludes removed.
+  expect(tsconfigContents.include).toEqual(['global.d.ts', 'another.d.ts'])
+})

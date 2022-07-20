@@ -28,7 +28,14 @@ export const configureTsConfig = () => {
 
   // Properties from package.json tsconfig property.
   if (options().tsconfig) {
-    configuration = merge(configuration, options().tsconfig, { clone: false })
+    configuration = merge(configuration, options().tsconfig, {
+      clone: false,
+      // Assumes all arrays in tsconfig.json are arrays of strings.
+      arrayMerge: (target, source) => {
+        const merged = target.concat(source)
+        return [...new Set(merged)]
+      },
+    })
   }
 
   // Always extend RN config.
