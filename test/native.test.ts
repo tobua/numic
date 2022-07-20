@@ -1,5 +1,6 @@
 import { existsSync, rmSync, cpSync, renameSync } from 'fs'
 import { join } from 'path'
+import { execSync } from 'child_process'
 import { expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { prepare, environment, packageJson, readFile, writeFile, file } from 'jest-fixture'
 import { native } from '../script/native'
@@ -286,4 +287,21 @@ test('Patch not applied to repository during initialization.', async () => {
   const repositoryBuildGradleContents = readFile('.numic/android/build.gradle')
   expect(repositoryBuildGradleContents).toContain('mavenCentral()')
   expect(repositoryBuildGradleContents).not.toContain('navenUI()')
+})
+
+test("Invalid dependencies in root don't lead to failing native installation.", async () => {
+  // ESM exports field without specific entry for package.json leads to validation error with CLI@8.0.3.
+  prepare([packageJson('native-validation', { dependencies: { laier: '1.0.3' } }), reactNativePkg])
+
+  execSync('npm i --legacy-peer-deps', { cwd: process.cwd() })
+
+  expect(existsSync(join(process.cwd(), 'node_modules/laier'))).toBe(true)
+
+  // @ts-ignore
+  process.exit = vi.fn(() => {})
+
+  await native({ skipInstall: true })
+
+  expect(process.exit).not.toHaveBeenCalled()
+  expect(existsSync(join(process.cwd(), '.numic/android'))).toBe(true)
 })

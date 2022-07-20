@@ -62,8 +62,8 @@
   "devDependencies": {
     "jest-fixture": "^3.0.1",
     "padua": "^0.6.1",
-    "react-native": "^0.69.1",
-    "vitest": "^0.17.1"
+    "react-native": "^0.69.2",
+    "vitest": "^0.18.1"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
