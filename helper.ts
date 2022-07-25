@@ -1,6 +1,9 @@
+import { resolve } from 'dns/promises'
+import { execSync } from 'child_process'
 import { join } from 'path'
 import { create } from 'logua'
 import arg from 'arg'
+import semver from 'semver'
 
 export const log = create('numic', 'green')
 
@@ -87,5 +90,34 @@ export const filterAndroid = (source: string) => {
   if (source.includes('/android/build/')) {
     return false
   }
+  return true
+}
+
+export const isOnline = async () => {
+  try {
+    await resolve('www.google.com')
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
+export const checkCommandVersion = (command, version) => {
+  let commandOutput: string
+
+  try {
+    commandOutput = execSync(command, { encoding: 'utf8' }).trim()
+  } catch (_) {
+    // Ignore, probably missing executable and will fail later.
+    return true
+  }
+
+  if (semver.valid(commandOutput)) {
+    if (!semver.gt(commandOutput, version)) {
+      // Outdated.
+      return false
+    }
+  }
+
   return true
 }

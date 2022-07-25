@@ -34,6 +34,7 @@
     "logua": "^2.1.4",
     "pakag": "^2.6.0",
     "parse-gitignore": "^2.0.0",
+    "semver": "^7.3.7",
     "skip-local-postinstall": "^2.0.3"
   },
   "peerDependencies": {
@@ -60,10 +61,11 @@
     "android"
   ],
   "devDependencies": {
+    "@types/semver": "^7.3.10",
     "jest-fixture": "^3.0.1",
     "padua": "^0.6.1",
-    "react-native": "^0.69.2",
-    "vitest": "^0.18.1"
+    "react-native": "^0.69.3",
+    "vitest": "^0.19.1"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {

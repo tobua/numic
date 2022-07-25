@@ -1,7 +1,14 @@
 import { existsSync } from 'fs'
 import { join } from 'path'
 import { execSync } from 'child_process'
-import { log, getFolders, basePath, additionalCliArguments } from '../helper'
+import {
+  log,
+  getFolders,
+  basePath,
+  additionalCliArguments,
+  isOnline,
+  checkCommandVersion,
+} from '../helper'
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
@@ -25,8 +32,25 @@ export const ios = async () => {
   // Update patch.
   patch()
 
+  if (!checkCommandVersion('gem -v', '3.3.0')) {
+    log('The "gem" executable version is outdated, make sure to update soon')
+  }
+
+  if (!checkCommandVersion('pod --version', '1.11.0')) {
+    log('The "pod" (cocoapods) executable version is outdated, make sure to update soon')
+  }
+
   log('Updating iOS Pods')
-  execSync('pod update', { cwd: join(basePath(), 'ios'), stdio: 'pipe' })
+  if (await isOnline()) {
+    try {
+      execSync('pod update', { cwd: join(basePath(), 'ios'), encoding: 'utf8', stdio: 'pipe' })
+    } catch (error) {
+      log('Failed to run "pod updated" in /ios', 'warning')
+      console.log(error.stdout)
+    }
+  } else {
+    log('Offline, skipping "pod update" in /ios')
+  }
 
   execSync(`react-native run-ios ${additionalCliArguments()}`, { stdio: 'inherit' })
 }

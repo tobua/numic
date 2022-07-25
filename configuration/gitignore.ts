@@ -40,7 +40,7 @@ export const userGitignore = () => {
   let entries = [...userGitignores]
 
   if (options().typescript) {
-    entries.push('tsconfig.json')
+    entries.push('/tsconfig.json')
   }
 
   const fromPackage = options().gitignore
