@@ -61,11 +61,11 @@
     "android"
   ],
   "devDependencies": {
-    "@types/semver": "^7.3.10",
+    "@types/semver": "^7.3.12",
     "jest-fixture": "^3.0.1",
     "padua": "^0.6.1",
-    "react-native": "^0.69.3",
-    "vitest": "^0.19.1"
+    "react-native": "^0.70.0",
+    "vitest": "^0.23.1"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
