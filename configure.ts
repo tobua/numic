@@ -98,9 +98,9 @@ export const configureGitignore = () => {
   writeFileSync(gitIgnorePath, entries.join('\r\n'))
 }
 
-export const configurePackageJson = () => {
+export const configurePackageJson = (isFirstInstall: boolean) => {
   const packageJsonContents = options().pkg
-  let generatedPackageJson = packageJson()
+  let generatedPackageJson = packageJson(isFirstInstall)
 
   // Merge existing configuration with additional required attributes.
   // Existing properties override generated configuration to allow
@@ -119,7 +119,9 @@ export const configurePackageJson = () => {
 }
 
 export const configure = () => {
-  configurePackageJson()
+  const isFirstInstall = !existsSync(join(basePath(), 'patch/current.patch'))
+
+  configurePackageJson(isFirstInstall)
   configureGitignore()
   configureTsConfig()
 }

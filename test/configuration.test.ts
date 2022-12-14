@@ -27,7 +27,7 @@ environment('configuration')
 
 const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')
 
-test('Properly configures empty project.', async () => {
+test('Properly configures empty project.', () => {
   prepare([packageJson('empty'), file('index.js', "console.log('Hello')"), reactNativePkg])
 
   configure()
@@ -46,7 +46,7 @@ test('Properly configures empty project.', async () => {
   expect(contents.length === 1).toBe(true)
 })
 
-test('Properly adapts existing scripts.', async () => {
+test('Properly adapts existing scripts.', () => {
   prepare([
     packageJson('empty', {
       scripts: { lint: 'my-custom-eslint', android: 'react-native run-android' },
@@ -62,10 +62,46 @@ test('Properly adapts existing scripts.', async () => {
 
   expect(packageContents.scripts.lint).not.toContain('numic')
   expect(packageContents.scripts.android).toContain('numic')
-  // TODO override eslint and prettier only if they still match initial contents.
 })
 
-test('Adds new entries to gitignore.', async () => {
+test(`Overrides lint and format commands on first install.`, () => {
+  prepare([
+    packageJson('empty', {
+      scripts: { android: 'react-native run-android' },
+    }),
+    reactNativePkg,
+  ])
+
+  configure()
+
+  const contents = contentsForFilesMatching('*.json')
+  expect(contents[0].name).toBe('package.json')
+  const packageContents = contents[0].contents as any
+
+  expect(packageContents.scripts.lint).toBe('numic lint')
+  expect(packageContents.scripts.android).toContain('numic')
+})
+
+test(`Skips lint and format commands on repeated install.`, () => {
+  prepare([
+    packageJson('empty', {
+      scripts: { android: 'react-native run-android' },
+    }),
+    reactNativePkg,
+    file('patch/current.patch', ''),
+  ])
+
+  configure()
+
+  const contents = contentsForFilesMatching('*.json')
+  expect(contents[0].name).toBe('package.json')
+  const packageContents = contents[0].contents as any
+
+  expect(packageContents.scripts.lint).not.toBeDefined()
+  expect(packageContents.scripts.android).toContain('numic')
+})
+
+test('Adds new entries to gitignore.', () => {
   prepare([packageJson('ignore'), reactNativePkg])
 
   configure()
@@ -80,7 +116,7 @@ test('Adds new entries to gitignore.', async () => {
   expect(gitignoreContents).not.toContain('tsconfig.json')
 })
 
-test('Adds new entries to gitignore.', async () => {
+test('Adds new entries to gitignore.', () => {
   prepare([packageJson('ignore-package', { numic: { gitignore: ['my-folder'] } }), reactNativePkg])
 
   configure()
@@ -92,7 +128,7 @@ test('Adds new entries to gitignore.', async () => {
   expect(gitignoreContents).toContain('my-folder')
 })
 
-test('No duplicates are added.', async () => {
+test('No duplicates are added.', () => {
   prepare([
     packageJson('ignore-duplicates', { numic: { gitignore: ['node_modules'] } }),
     file('.gitignore', `node_modules`),
@@ -110,7 +146,7 @@ test('No duplicates are added.', async () => {
   expect(occurrences).toBe(2)
 })
 
-test('Default native ignores from template are removed.', async () => {
+test('Default native ignores from template are removed.', () => {
   prepare([
     packageJson('ignore-duplicates'),
     file(
@@ -134,7 +170,7 @@ test('Default native ignores from template are removed.', async () => {
   expect(gitignoreContents).not.toContain('local.properties')
 })
 
-test('Properly configures empty project.', async () => {
+test('Properly configures empty project.', () => {
   prepare([packageJson('empty'), file('index.js', "console.log('Hello')"), reactNativePkg])
 
   configure()
@@ -148,7 +184,7 @@ test('Properly configures empty project.', async () => {
   expect(packageContents.eslintConfig.extends).toContain('eslintrc')
 })
 
-test('Properly configures typescript when dependency detected.', async () => {
+test('Properly configures typescript when dependency detected.', () => {
   prepare([
     packageJson('typescript', { devDependencies: { typescript: '^4.4.4' } }),
     reactNativePkg,
@@ -174,7 +210,7 @@ test('Properly configures typescript when dependency detected.', async () => {
   expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
 })
 
-test('Properly configures typescript when tsconfig detected.', async () => {
+test('Properly configures typescript when tsconfig detected.', () => {
   prepare([
     packageJson('typescript-detect'),
     file(
@@ -204,7 +240,7 @@ test('Properly configures typescript when tsconfig detected.', async () => {
   expect(tsconfigContents.exclude).toBe(undefined)
 })
 
-test('Extended tsconfig properties are removed.', async () => {
+test('Extended tsconfig properties are removed.', () => {
   prepare([
     packageJson('typescript-extend', { devDependencies: { typescript: '^4.4.4' } }),
     file(
@@ -236,7 +272,7 @@ test('Extended tsconfig properties are removed.', async () => {
   expect(tsconfigContents.exclude).toEqual(['my-stuff'])
 })
 
-test('tsconfig from package.json is merged in.', async () => {
+test('tsconfig from package.json is merged in.', () => {
   prepare([
     packageJson('typescript-package', {
       devDependencies: { typescript: '^4.4.4' },
@@ -270,7 +306,7 @@ test('tsconfig from package.json is merged in.', async () => {
   expect(tsconfigContents.compilerOptions.module).toBe('esm')
 })
 
-test("Tsconfig array properties aren't duplicated upon merge.", async () => {
+test("Tsconfig array properties aren't duplicated upon merge.", () => {
   prepare([
     packageJson('typescript-merge', {
       devDependencies: { typescript: '^4.4.4' },

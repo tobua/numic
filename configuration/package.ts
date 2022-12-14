@@ -1,7 +1,7 @@
 import { join, sep } from 'path'
 import { options } from '../options'
 
-export const packageJson = () => {
+export const packageJson = (isFirstInstall: boolean) => {
   const pkg: any = {
     scripts: options().pkg.scripts,
     prettier: `.${sep}${join('node_modules/numic/configuration', '.prettierrc.json')}`,
@@ -10,26 +10,28 @@ export const packageJson = () => {
     },
   }
 
-  if (!options().pkg.scripts) {
-    pkg.scripts = {}
+  // Existing scripts will not be overriden.
+  if (isFirstInstall) {
+    if (!options().pkg.scripts) {
+      pkg.scripts = {}
+    }
+
+    pkg.scripts = Object.assign(
+      {
+        ios: 'numic ios',
+        android: 'numic android',
+        lint: 'numic lint',
+      },
+      pkg.scripts
+    )
   }
 
-  // Existing scripts will not be overriden.
-  pkg.scripts = Object.assign(
-    {
-      ios: 'numic ios',
-      android: 'numic android',
-      lint: 'numic lint',
-    },
-    pkg.scripts
-  )
-
   // Essential to plugin lifecycle.
-  if (!pkg.scripts.ios.includes('numic')) {
+  if (pkg.scripts && !pkg.scripts.ios?.includes('numic')) {
     pkg.scripts.ios = 'numic ios'
   }
 
-  if (!pkg.scripts.android.includes('numic')) {
+  if (pkg.scripts && !pkg.scripts.android?.includes('numic')) {
     pkg.scripts.android = 'numic android'
   }
 
