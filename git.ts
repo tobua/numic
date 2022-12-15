@@ -98,9 +98,11 @@ export const createPatch = () => {
 export const applyPatch = ({
   skipEmpty,
   location = basePath(),
+  reject = false,
 }: {
   skipEmpty?: boolean
   location?: string
+  reject?: boolean
 }) => {
   const git = createGitShell(location)
   let temporaryGitCreated = false
@@ -123,9 +125,14 @@ export const applyPatch = ({
 
   // TODO Add '--check' flag to see if patch is valid and can be applied.
   // https://git-scm.com/docs/git-apply#Documentation/git-apply.txt---check
-  // TODO --reject flag to apply possible changes and output fails to .rej file.
 
-  const { stderr } = git('apply', join(basePath(), 'patch/current.patch'))
+  const applyArguments = ['apply', join(basePath(), 'patch/current.patch')]
+
+  if (reject) {
+    applyArguments.push('--reject')
+  }
+
+  const { stderr } = git(...applyArguments)
   const errorMessage = stderr.toString()
 
   if (temporaryGitCreated) {
