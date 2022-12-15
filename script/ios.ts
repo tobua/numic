@@ -33,11 +33,15 @@ export const ios = async () => {
   patch()
 
   if (!checkCommandVersion('gem -v', '3.3.0')) {
-    log('The "gem" executable version is outdated, make sure to update soon')
+    log(
+      'The "gem" executable version is outdated, make sure to update soon, by running "gem update --system"'
+    )
   }
 
   if (!checkCommandVersion('pod --version', '1.11.0')) {
-    log('The "pod" (cocoapods) executable version is outdated, make sure to update soon')
+    log(
+      'The "pod" (cocoapods) executable version is outdated, make sure to update soon, by running "gem update"'
+    )
   }
 
   log('Updating iOS Pods')

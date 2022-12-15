@@ -125,10 +125,17 @@ export const applyPatch = ({
   // https://git-scm.com/docs/git-apply#Documentation/git-apply.txt---check
   // TODO --reject flag to apply possible changes and output fails to .rej file.
 
-  git('apply', join(basePath(), 'patch/current.patch'))
+  const { stderr } = git('apply', join(basePath(), 'patch/current.patch'))
+  const errorMessage = stderr.toString()
 
   if (temporaryGitCreated) {
     rmSync(repositoryPath, { recursive: true })
+  }
+
+  if (errorMessage) {
+    log('Unable to apply patch')
+    log(errorMessage)
+    return
   }
 
   log('Patch successfully applied')
