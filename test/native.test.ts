@@ -1,25 +1,26 @@
-import { existsSync, rmSync, cpSync, renameSync } from 'fs'
+import { existsSync, rmSync, cpSync, renameSync, mkdirSync } from 'fs'
 import { join } from 'path'
 import { execSync } from 'child_process'
 import { expect, test, beforeEach, afterEach, vi } from 'vitest'
-import { prepare, environment, packageJson, readFile, writeFile, file } from 'jest-fixture'
+import {
+  registerVitest,
+  prepare,
+  environment,
+  packageJson,
+  readFile,
+  writeFile,
+  file,
+} from 'jest-fixture'
 import { native } from '../script/native'
 import { patch } from '../script/patch'
 import { plugin } from '../script/plugin'
 import { apply } from '../script/apply'
-import { resetOptions } from '../options'
+import { resetOptions } from '../helper'
 
 const initialCwd = process.cwd()
 
-// @ts-ignore
-global.jest = { spyOn: vi.spyOn }
-// @ts-ignore
-global.beforeEach = beforeEach
-// @ts-ignore
-global.afterEach = afterEach
-
+registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
-
 environment('native')
 
 const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')
@@ -294,6 +295,9 @@ test("Invalid dependencies in root don't lead to failing native installation.", 
   prepare([packageJson('native-validation', { dependencies: { laier: '1.0.3' } }), reactNativePkg])
 
   execSync('npm i --legacy-peer-deps', { cwd: process.cwd() })
+
+  mkdirSync(join(process.cwd(), 'node_modules/react-native'), { recursive: true })
+  writeFile('node_modules/react-native/package.json', { version: '0.69.0' })
 
   expect(existsSync(join(process.cwd(), 'node_modules/laier'))).toBe(true)
 

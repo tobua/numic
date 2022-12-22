@@ -1,9 +1,12 @@
 import { resolve } from 'dns/promises'
-import { execSync } from 'child_process'
-import { join } from 'path'
-import { create } from 'logua'
+import { execSync } from 'node:child_process'
+import { join } from 'node:path'
+import { readFileSync, existsSync } from 'node:fs'
+import merge from 'deepmerge'
 import arg from 'arg'
 import semver from 'semver'
+import { create } from 'logua'
+import { NativeOptions, Options, Package } from './types'
 
 export const log = create('numic', 'green')
 
@@ -25,8 +28,6 @@ export const basePath = () => {
 
   return currentWorkingDirectory
 }
-
-export const hashPath = (options) => join('node_modules', 'numic', options().hash)
 
 const optionsSpecificationByScript = {
   native: {
@@ -120,4 +121,102 @@ export const checkCommandVersion = (command, version) => {
   }
 
   return true
+}
+
+const isTypeScript = (pkg: Package) =>
+  Boolean(pkg.devDependencies?.typescript || existsSync(join(basePath(), 'tsconfig.json')))
+
+// Default options.
+const defaultOptions = (pkg: Package) => ({
+  pkg,
+  typescript: isTypeScript(pkg),
+})
+
+let cache: Options | undefined
+
+export const resetOptions = () => {
+  cache = undefined
+}
+
+export const options: () => Options = () => {
+  if (cache) {
+    return cache
+  }
+
+  let packageContents: Package
+
+  try {
+    const packageContentsFile = readFileSync(join(basePath(), 'package.json'), 'utf8')
+    packageContents = JSON.parse(packageContentsFile)
+  } catch (error) {
+    log('Unable to load package.json', 'error')
+  }
+
+  if (typeof packageContents.name !== 'string') {
+    log('Missing "name" field in package.json', 'error')
+  }
+
+  let result: Options = defaultOptions(packageContents)
+
+  try {
+    result.reactNativeVersion = JSON.parse(
+      readFileSync(join(basePath(), 'node_modules/react-native/package.json'), 'utf8')
+    ).version
+  } catch (error) {
+    log('React native installation not found', 'warning')
+  }
+
+  if (typeof packageContents.numic === 'object') {
+    // Include project specific overrides
+    result = merge(result, packageContents.numic, { clone: false })
+  }
+
+  if (typeof packageContents.tsconfig === 'object') {
+    result.tsconfig = packageContents.tsconfig
+  }
+
+  cache = result
+
+  return result
+}
+
+export const getAppJsonName = () => {
+  const appJsonPath = join(basePath(), 'app.json')
+  if (!existsSync(appJsonPath)) {
+    return null
+  }
+
+  try {
+    const contents = JSON.parse(readFileSync(appJsonPath, 'utf-8'))
+    if (typeof contents.name === 'string' && contents.name.length > 0) {
+      return contents.name
+    }
+  } catch (error) {
+    // Ignored
+  }
+
+  return null
+}
+
+export const getVersion = (nativeOptions: NativeOptions) => {
+  if (nativeOptions.version) {
+    return nativeOptions.version
+  }
+
+  const packageVersion = options().reactNativeVersion
+
+  if (packageVersion) {
+    return packageVersion
+  }
+
+  return ''
+}
+
+export const defaultNativeOptions = (nativeOptions: NativeOptions) => {
+  nativeOptions.skipInstall ??= true
+  nativeOptions.debug ??= false
+  nativeOptions.appName ||= getAppJsonName() ?? 'NumicApp'
+  nativeOptions.version ||= getVersion(nativeOptions)
+
+  return nativeOptions
 }

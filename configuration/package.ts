@@ -1,5 +1,5 @@
 import { join, sep } from 'path'
-import { options } from '../options'
+import { options } from '../helper'
 
 export const packageJson = (isFirstInstall: boolean) => {
   const pkg: any = {

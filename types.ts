@@ -17,3 +17,10 @@ export interface Options {
   reactNativeVersion?: string
   typescript: boolean
 }
+
+export type NativeOptions = {
+  skipInstall?: boolean
+  appName?: string
+  debug?: boolean
+  version?: string
+}

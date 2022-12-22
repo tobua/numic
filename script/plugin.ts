@@ -2,7 +2,7 @@ import { existsSync, readdirSync } from 'fs'
 import { join, basename } from 'path'
 import { commitChanges, resetRepository } from '../git'
 import { log, getFolders, basePath } from '../helper'
-import { options } from '../options'
+import { options } from '../helper'
 
 export interface PluginInput {
   projectPath?: string

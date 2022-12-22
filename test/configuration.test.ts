@@ -2,6 +2,7 @@ import { mkdirSync, cpSync } from 'fs'
 import { join } from 'path'
 import { expect, test, beforeEach, afterEach, vi } from 'vitest'
 import {
+  registerVitest,
   prepare,
   environment,
   packageJson,
@@ -10,19 +11,12 @@ import {
   readFile,
 } from 'jest-fixture'
 import { configure } from '../configure'
-import { resetOptions } from '../options'
+import { resetOptions } from '../helper'
 
 const initialCwd = process.cwd()
 
-// @ts-ignore
-global.jest = { spyOn: vi.spyOn }
-// @ts-ignore
-global.beforeEach = beforeEach
-// @ts-ignore
-global.afterEach = afterEach
-
+registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
-
 environment('configuration')
 
 const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')

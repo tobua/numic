@@ -1,21 +1,22 @@
 import { existsSync } from 'fs'
 import { join } from 'path'
 import { expect, test, beforeEach, afterEach, vi } from 'vitest'
-import { prepare, environment, packageJson, readFile, writeFile, file } from 'jest-fixture'
+import {
+  registerVitest,
+  prepare,
+  environment,
+  packageJson,
+  readFile,
+  writeFile,
+  file,
+} from 'jest-fixture'
 import { initializeRepository } from '../git'
 import { patch } from '../script/patch'
 import { apply } from '../script/apply'
-import { resetOptions } from '../options'
+import { resetOptions } from '../helper'
 
-// @ts-ignore
-global.jest = { spyOn: vi.spyOn }
-// @ts-ignore
-global.beforeEach = beforeEach
-// @ts-ignore
-global.afterEach = afterEach
-
+registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
-
 environment('patch')
 
 const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})

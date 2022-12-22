@@ -1,23 +1,24 @@
 import { cpSync, existsSync } from 'fs'
 import { join } from 'path'
 import { expect, test, beforeEach, afterEach, vi } from 'vitest'
-import { prepare, environment, packageJson, readFile, file, writeFile } from 'jest-fixture'
+import {
+  registerVitest,
+  prepare,
+  environment,
+  packageJson,
+  readFile,
+  file,
+  writeFile,
+} from 'jest-fixture'
 import { native } from '../script/native'
 import { plugin } from '../script/plugin'
 import { patch } from '../script/patch'
-import { resetOptions } from '../options'
+import { resetOptions } from '../helper'
 
 const initialCwd = process.cwd()
 
-// @ts-ignore
-global.jest = { spyOn: vi.spyOn }
-// @ts-ignore
-global.beforeEach = beforeEach
-// @ts-ignore
-global.afterEach = afterEach
-
+registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
-
 environment('plugin')
 
 const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')

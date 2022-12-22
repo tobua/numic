@@ -1,5 +1,6 @@
-import { options } from '../options'
+import { options } from '../helper'
 
+// TODO up-to-date with current template?
 const pluginGitignores = [
   // XCode
   'build/',

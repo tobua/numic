@@ -1,47 +1,15 @@
 import { join } from 'path'
-import { existsSync, mkdirSync, renameSync, rmSync, cpSync, readFileSync, writeFileSync } from 'fs'
-import { execSync } from 'child_process'
-import { log, basePath, getFolders, filterAndroid, filterIOS } from '../helper'
+import { existsSync, mkdirSync, rmSync, cpSync } from 'fs'
+import { getFolders, filterAndroid, filterIOS, defaultNativeOptions, log } from '../helper'
 import { initializeRepository } from '../git'
-import { options } from '../options'
 import { plugin } from './plugin'
-
-type NativeOptions = { skipInstall?: boolean; appName?: string; debug?: boolean; version?: string }
-
-const getAppJsonName = () => {
-  const appJsonPath = join(basePath(), 'app.json')
-  if (!existsSync(appJsonPath)) {
-    return null
-  }
-
-  try {
-    const contents = JSON.parse(readFileSync(appJsonPath, 'utf-8'))
-    if (typeof contents.name === 'string' && contents.name.length > 0) {
-      return contents.name
-    }
-  } catch (error) {
-    // Ignored
-  }
-
-  return null
-}
-
-const getVersion = (nativeOptions: NativeOptions) => {
-  if (nativeOptions.version) {
-    return ` --version ${nativeOptions.version}`
-  }
-
-  const packageVersion = options().reactNativeVersion
-
-  if (packageVersion) {
-    return ` --version ${packageVersion}`
-  }
-
-  return ''
-}
+import { NativeOptions } from '../types'
+import { cacheTemplate } from '../template-cache'
 
 export const native = async (nativeOptions: NativeOptions = {}) => {
   const folders = getFolders()
+  // eslint-disable-next-line no-param-reassign
+  nativeOptions = defaultNativeOptions(nativeOptions)
 
   if (existsSync(folders.numic)) {
     // Remove existing repository and installation.
@@ -49,8 +17,6 @@ export const native = async (nativeOptions: NativeOptions = {}) => {
   }
 
   mkdirSync(folders.numic, { recursive: true })
-  // Empty package.json to bypass React Native CLI dependencies validation.
-  writeFileSync(join(folders.numic, 'package.json'), '{ "name": "numic-native" }')
 
   log('⚠️  Removing existing /android and /ios folders')
 
@@ -63,36 +29,22 @@ export const native = async (nativeOptions: NativeOptions = {}) => {
 
   log('⌛ Initializing a fresh RN project...')
 
-  const appName = nativeOptions.appName ?? getAppJsonName() ?? 'NumicApp'
-  const skip = nativeOptions.skipInstall ? ' --skip-install' : ''
-  const version = getVersion(nativeOptions)
+  const templateCacheLocation = cacheTemplate(nativeOptions)
+  const androidCache = join(templateCacheLocation, 'android')
+  const iosCache = join(templateCacheLocation, 'ios')
 
-  // DOC https://github.com/react-native-community/cli/blob/master/packages/cli/src/commands/init/index.ts
-  try {
-    execSync(`npx react-native init ${appName}${skip}${version}`, {
-      cwd: folders.numic,
-      encoding: 'utf8',
-      // Write output to console if in debug mode.
-      stdio: nativeOptions.debug ? 'inherit' : 'pipe',
-    })
-  } catch (error) {
-    log(`Failed to install React Native template.\n\n${error.stdout}`, 'error')
-    return
-  }
-
-  // Move to user folder and copy to repository folder to keep build files intact.
-  // Otherwise crash with iOS build.
-  renameSync(join(basePath(), `.numic/${appName}/android`), folders.user.android)
-  renameSync(join(basePath(), `.numic/${appName}/ios`), folders.user.ios)
-
-  cpSync(folders.user.android, folders.plugin.android, { recursive: true, filter: filterAndroid })
-  cpSync(folders.user.ios, folders.plugin.ios, {
+  // TODO check if iOS stays intact, previously issues caused by copying, crash on build.
+  cpSync(androidCache, folders.user.android, { recursive: true, filter: filterAndroid })
+  cpSync(iosCache, folders.user.ios, {
     recursive: true,
     filter: filterIOS,
   })
 
-  // Remove temporary project directory.
-  rmSync(join(folders.numic, appName), { recursive: true })
+  cpSync(androidCache, folders.plugin.android, { recursive: true, filter: filterAndroid })
+  cpSync(iosCache, folders.plugin.ios, {
+    recursive: true,
+    filter: filterIOS,
+  })
 
   // Install plugins (will not be included in patches).
   await plugin()
