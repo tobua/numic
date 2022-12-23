@@ -30,6 +30,7 @@
     "@tsconfig/react-native": "^2.0.3",
     "arg": "^5.0.2",
     "deepmerge": "^4.2.2",
+    "fast-glob": "^3.2.12",
     "global-cache-dir": "^4.4.0",
     "is-ci": "^3.0.1",
     "logua": "^2.1.4",

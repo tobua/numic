@@ -8,6 +8,7 @@ Utility to manage React Native projects. Commit only the changes made to native 
 - Runs during project installation
 - Easily upgrade native code
 - ESLint, Prettier and TypeScript configurations
+- Plugins to apply common native changes automatically
 
 ## Installation
 
@@ -62,7 +63,10 @@ Apply installed plugins.
 
 ## Plugins
 
-In order to automate common changes to native folders, reusable plugins can be installed. Any node_module ending in `-numic-plugin` will be treated as such and automatically installed. [icon-numic-plugin](https://npmjs.com/icon-numic-plugin) is an example of a plugin that will automatically create icons in various sizes for Android and iOS.
+In order to automate common changes to native folders, reusable plugins can be installed. Any node_module ending in `-numic-plugin` will be treated as such and automatically installed. Currently the following plugins are available:
+
+- [icon-numic-plugin](https://npmjs.com/icon-numic-plugin) creates icons in various sizes for Android and iOS.
+- [android-sdk-numic-plugin](https://npmjs.com/android-sdk-numic-plugin) checks which Android SDK versions are installed and adapts Gradle configuration to ensure a successful build.
 
 ### Anatomy of a Plugin
 
@@ -70,13 +74,20 @@ In order to automate common changes to native folders, reusable plugins can be i
 import { join } from 'path'
 
 interface PluginInput {
-  projectPath: string
-  nativePath: string
-  log: (message: string, type?: 'error' | 'warning') => void
-  options: object
+  // Root project path.
+  projectPath?: string
+  // Location of /android or /ios folders, either root or inside /.numic.
+  nativePath?: string
+  log?: (message: string, type?: 'error' | 'warning') => void
+  options?: Options
 }
 
-export default async ({ projectPath, nativePath, log, options }: PluginInput) => {
+export default async ({
+  projectPath = process.cwd(),
+  nativePath = process.cwd(),
+  log = console.log,
+  options = {},
+}: PluginInput) => {
   const androidFolder = join(nativePath, 'android')
   const iosFolder = join(nativePath, 'ios')
   const appJsonPath = join(projectPath, 'app.json')

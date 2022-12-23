@@ -3,6 +3,7 @@ import { join } from 'path'
 import { spawnSync } from 'child_process'
 import { basePath, log } from './helper'
 import { pluginGitignore } from './configuration/gitignore'
+import { applyPatch } from './apply'
 
 const createGitShell =
   (cwd = join(basePath(), '.numic')) =>
@@ -95,14 +96,12 @@ export const createPatch = () => {
   resetRepository()
 }
 
-export const applyPatch = ({
+export const apply = ({
   skipEmpty,
   location = basePath(),
-  reject = false,
 }: {
   skipEmpty?: boolean
   location?: string
-  reject?: boolean
 }) => {
   const git = createGitShell(location)
   let temporaryGitCreated = false
@@ -123,27 +122,9 @@ export const applyPatch = ({
     temporaryGitCreated = true
   }
 
-  // TODO Add '--check' flag to see if patch is valid and can be applied.
-  // https://git-scm.com/docs/git-apply#Documentation/git-apply.txt---check
-
-  const applyArguments = ['apply', join(basePath(), 'patch/current.patch')]
-
-  if (reject) {
-    applyArguments.push('--reject')
-  }
-
-  const { stderr } = git(...applyArguments)
-  const errorMessage = stderr.toString()
+  applyPatch(location, git)
 
   if (temporaryGitCreated) {
     rmSync(repositoryPath, { recursive: true })
   }
-
-  if (errorMessage) {
-    log('Unable to apply patch')
-    log(errorMessage)
-    return
-  }
-
-  log('Patch successfully applied')
 }

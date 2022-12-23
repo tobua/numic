@@ -1,5 +1,5 @@
-import { applyPatch } from '../git'
+import { apply as applyPatch } from '../git'
 
-export const apply = (options: { skipEmpty?: boolean; reject?: boolean }) => {
+export const apply = (options: { skipEmpty?: boolean }) => {
   applyPatch(options)
 }

@@ -33,7 +33,6 @@ export const native = async (nativeOptions: NativeOptions = {}) => {
   const androidCache = join(templateCacheLocation, 'android')
   const iosCache = join(templateCacheLocation, 'ios')
 
-  // TODO check if iOS stays intact, previously issues caused by copying, crash on build.
   cpSync(androidCache, folders.user.android, { recursive: true, filter: filterAndroid })
   cpSync(iosCache, folders.user.ios, {
     recursive: true,
