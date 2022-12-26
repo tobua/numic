@@ -3,6 +3,12 @@
   "scripts": {
     "test": "jest"
   },
+  "numic": {
+    "icon-numic-plugin": {
+      "androidForeground": "adaptive-icon.svg",
+      "androidBackgroundColor": "#e9e9e9"
+    }
+  },
   "dependencies": {
     "react": "18.2.0",
     "react-native": "0.70.6"
@@ -17,6 +23,7 @@
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",
+    "android-sdk-numic-plugin": "^1.0.1",
     "babel-jest": "^29.3.1",
     "eslint": "^8.30.0",
     "icon-numic-plugin": "^1.4.3",
