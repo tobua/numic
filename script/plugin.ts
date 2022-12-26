@@ -13,7 +13,7 @@ export interface PluginInput {
 type PluginFunction = (options?: PluginInput) => void
 type Plugin = string
 
-const runPluginsIn = async (plugins: Plugin[], location: string) => {
+const runPluginsIn = async (plugins: Plugin[], location: string, silent = false) => {
   const promises = plugins.map(async (plugin) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let runner: PluginFunction = (..._args: any) => {}
@@ -30,7 +30,7 @@ const runPluginsIn = async (plugins: Plugin[], location: string) => {
     return runner({
       projectPath: basePath(),
       nativePath: location,
-      log,
+      log: silent ? () => {} : log,
       options: options()[basename(plugin)] ?? {},
     })
   })
@@ -75,7 +75,8 @@ export const plugin = async () => {
   if (installedPlugins.length > 0) {
     await runPluginsIn(installedPlugins, basePath())
     resetRepository()
-    await runPluginsIn(installedPlugins, join(basePath(), '.numic'))
+    // Don't show output on second run (should be the same).
+    await runPluginsIn(installedPlugins, join(basePath(), '.numic'), true)
     commitChanges()
     log(`Ran ${installedPlugins.length} plugins`)
   }
