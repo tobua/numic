@@ -2,13 +2,7 @@ import { existsSync, readdirSync } from 'fs'
 import { join, basename } from 'path'
 import { commitChanges, resetRepository } from '../git'
 import { log, getFolders, basePath, options } from '../helper'
-
-export interface PluginInput {
-  projectPath?: string
-  nativePath?: string
-  log?: (message: string, type?: 'error' | 'warning') => void
-  options: object
-}
+import type { PluginInput } from '../types'
 
 type PluginFunction = (options?: PluginInput) => void
 type Plugin = string
@@ -32,6 +26,7 @@ const runPluginsIn = async (plugins: Plugin[], location: string, silent = false)
       nativePath: location,
       log: silent ? () => {} : log,
       options: options()[basename(plugin)] ?? {},
+      version: options().reactNativeVersion,
     })
   })
 

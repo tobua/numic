@@ -10,6 +10,8 @@ import { plugin } from './script/plugin'
 import { android } from './script/android'
 import { ios } from './script/ios'
 
+export type { PluginInput } from './types'
+
 const scripts = {
   lint,
   native,

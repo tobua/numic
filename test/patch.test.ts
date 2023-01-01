@@ -180,7 +180,7 @@ test('Patching also works with nested files and multiple changes.', () => {
   expect(existsSync(patchPath)).toBe(true)
   expect(existsSync(rejectedHunksPath)).toBe(false)
 
-  let patchContents = readFile(patchPath)
+  const patchContents = readFile(patchPath)
   expect(patchContents).toContain(firstFileName)
   expect(patchContents).toContain(secondFileName)
   expect(patchContents).toContain(thirdFileName)
@@ -259,4 +259,50 @@ test('Patching also works with nested files and multiple changes.', () => {
   expect(rejectedHunkContents).not.toContain(thirdFileName)
   expect(rejectedHunkContents).toContain('-eight')
   expect(rejectedHunkContents).toContain('+eiight')
+})
+
+test('Changes can be excluded from patch with nativeGitignore option.', () => {
+  prepare([
+    packageJson('patch', { numic: { nativeGitignore: ['first.txt', 'second.txt'] } }),
+    reactNativePkg,
+    file('.numic/ios/first.txt', 'one\ntwo\nthree'),
+    file('.numic/android/second.txt', 'one\ntwo\nthree'),
+    file('ios/first.txt', 'one\nfour\nthree'),
+    file('android/second.txt', 'one\nfour\nthree'),
+  ])
+
+  const nextLog = consoleLogSpy.mock.calls.length
+
+  initializeRepository()
+  patch()
+
+  expect(consoleLogSpy.mock.calls[nextLog][0]).toContain('No changes to patch found')
+
+  expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(false)
+})
+
+test('nativeGitignore option can be used to include otherwise ignored files.', () => {
+  prepare([
+    packageJson('patch', { numic: { nativeGitignore: '!IDEWorkspaceChecks.plist' } }),
+    reactNativePkg,
+    file(
+      '.numic/ios/numic.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist',
+      'one\ntwo\nthree'
+    ),
+    file('.numic/android/second.txt', 'one\ntwo\nthree'),
+    file(
+      'ios/numic.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist',
+      'one\nfour\nthree'
+    ),
+    file('android/second.txt', 'one\ntwo\nthree'),
+  ])
+
+  const nextLog = consoleLogSpy.mock.calls.length
+
+  initializeRepository()
+  patch()
+
+  expect(consoleLogSpy.mock.calls[nextLog][0]).toContain('Patch created')
+
+  expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(true)
 })

@@ -1,3 +1,4 @@
+import { EOL } from 'node:os'
 import { options } from '../helper'
 
 // TODO up-to-date with current template?
@@ -33,6 +34,10 @@ const pluginGitignores = [
   '/ios/Pods/',
   // Automatically generated along with pods
   'Podfile.lock',
+  // macOS cache files.
+  '.DS_Store',
+  // Warnings automatically generated when project opened in XCode.
+  'IDEWorkspaceChecks.plist',
 ]
 
 const userGitignores = ['android', 'ios', '.numic', 'node_modules', 'package-lock.json']
@@ -57,4 +62,14 @@ export const userGitignore = () => {
 export const filterPluginIgnores = (input: string[]) =>
   input.filter((element) => !pluginGitignores.includes(element))
 
-export const pluginGitignore = () => pluginGitignores.join('\r\n')
+export const pluginGitignore = () => {
+  let gitignoreEntries = pluginGitignores
+
+  if (typeof options().nativeGitignore === 'string') {
+    gitignoreEntries.push(options().nativeGitignore as string)
+  } else if (Array.isArray(options().nativeGitignore)) {
+    gitignoreEntries = gitignoreEntries.concat(options().nativeGitignore)
+  }
+
+  return gitignoreEntries.join(EOL)
+}
