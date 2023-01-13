@@ -1,6 +1,6 @@
 import { existsSync } from 'fs'
 import { execSync } from 'child_process'
-import { log, getFolders, additionalCliArguments } from '../helper'
+import { log, getFolders, additionalCliArguments, hasRejectedHunks } from '../helper'
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
@@ -19,6 +19,10 @@ export const android = async () => {
   } else {
     // Apply plugins in case new plugins installed.
     await plugin()
+  }
+
+  if (hasRejectedHunks()) {
+    return
   }
 
   // Update patch.

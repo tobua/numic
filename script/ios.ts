@@ -8,6 +8,7 @@ import {
   additionalCliArguments,
   isOnline,
   checkCommandVersion,
+  hasRejectedHunks,
 } from '../helper'
 import { native } from './native'
 import { patch } from './patch'
@@ -27,6 +28,10 @@ export const ios = async () => {
   } else {
     // Apply plugins in case new plugins installed.
     await plugin()
+  }
+
+  if (hasRejectedHunks()) {
+    return
   }
 
   // Update patch.

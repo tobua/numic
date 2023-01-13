@@ -9,7 +9,7 @@ registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
 environment('native')
 
-const rnVersion = '0.70.6'
+const rnVersion = '0.71.0'
 const olderRNVersion = '0.69.0'
 const reactNativePkg = file(
   'node_modules/react-native/package.json',
@@ -99,5 +99,26 @@ test('Removes expired templates added manually and adds new appName template.', 
   expect(existsSync(join(templatePath, 'android'))).toBe(true)
   expect(existsSync(join(templatePath, `ios/${appName}.xcodeproj`))).toBe(true)
 
-  expect(readdirSync(cacheDirectory)).toEqual(['0.68.5', '0.69.0', '0.70.6'])
+  expect(readdirSync(cacheDirectory)).toEqual(['0.68.5', '0.69.0', rnVersion])
+})
+
+test('Version sorting also works with prereleases.', () => {
+  const prereleaseVersion = '0.71.0-rc.6'
+  mkdirSync(join(cacheDirectory, prereleaseVersion, 'prerelease-app', 'android'), {
+    recursive: true,
+  })
+
+  const appName = 'NewApp'
+  prepare([packageJson('native'), reactNativePkg])
+
+  const options = defaultNativeOptions({
+    version: rnVersion, // Existing version.
+    appName,
+    debug: false,
+  })
+
+  const templatePath = cacheTemplate(options)
+
+  expect(existsSync(templatePath)).toBe(true)
+  expect(readdirSync(cacheDirectory)).toEqual(['0.69.0', rnVersion, prereleaseVersion])
 })

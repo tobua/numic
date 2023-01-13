@@ -220,3 +220,21 @@ export const defaultNativeOptions = (nativeOptions: NativeOptions) => {
 
   return nativeOptions
 }
+
+export const hasRejectedHunks = () => {
+  const rejectedHunksPath = join(basePath(), 'patch/rejected-hunks.patch')
+
+  if (existsSync(rejectedHunksPath)) {
+    log(
+      `Parts of your patch couldn't be applied and are now in patch/rejected-hunks.patch`,
+      'warning'
+    )
+    log(
+      'Apply the rejected hunks manually to the native folders and then run "npx numic patch" to update the patch'
+    )
+    log('After this remove the rejected-hunks.patch file and try this command again')
+    return true
+  }
+
+  return false
+}
