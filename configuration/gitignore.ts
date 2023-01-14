@@ -1,7 +1,6 @@
 import { EOL } from 'node:os'
 import { options } from '../helper'
 
-// TODO up-to-date with current template?
 const pluginGitignores = [
   // XCode
   'build/',
@@ -32,10 +31,13 @@ const pluginGitignores = [
   '!debug.keystore',
   // Cocoapods (generated with pod install / update)
   '/ios/Pods/',
+  '/vendor/bundle/',
   // Automatically generated along with pods
   'Podfile.lock',
   // macOS cache files.
   '.DS_Store',
+  // Various
+  '*.jsbundle',
   // Warnings automatically generated when project opened in XCode.
   'IDEWorkspaceChecks.plist',
 ]

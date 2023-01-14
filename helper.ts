@@ -33,7 +33,6 @@ const optionsSpecificationByScript = {
   native: {
     '--version': String,
     '--debug': Boolean,
-    '--skipInstall': Boolean,
     '--appName': String,
   },
   lint: {},
@@ -213,7 +212,6 @@ export const getVersion = (nativeOptions: NativeOptions) => {
 }
 
 export const defaultNativeOptions = (nativeOptions: NativeOptions) => {
-  nativeOptions.skipInstall ??= true
   nativeOptions.debug ??= false
   nativeOptions.appName ||= getAppJsonName() ?? 'NumicApp'
   nativeOptions.version ||= getVersion(nativeOptions)
@@ -226,13 +224,9 @@ export const hasRejectedHunks = () => {
 
   if (existsSync(rejectedHunksPath)) {
     log(
-      `Parts of your patch couldn't be applied and are now in patch/rejected-hunks.patch`,
+      `Parts of your patch couldn't be applied and are now in patch/rejected-hunks.patch. Apply the rejected hunks manually to the native folders and then run "npx numic patch" to update the patch. After this remove the rejected-hunks.patch file and try this command again`,
       'warning'
     )
-    log(
-      'Apply the rejected hunks manually to the native folders and then run "npx numic patch" to update the patch'
-    )
-    log('After this remove the rejected-hunks.patch file and try this command again')
     return true
   }
 

@@ -38,7 +38,7 @@ test('Simple plugin modifies native files.', async () => {
     }
   )
 
-  await native({ skipInstall: true })
+  await native()
 
   const buildGradleContents = readFile('android/build.gradle')
 
@@ -62,7 +62,7 @@ test('Asynchronous plugin modifies native files.', async () => {
     }
   )
 
-  await native({ skipInstall: true })
+  await native()
 
   const podfileContents = readFile('ios/Podfile')
 
@@ -76,7 +76,7 @@ test('Local plugin modifies native files.', async () => {
     reactNativePkg,
   ])
 
-  await native({ skipInstall: true })
+  await native()
 
   const buildGradleContents = readFile('android/build.gradle')
 
@@ -90,7 +90,7 @@ test('Local plugin can be configured.', async () => {
     reactNativePkg,
   ])
 
-  await native({ skipInstall: true })
+  await native()
 
   const buildGradleContents = readFile('android/build.gradle')
 
@@ -115,7 +115,7 @@ test('Npm plugin can be configured.', async () => {
     }
   )
 
-  await native({ skipInstall: true })
+  await native()
 
   const buildGradleContents = readFile('android/build.gradle')
 
@@ -125,7 +125,7 @@ test('Npm plugin can be configured.', async () => {
 test("Plugin changes are staged and don't cause patch even after initial repository is set up.", async () => {
   prepare([packageJson('plugin'), reactNativePkg])
 
-  await native({ skipInstall: true })
+  await native()
 
   // No plugin & patch initially.
   expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(false)

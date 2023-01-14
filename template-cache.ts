@@ -25,7 +25,6 @@ const removeExpiredTemplates = (version: string) => {
 }
 
 export const cacheTemplate = (nativeOptions: NativeOptions) => {
-  const skip = nativeOptions.skipInstall ? ' --skip-install' : ''
   const directory = join(cacheDirectory, nativeOptions.version, nativeOptions.appName)
 
   removeExpiredTemplates(nativeOptions.version)
@@ -40,10 +39,9 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
   // TODO necessary? writeFileSync(join(folders.numic, 'package.json'), '{ "name": "numic-native" }')
 
   // DOC https://github.com/react-native-community/cli/blob/master/packages/cli/src/commands/init/index.ts
-  // TODO always skip installation?
   try {
     execSync(
-      `npx react-native init ${nativeOptions.appName}${skip} --version ${nativeOptions.version}`,
+      `npx react-native init ${nativeOptions.appName} --skip-install --version ${nativeOptions.version}`,
       {
         cwd: directory,
         encoding: 'utf8',

@@ -28,7 +28,7 @@ const reactNativePkg = file('node_modules/react-native/package.json', '{ "versio
 test('Create native project for android and ios.', async () => {
   prepare([packageJson('native'), reactNativePkg])
 
-  await native({ skipInstall: true })
+  await native()
 
   expect(existsSync(join(process.cwd(), '.numic'))).toBe(true)
   // Unmodified native folders.
@@ -52,7 +52,7 @@ test('Removes existing native files.', async () => {
 
   expect(existsSync(join(process.cwd(), 'ios/hello.js'))).toBe(true)
 
-  await native({ skipInstall: true })
+  await native()
 
   expect(existsSync(join(process.cwd(), 'ios/hello.js'))).toBe(false)
 })
@@ -60,7 +60,7 @@ test('Removes existing native files.', async () => {
 test('Creates patch for simple change in android and ios user folder.', async () => {
   prepare([packageJson('native-change'), reactNativePkg])
 
-  await native({ skipInstall: true })
+  await native()
 
   const buildGradleContents = readFile('android/build.gradle')
   const changedContents = buildGradleContents.replace('mavenCentral()', 'navenUI()')
@@ -110,7 +110,7 @@ test('Creates patch for simple change in android and ios user folder.', async ()
 test('Patches nested changes as well as file additions, renames and removals.', async () => {
   prepare([packageJson('native-nested'), reactNativePkg])
 
-  await native({ skipInstall: true })
+  await native()
 
   const manifestPath = 'android/app/src/main/AndroidManifest.xml'
   const manifestContents = readFile(manifestPath)
@@ -181,7 +181,7 @@ test('Patches nested changes as well as file additions, renames and removals.', 
 test('Reverted changes disappear from patch.', async () => {
   prepare([packageJson('native-revert'), reactNativePkg])
 
-  await native({ skipInstall: true })
+  await native()
 
   let buildGradleContents = readFile('android/build.gradle')
   const changedContents = buildGradleContents.replace('mavenCentral()', 'navenUI()')
@@ -217,7 +217,7 @@ test('Reverted changes disappear from patch.', async () => {
 test('Patches binary files like images.', async () => {
   prepare([packageJson('native-binary'), reactNativePkg])
 
-  await native({ skipInstall: true })
+  await native()
 
   patch()
 
@@ -249,7 +249,7 @@ test('Picks up existing appName from app.json.', async () => {
     reactNativePkg,
   ])
 
-  await native({ skipInstall: true })
+  await native()
 
   expect(existsSync(join(process.cwd(), 'ios/ThisReact'))).toBe(true)
   expect(existsSync(join(process.cwd(), 'ios/ThisReact.xcodeproj'))).toBe(true)
@@ -273,7 +273,7 @@ test('Patch not applied to repository during initialization.', async () => {
   )
 
   // Installation commands.
-  await native({ skipInstall: true })
+  await native()
   apply({ skipEmpty: true }) // => applies existing patch to native root folders.
   // Run/build commands.
   await plugin()
@@ -304,7 +304,7 @@ test("Invalid dependencies in root don't lead to failing native installation.", 
   // @ts-ignore
   process.exit = vi.fn(() => {})
 
-  await native({ skipInstall: true })
+  await native()
 
   expect(process.exit).not.toHaveBeenCalled()
   expect(existsSync(join(process.cwd(), '.numic/android'))).toBe(true)

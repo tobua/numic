@@ -45,7 +45,7 @@ Lints and formats the whole project.
   
 ### `numic native`
 
-Generate or recreate native `/ios` and `/android` folders. Use this command to upgrade the native code.
+Generate or recreate native `/ios` and `/android` folders. Use this command to upgrade the native code. This also runs during project installation. Use the `--debug` flag to print template generation output, the `--version 0.X.Y` flag to override use of the installed React Native version to generate the template or the `--appName MyApp` flag to specify the name with which the template is generated.
 
 ### `numic patch`
 
@@ -105,7 +105,7 @@ Any plugins placed as `.js` files inside `/plugin` or installed node_modules end
 
 Adding a `numic` property allows to configure script and plugin behaviour. This is useful for npm plugins but also works for local plugins inside the `/plugin` folder.
 
-```json
+```js
 {
   "name": "my-app",
   "numic": {

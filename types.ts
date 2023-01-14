@@ -20,7 +20,6 @@ export interface Options {
 }
 
 export type NativeOptions = {
-  skipInstall?: boolean
   appName?: string
   debug?: boolean
   version?: string

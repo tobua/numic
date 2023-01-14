@@ -33,7 +33,6 @@ test('Downloads and caches new template.', () => {
   expect(options.version).toBe(rnVersion)
   expect(options.appName).toBe(appName)
   expect(options.debug).toBe(false)
-  expect(options.skipInstall).toBe(true)
 
   const templatePath = cacheTemplate(options)
 
@@ -54,13 +53,11 @@ test('Downloads and caches another template.', () => {
     // Version read from package.
     // appName read from app.json.
     debug: true,
-    skipInstall: true,
   })
 
   expect(options.version).toBe(olderRNVersion)
   expect(options.appName).toBe(appName)
   expect(options.debug).toBe(true)
-  expect(options.skipInstall).toBe(true)
 
   const templatePath = cacheTemplate(options)
 
@@ -89,7 +86,6 @@ test('Removes expired templates added manually and adds new appName template.', 
   expect(options.version).toBe(rnVersion)
   expect(options.appName).toBe(appName)
   expect(options.debug).toBe(false)
-  expect(options.skipInstall).toBe(true)
 
   const templatePath = cacheTemplate(options)
 
