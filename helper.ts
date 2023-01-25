@@ -232,3 +232,7 @@ export const hasRejectedHunks = () => {
 
   return false
 }
+
+// Remove lines like "index c9bc539..eaaabea 100644"
+export const replaceIndexLinesFromPatch = (input: string) =>
+  input.replaceAll(/index\s[a-zA-Z0-9]{7}\.\.[a-zA-Z0-9]{7}\s\d{6}[\n\r]/g, '')

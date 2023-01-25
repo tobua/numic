@@ -15,7 +15,7 @@ import { native } from '../script/native'
 import { patch } from '../script/patch'
 import { plugin } from '../script/plugin'
 import { apply } from '../script/apply'
-import { resetOptions } from '../helper'
+import { replaceIndexLinesFromPatch, resetOptions } from '../helper'
 
 const initialCwd = process.cwd()
 
@@ -308,4 +308,28 @@ test("Invalid dependencies in root don't lead to failing native installation.", 
 
   expect(process.exit).not.toHaveBeenCalled()
   expect(existsSync(join(process.cwd(), '.numic/android'))).toBe(true)
+})
+
+test(`Index annotations in patch aren't neccessary.`, async () => {
+  prepare([packageJson('native-index-lines'), reactNativePkg])
+
+  const withIndexLines = readFile(join(initialCwd, 'test/patch/build-gradle.patch'))
+  writeFile(join(process.cwd(), 'patch/current.patch'), replaceIndexLinesFromPatch(withIndexLines))
+
+  // Installation commands.
+  await native()
+  apply({ skipEmpty: true }) // => applies existing patch to native root folders.
+  // Run/build commands.
+  await plugin()
+  patch()
+
+  // Patch is applied to regular native folders
+  const buildGradleContents = readFile('android/build.gradle')
+  expect(buildGradleContents).not.toContain('mavenCentral()')
+  expect(buildGradleContents).toContain('navenUI()')
+
+  // Patch is not applied to repository copy.
+  const repositoryBuildGradleContents = readFile('.numic/android/build.gradle')
+  expect(repositoryBuildGradleContents).toContain('mavenCentral()')
+  expect(repositoryBuildGradleContents).not.toContain('navenUI()')
 })

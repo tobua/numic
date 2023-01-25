@@ -33,7 +33,7 @@
     "fast-glob": "^3.2.12",
     "global-cache-dir": "^4.4.0",
     "is-ci": "^3.0.1",
-    "logua": "^2.1.4",
+    "logua": "^2.2.0",
     "pakag": "^2.6.0",
     "parse-gitignore": "^2.0.0",
     "semver": "^7.3.8",
@@ -66,9 +66,9 @@
   "devDependencies": {
     "@types/semver": "^7.3.13",
     "jest-fixture": "^4.0.2",
-    "padua": "^1.0.1",
-    "react-native": "^0.71.0",
-    "vitest": "^0.27.1"
+    "padua": "^1.1.0",
+    "react-native": "^0.71.1",
+    "vitest": "^0.28.2"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {

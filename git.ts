@@ -1,7 +1,7 @@
 import { writeFileSync, existsSync, mkdirSync, rmSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { spawnSync } from 'child_process'
-import { basePath, log } from './helper'
+import { basePath, log, replaceIndexLinesFromPatch } from './helper'
 import { pluginGitignore } from './configuration/gitignore'
 import { applyPatch } from './apply'
 
@@ -73,7 +73,7 @@ export const createPatch = () => {
       const existingPatchContents = readFileSync(patchFileName, 'utf-8')
 
       if (existingPatchContents !== patchContents) {
-        writeFileSync(patchFileName, patchContents)
+        writeFileSync(patchFileName, replaceIndexLinesFromPatch(patchContents))
         log('Patch updated in patch/current.patch')
       }
     } else {
@@ -82,7 +82,7 @@ export const createPatch = () => {
         mkdirSync(patchFolder, { recursive: true })
       }
 
-      writeFileSync(patchFileName, patchContents)
+      writeFileSync(patchFileName, replaceIndexLinesFromPatch(patchContents))
       log('Patch created in patch/current.patch')
     }
   } else {
