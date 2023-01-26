@@ -64,7 +64,7 @@ export const createPatch = () => {
   )
 
   const patchFileName = join(basePath(), 'patch/current.patch')
-  const patchContents = diffResult.stdout.toString()
+  const patchContents = replaceIndexLinesFromPatch(diffResult.stdout.toString())
 
   if (patchContents) {
     const patchUpdated = existsSync(patchFileName)
@@ -73,7 +73,7 @@ export const createPatch = () => {
       const existingPatchContents = readFileSync(patchFileName, 'utf-8')
 
       if (existingPatchContents !== patchContents) {
-        writeFileSync(patchFileName, replaceIndexLinesFromPatch(patchContents))
+        writeFileSync(patchFileName, patchContents)
         log('Patch updated in patch/current.patch')
       }
     } else {
@@ -82,7 +82,7 @@ export const createPatch = () => {
         mkdirSync(patchFolder, { recursive: true })
       }
 
-      writeFileSync(patchFileName, replaceIndexLinesFromPatch(patchContents))
+      writeFileSync(patchFileName, patchContents)
       log('Patch created in patch/current.patch')
     }
   } else {
