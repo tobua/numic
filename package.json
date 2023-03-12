@@ -29,12 +29,12 @@
   "dependencies": {
     "@tsconfig/react-native": "^2.0.3",
     "arg": "^5.0.2",
-    "deepmerge": "^4.2.2",
+    "deepmerge": "^4.3.0",
     "fast-glob": "^3.2.12",
     "global-cache-dir": "^4.4.0",
     "is-ci": "^3.0.1",
     "logua": "^2.2.0",
-    "pakag": "^2.6.0",
+    "pakag": "^2.7.0",
     "parse-gitignore": "^2.0.0",
     "semver": "^7.3.8",
     "semver-sort": "^1.0.0",
@@ -67,8 +67,8 @@
     "@types/semver": "^7.3.13",
     "jest-fixture": "^4.0.2",
     "padua": "^1.1.0",
-    "react-native": "^0.71.1",
-    "vitest": "^0.28.2"
+    "react-native": "^0.71.4",
+    "vitest": "^0.29.2"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
