@@ -1,8 +1,14 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react'
-import { proxy, useSnapshot } from 'valtio'
+import { proxy, useSnapshot, subscribe } from 'valtio'
 import { useBreakpoint } from '../helper/breakpoint'
 
-export const Performance = proxy({ fps: 0 })
+export const Performance = proxy({ fps: 0, physics: true })
+
+subscribe(Performance, () => {
+  if (Performance.fps > 0 && Performance.fps < 25) {
+    Performance.physics = false
+  }
+})
 
 function Button({
   children,
@@ -28,7 +34,7 @@ function Button({
 
 export function Quality({ dpr, onDpr }) {
   const { mobile } = useBreakpoint()
-  const { fps } = useSnapshot(Performance)
+  const { fps, physics } = useSnapshot(Performance)
 
   return (
     <div
@@ -39,7 +45,17 @@ export function Quality({ dpr, onDpr }) {
         gap: mobile ? 5 : 10,
       }}
     >
-      <span style={{ fontSize: mobile ? 10 : 12, lineHeight: 1.2 }}>Quality - {fps} FPS</span>
+      <span style={{ fontSize: mobile ? 10 : 12, lineHeight: 1.2 }}>
+        Quality - {fps} FPS -{' '}
+        <label
+          style={{ fontWeight: 'bold', cursor: 'pointer' }}
+          onClick={() => {
+            Performance.physics = !physics
+          }}
+        >
+          {physics ? 'Disable' : 'Enable'} Physics
+        </label>
+      </span>
       <div style={{ display: 'flex', gap: mobile ? 5 : 10 }}>
         <Button active={dpr === 0.5} onClick={() => onDpr(0.5)}>
           low

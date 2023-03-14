@@ -17,7 +17,7 @@ const itemPositions = {
 
 const cameraTargetPosition = {
   patch: new Vector3(0, 100, 1000),
-  plugin: new Vector3(500, 200, 500),
+  plugin: new Vector3(500, 200, 1500),
   update: new Vector3(600, 400, 200),
   migration: new Vector3(600, 400, 200),
 }

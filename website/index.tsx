@@ -8,6 +8,7 @@ import { Scene } from './markup/Scene'
 import { Features } from './markup/Features'
 import { Quality } from './markup/Quality'
 import { useBreakpoint } from './helper/breakpoint'
+import { GettingStarted } from './markup/GettingStarted'
 
 function App({ initialFeature = 'patch' }) {
   const [currentFeature, setCurrentFeature] = useState(initialFeature)
@@ -29,7 +30,7 @@ function App({ initialFeature = 'patch' }) {
         }}
       >
         <Title />
-        <GitHubButton />
+        <GitHubButton rotate />
       </div>
       <div style={{ gridColumn: '2 / 2', padding: mobile ? 10 : 20 }}>
         <Description />
@@ -58,6 +59,7 @@ function App({ initialFeature = 'patch' }) {
       >
         <Quality dpr={dpr} onDpr={setDpr} />
       </div>
+      <GettingStarted />
     </>
   )
 }

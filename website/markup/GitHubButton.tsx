@@ -59,7 +59,7 @@ function Scene({ rotate = true, hovered, ...props }) {
   )
 }
 
-export function GitHubButton({ quality = 1 }: { quality?: Dpr }) {
+export function GitHubButton({ quality = 1, rotate = false }: { quality?: Dpr; rotate?: boolean }) {
   const [hovered, setHover] = useState(false)
   const [active, setActive] = useState(false)
   const { mobile } = useBreakpoint()
@@ -84,7 +84,7 @@ export function GitHubButton({ quality = 1 }: { quality?: Dpr }) {
     >
       <Canvas dpr={quality}>
         <Suspense fallback={<Loader spinner />}>
-          <Scene hovered={hovered} rotate={false} />
+          <Scene hovered={hovered} rotate={rotate} />
           <OrthographicCamera
             name="1"
             makeDefault={true}

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Vector3, useFrame } from '@react-three/fiber'
 import { Box, MeshReflectorMaterial } from '@react-three/drei'
-import { Nodes } from '../../types'
 import { Physics, RigidBody } from '@react-three/rapier'
+import { useSnapshot } from 'valtio'
+import { Nodes } from '../../types'
+import { Performance } from '../Quality'
 
 const circlePoints = (
   count: number,
@@ -30,6 +32,21 @@ function Floor() {
   )
 }
 
+function StaticRings({ count = 10 }) {
+  const points = circlePoints(count, 100)
+
+  return (
+    <group name="Rings" position={[60, -50, 0]}>
+      {points.map((point, index) => (
+        <mesh key={index} position={[point.x, 0, point.y]} castShadow>
+          <sphereGeometry args={[10, 16, 16]} />
+          <MeshReflectorMaterial mirror={0} color="white" />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
 function Rings({ count = 10, rotate = true, active = false }) {
   const group = useRef<any>()
   const points = circlePoints(count, 100)
@@ -49,7 +66,7 @@ function Rings({ count = 10, rotate = true, active = false }) {
       <group ref={group} name="Rings" position={[60, -50, 0]}>
         {points.map((point, index) => (
           <RigidBody key={index}>
-            <mesh position={[point.x, 0, point.y]}>
+            <mesh position={[point.x, 0, point.y]} castShadow>
               <sphereGeometry args={[10, 16, 16]} />
               <MeshReflectorMaterial mirror={0} color="white" />
             </mesh>
@@ -95,10 +112,17 @@ export function Apple({
   active?: boolean
   rings?: boolean
 }) {
+  const { physics } = useSnapshot(Performance)
+
   return (
     <group name="Apple" position={position}>
       <Icon nodes={nodes} />
-      {rings && <Rings active={active} rotate={!active} />}
+      {rings &&
+        (physics ? (
+          <Rings active={active && physics} rotate={!active && physics} />
+        ) : (
+          <StaticRings />
+        ))}
     </group>
   )
 }
