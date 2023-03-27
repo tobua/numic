@@ -32,3 +32,9 @@ export interface PluginInput {
   options?: object
   version?: string
 }
+
+export type RunInputs = {
+  location: 'local' | 'device'
+  mode: 'development' | 'production'
+  deviceId?: string
+}

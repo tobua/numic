@@ -28,15 +28,19 @@ npm init --yes now numic ./my-app
 
 This framework provides the following commands that will be added to `scripts` in `package.json` upon installation.
 
-### `numic ios`
+### `numic` - `npm start`
+
+Shortcut command that will promt for the commands below as well as specific options for each command.
+
+### `numic ios` - `npm run ios`
 
 Run native application on iOS device or Simulator. Updates patch and pods first. Alias for `react-native run-ios` where any additional arguments are passed as well.
 
-### `numic android`
+### `numic android` - `npm run android`
 
 Run native application on Android device or Emulator. Updates patch first. Alias for `react-native run-android` where any additional arguments are passed as well.
 
-### `numic lint`
+### `numic lint` - `npm run lint`
 
 Lints and formats the whole project.
 

@@ -46,7 +46,7 @@ const optionsSpecificationByScript = {
 export const cliOptions = (script: string) => {
   const result = {}
 
-  if (script === 'ios' || script === 'android') {
+  if (script === 'ios' || script === 'android' || script === 'prompt') {
     return result
   }
 

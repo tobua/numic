@@ -4,8 +4,9 @@ import { log, getFolders, additionalCliArguments, hasRejectedHunks } from '../he
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
+import { RunInputs } from '../types'
 
-export const android = async () => {
+export const android = async (inputs: RunInputs) => {
   const folders = getFolders()
   log('Android')
 
@@ -28,5 +29,16 @@ export const android = async () => {
   // Update patch.
   patch()
 
-  execSync(`react-native run-android ${additionalCliArguments()}`, { stdio: 'inherit' })
+  let runInputArguments = ''
+
+  if (typeof inputs === 'object' && inputs.mode && inputs.location) {
+    runInputArguments += ` --mode=${inputs.mode === 'development' ? 'debug' : 'release'}`
+    if (inputs.location === 'device' && inputs.deviceId) {
+      runInputArguments += ` --deviceId=${inputs.deviceId}`
+    }
+  }
+
+  execSync(`react-native run-android${runInputArguments} ${additionalCliArguments()}`, {
+    stdio: 'inherit',
+  })
 }

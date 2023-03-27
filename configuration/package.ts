@@ -18,6 +18,7 @@ export const packageJson = (isFirstInstall: boolean) => {
 
     pkg.scripts = Object.assign(
       {
+        start: 'numic',
         ios: 'numic ios',
         android: 'numic android',
         lint: 'numic lint',

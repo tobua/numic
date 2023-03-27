@@ -13,8 +13,9 @@ import {
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
+import { RunInputs } from '../types'
 
-export const ios = async () => {
+export const ios = async (inputs: RunInputs) => {
   const folders = getFolders()
   log('iOS')
 
@@ -61,5 +62,16 @@ export const ios = async () => {
     log('Offline, skipping "pod update" in /ios')
   }
 
-  execSync(`react-native run-ios ${additionalCliArguments()}`, { stdio: 'inherit' })
+  let runInputArguments = ''
+
+  if (typeof inputs === 'object' && inputs.mode && inputs.location) {
+    runInputArguments += ` --mode=${inputs.mode === 'development' ? 'Debug' : 'Release'}`
+    if (inputs.location === 'device') {
+      runInputArguments += ' --device'
+    }
+  }
+
+  execSync(`react-native run-ios${runInputArguments} ${additionalCliArguments()}`, {
+    stdio: 'inherit',
+  })
 }

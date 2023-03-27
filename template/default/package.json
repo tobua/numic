@@ -14,15 +14,15 @@
     "react-native": "0.71.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.21.3",
     "@babel/runtime": "^7.21.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@tsconfig/react-native": "^2.0.3",
-    "@types/jest": "^29.4.1",
-    "@types/react-native": "^0.71.3",
+    "@types/jest": "^29.5.0",
+    "@types/react-native": "^0.71.5",
     "@types/react-test-renderer": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.55.0",
-    "@typescript-eslint/parser": "^5.55.0",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
     "android-sdk-numic-plugin": "^1.0.1",
     "babel-jest": "^29.5.0",
     "eslint": "^8.36.0",
@@ -31,7 +31,7 @@
     "metro-react-native-babel-preset": "^0.76.0",
     "numic": "latest",
     "react-test-renderer": "18.2.0",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.2"
   },
   "jest": {
     "moduleFileExtensions": [

@@ -9,6 +9,7 @@ import { patch } from './script/patch'
 import { plugin } from './script/plugin'
 import { android } from './script/android'
 import { ios } from './script/ios'
+import { prompt } from './script/prompt'
 
 export type { PluginInput } from './types'
 
@@ -20,9 +21,10 @@ const scripts = {
   plugin,
   android,
   ios,
+  prompt,
 }
 
-const script = process.argv.slice(2)[0]
+const script = process.argv.slice(2)[0] ?? 'prompt'
 
 if (!Object.keys(scripts).includes(script)) {
   log('Please provide a valid script', 'error')
