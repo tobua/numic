@@ -4,7 +4,7 @@ import { log, getFolders, additionalCliArguments, hasRejectedHunks } from '../he
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
-import { RunInputs } from '../types'
+import { RunInputs, RunLocation, RunMode } from '../types'
 
 export const android = async (inputs: RunInputs) => {
   const folders = getFolders()
@@ -31,9 +31,9 @@ export const android = async (inputs: RunInputs) => {
 
   let runInputArguments = ''
 
-  if (typeof inputs === 'object' && inputs.mode && inputs.location) {
-    runInputArguments += ` --mode=${inputs.mode === 'development' ? 'debug' : 'release'}`
-    if (inputs.location === 'device' && inputs.deviceId) {
+  if (typeof inputs === 'object') {
+    runInputArguments += ` --mode=${inputs.mode === RunMode.debug ? 'debug' : 'release'}`
+    if (inputs.location === RunLocation.device && inputs.deviceId) {
       runInputArguments += ` --deviceId=${inputs.deviceId}`
     }
   }

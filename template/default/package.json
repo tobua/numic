@@ -7,6 +7,10 @@
     "icon-numic-plugin": {
       "androidForeground": "adaptive-icon.svg",
       "androidBackgroundColor": "#e9e9e9"
+    },
+    "android-sdk-numic-plugin": {
+      "compileSdkVersion": 33,
+      "targetSdkVersion": 33
     }
   },
   "dependencies": {

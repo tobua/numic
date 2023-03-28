@@ -33,8 +33,19 @@ export interface PluginInput {
   version?: string
 }
 
+export enum RunLocation {
+  local,
+  device,
+}
+
+export enum RunMode {
+  debug,
+  release,
+}
+
 export type RunInputs = {
-  location: 'local' | 'device'
-  mode: 'development' | 'production'
+  location: RunLocation
+  mode: RunMode
   deviceId?: string
+  simulator?: string
 }
