@@ -24,6 +24,8 @@ This will also create fresh `/android` and `/ios` native folders and generate a 
 npm init --yes now numic ./my-app
 ```
 
+This will prompt for an app name that can only contain **alphanumeric** characters and will be used as the initial bundle identifier. Using `NumicApp` as the name will result in `com.numicapp` as the bundle identifier. The name as well as the display name can later be configured in `app.json`.
+
 ## Commands
 
 This framework provides the following commands that will be added to `scripts` in `package.json` upon installation.
