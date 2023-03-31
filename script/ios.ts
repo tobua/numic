@@ -64,7 +64,11 @@ export const ios = async (inputs: RunInputs) => {
 
   let runInputArguments = ''
 
-  if (typeof inputs === 'object') {
+  if (
+    typeof inputs === 'object' &&
+    typeof inputs.mode === 'number' &&
+    typeof inputs.location === 'number'
+  ) {
     runInputArguments += ` --mode=${inputs.mode === RunMode.debug ? 'Debug' : 'Release'}`
     if (inputs.location === RunLocation.device) {
       runInputArguments += ' --device'

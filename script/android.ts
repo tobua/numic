@@ -31,7 +31,11 @@ export const android = async (inputs: RunInputs) => {
 
   let runInputArguments = ''
 
-  if (typeof inputs === 'object') {
+  if (
+    typeof inputs === 'object' &&
+    typeof inputs.mode === 'number' &&
+    typeof inputs.location === 'number'
+  ) {
     runInputArguments += ` --mode=${inputs.mode === RunMode.debug ? 'debug' : 'release'}`
     if (inputs.location === RunLocation.device && inputs.deviceId) {
       runInputArguments += ` --deviceId=${inputs.deviceId}`
