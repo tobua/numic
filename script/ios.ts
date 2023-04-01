@@ -71,7 +71,7 @@ export const ios = async (inputs: RunInputs) => {
   ) {
     runInputArguments += ` --mode=${inputs.mode === RunMode.debug ? 'Debug' : 'Release'}`
     if (inputs.location === RunLocation.device) {
-      runInputArguments += ' --device'
+      runInputArguments += ` --device "${inputs.device}"`
     } else {
       runInputArguments += ` --simulator "${inputs.simulator}"`
     }

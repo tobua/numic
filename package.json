@@ -67,12 +67,12 @@
   ],
   "devDependencies": {
     "@types/command-exists": "^1.2.0",
-    "@types/prompts": "^2.4.3",
+    "@types/prompts": "^2.4.4",
     "@types/semver": "^7.3.13",
     "jest-fixture": "^4.0.2",
     "padua": "^1.1.0",
-    "react-native": "^0.71.4",
-    "vitest": "^0.29.7"
+    "react-native": "^0.71.5",
+    "vitest": "^0.29.8"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
