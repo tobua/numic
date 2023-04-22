@@ -3,29 +3,36 @@ import { join, basename } from 'path'
 import { commitChanges, resetRepository } from '../git'
 import { log, getFolders, basePath, options } from '../helper'
 import type { PluginInput } from '../types'
+import androidVersion from '../plugin/android-version'
+
+const builtInPlugins = [androidVersion]
 
 type PluginFunction = (options?: PluginInput) => void
-type Plugin = string
+type Plugin = string | PluginFunction
 
 const runPluginsIn = async (plugins: Plugin[], location: string, silent = false) => {
   const promises = plugins.map(async (plugin) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let runner: PluginFunction = (..._args: any) => {}
 
-    try {
-      runner = await import(plugin)
-      if ((runner as any).default) {
-        runner = (runner as any).default
+    if (typeof plugin === 'function') {
+      runner = plugin
+    } else {
+      try {
+        runner = await import(plugin)
+        if ((runner as any).default) {
+          runner = (runner as any).default
+        }
+      } catch (error) {
+        log(`Failed to load plugin ${plugin}`)
       }
-    } catch (error) {
-      log(`Failed to load plugin ${plugin}`)
     }
 
     return runner({
       projectPath: basePath(),
       nativePath: location,
       log: silent ? () => {} : log,
-      options: options()[basename(plugin)] ?? {},
+      options: typeof plugin === 'function' ? options() : options()[basename(plugin)] ?? {},
       version: options().reactNativeVersion,
     })
   })
@@ -55,7 +62,7 @@ export const plugin = async () => {
     packages = packages.concat(Object.keys(devDependencies))
   }
 
-  let installedPlugins = packages.filter((pkg) => pkg.endsWith('-numic-plugin'))
+  let installedPlugins: Plugin[] = packages.filter((pkg) => pkg.endsWith('-numic-plugin'))
 
   // Local plugins from /plugin user folder.
   if (existsSync(folders.plugins)) {
@@ -66,6 +73,9 @@ export const plugin = async () => {
 
     installedPlugins = installedPlugins.concat(pluginFiles)
   }
+
+  // Always run all built-in plugins.
+  installedPlugins = installedPlugins.concat(builtInPlugins)
 
   if (installedPlugins.length > 0) {
     await runPluginsIn(installedPlugins, basePath())

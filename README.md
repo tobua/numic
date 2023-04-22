@@ -126,7 +126,10 @@ Adding a `numic` property allows to configure script and plugin behaviour. This 
       "android/app/upload-keystore.jks",
       "project.pbxproj",
       "!IDEWorkspaceChecks.plist" // Include file.
-    ]
+    ],
+    // Set Android Version (versionCode & versionName) in /app/build.gradle.
+    "androidVersion": 45,
+    "androidVersion": [8, "2.31"],
   },
   // Will be merged with tsconfig, that's by default gitignored.
   "tsconfig": {

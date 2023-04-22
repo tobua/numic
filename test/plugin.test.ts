@@ -164,3 +164,53 @@ test("Plugin changes are staged and don't cause patch even after initial reposit
   buildGradleContents = readFile('android/build.gradle')
   expect(buildGradleContents).toContain('com.numic:plugin')
 })
+
+test('Built-in plugins always run when proper options are set.', async () => {
+  prepare([packageJson('plugin-built-in', { numic: { androidVersion: 9 } }), reactNativePkg])
+
+  await native()
+
+  let buildGradleContents = readFile('android/app/build.gradle')
+
+  expect(buildGradleContents).toContain('versionCode 9')
+  expect(buildGradleContents).toContain('versionName "1.9"')
+
+  const setAndroidVersionAndRunPlugin = async (androidVersion: any) => {
+    const pkg = readFile('package.json')
+
+    pkg.numic.androidVersion = androidVersion
+
+    writeFile('package.json', pkg, { json: true })
+
+    resetOptions()
+    await plugin()
+
+    return readFile('android/app/build.gradle')
+  }
+
+  buildGradleContents = await setAndroidVersionAndRunPlugin([3333, '123.456.789'])
+
+  expect(buildGradleContents).toContain('versionCode 3333')
+  expect(buildGradleContents).toContain('versionName "123.456.789"')
+
+  buildGradleContents = await setAndroidVersionAndRunPlugin(123456)
+
+  expect(buildGradleContents).toContain('versionCode 123456')
+  expect(buildGradleContents).toContain('versionName "1.123456"')
+
+  buildGradleContents = await setAndroidVersionAndRunPlugin([2, 'flappy-bird'])
+
+  expect(buildGradleContents).toContain('versionCode 2')
+  expect(buildGradleContents).toContain('versionName "flappy-bird"')
+
+  buildGradleContents = await setAndroidVersionAndRunPlugin(1)
+
+  expect(buildGradleContents).toContain('versionCode 1')
+  expect(buildGradleContents).toContain('versionName "1.1"')
+
+  // Remains unchanged for invalid values.
+  buildGradleContents = await setAndroidVersionAndRunPlugin('test')
+
+  expect(buildGradleContents).toContain('versionCode 1')
+  expect(buildGradleContents).toContain('versionName "1.1"')
+})
