@@ -3,7 +3,7 @@ import { join } from 'path'
 import { execSync } from 'child_process'
 import prompts from 'prompts'
 import { sync as commandExists } from 'command-exists'
-import { basePath, log } from '../helper'
+import { basePath, hasRejectedHunks, log } from '../helper'
 import { patch } from './patch'
 import { plugin } from './plugin'
 import { apply } from './apply'
@@ -89,7 +89,15 @@ const getIOSDevices = () => {
   return [...output.matchAll(/'(.+?)'/g)].map((match) => match[1])
 }
 
-const createAndroidBundle = () => {
+const createAndroidBundle = async () => {
+  await plugin() // Run plugins (to update Android version etc.)
+
+  if (hasRejectedHunks()) {
+    return
+  }
+
+  patch() // Update patch.
+
   const base = basePath()
 
   try {
@@ -151,7 +159,7 @@ export const prompt = async () => {
     })
 
     if (platform === 'android') {
-      createAndroidBundle()
+      await createAndroidBundle()
     }
 
     if (platform === 'ios') {
