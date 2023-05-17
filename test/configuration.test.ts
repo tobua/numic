@@ -239,7 +239,7 @@ test('Extended tsconfig properties are removed.', () => {
     packageJson('typescript-extend', { devDependencies: { typescript: '^4.4.4' } }),
     file(
       'tsconfig.json',
-      '{ "compilerOptions": { "moduleResolution": "node" }, "exclude": [ "node_modules", "my-stuff" ] }'
+      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "node_modules", "my-stuff" ] }'
     ),
     reactNativePkg,
   ])
@@ -260,8 +260,9 @@ test('Extended tsconfig properties are removed.', () => {
   // Always extend RN template config.
   expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
   // Always added.
+  expect(tsconfigContents.compilerOptions.module).toBe('NodeNext')
+  expect(tsconfigContents.compilerOptions.moduleResolution).toBe('node')
   expect(tsconfigContents.compilerOptions.skipLibCheck).toBe(true)
-  expect(tsconfigContents.moduleResolution).toBe(undefined)
   // Extended excludes removed.
   expect(tsconfigContents.exclude).toEqual(['my-stuff'])
 })
@@ -295,7 +296,7 @@ test('tsconfig from package.json is merged in.', () => {
   expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
   // Always added.
   expect(tsconfigContents.compilerOptions.skipLibCheck).toBe(false)
-  expect(tsconfigContents.moduleResolution).toBe(undefined)
+  expect(tsconfigContents.compilerOptions.moduleResolution).toBe('node')
   expect(tsconfigContents.include).toEqual(['global.d.ts'])
   expect(tsconfigContents.compilerOptions.module).toBe('esm')
 })

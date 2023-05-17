@@ -71,9 +71,15 @@ export const configureTsConfig = () => {
     // Ignored
   }
 
-  // Enabled by default in template but not shared configuration, set to false can slow down checking a lot.
-  if (typeof configuration.compilerOptions.skipLibCheck === 'undefined') {
-    configuration.compilerOptions.skipLibCheck = true
+  // Base package in our setup is ESM, type: module.
+  if (typeof configuration.compilerOptions.module === 'undefined') {
+    configuration.compilerOptions.module = 'NodeNext'
+  }
+
+  // Avoid the need to add (.js) file endings (already handled by Metro bundler).
+  // Currently set to NodeNext in official React Native TypeScript Configuration.
+  if (typeof configuration.compilerOptions.moduleResolution === 'undefined') {
+    configuration.compilerOptions.moduleResolution = 'node'
   }
 
   writeFileSync(tsconfigPath, JSON.stringify(configuration, null, 2))

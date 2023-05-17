@@ -27,18 +27,18 @@
     }
   },
   "dependencies": {
-    "@tsconfig/react-native": "^3.0.0",
+    "@tsconfig/react-native": "^3.0.1",
     "arg": "^5.0.2",
     "command-exists": "^1.2.9",
     "deepmerge": "^4.3.1",
     "fast-glob": "^3.2.12",
-    "global-cache-dir": "^4.4.0",
+    "global-cache-dir": "^5.0.0",
     "is-ci": "^3.0.1",
     "logua": "^2.2.0",
     "pakag": "^2.8.0",
     "parse-gitignore": "^2.0.0",
     "prompts": "^2.4.2",
-    "semver": "^7.5.0",
+    "semver": "^7.5.1",
     "semver-sort": "^1.0.0",
     "skip-local-postinstall": "^2.0.4"
   },
@@ -68,11 +68,11 @@
   "devDependencies": {
     "@types/command-exists": "^1.2.0",
     "@types/prompts": "^2.4.4",
-    "@types/semver": "^7.3.13",
+    "@types/semver": "^7.5.0",
     "jest-fixture": "^4.0.2",
-    "padua": "^1.2.2",
-    "react-native": "^0.71.7",
-    "vitest": "^0.30.1"
+    "padua": "^1.2.3",
+    "react-native": "^0.71.8",
+    "vitest": "^0.31.0"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
