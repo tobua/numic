@@ -21,7 +21,10 @@ registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
 environment('plugin')
 
-const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')
+const reactNativePkg = file(
+  'node_modules/react-native/package.json',
+  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`
+)
 
 test('Simple plugin modifies native files.', async () => {
   prepare([
@@ -170,10 +173,18 @@ test('Built-in plugins always run when proper options are set.', async () => {
 
   await native()
 
-  let buildGradleContents = readFile('android/app/build.gradle')
+  const buildGradleContents = readFile('android/build.gradle')
+  const appBuildGradleContents = readFile('android/app/build.gradle')
 
-  expect(buildGradleContents).toContain('versionCode 9')
-  expect(buildGradleContents).toContain('versionName "1.9"')
+  expect(buildGradleContents).toContain('versionCode = 9')
+  expect(buildGradleContents).toContain('versionName = "1.9"')
+  expect(buildGradleContents).not.toContain('versionCode rootProject.ext.versionCode')
+  expect(buildGradleContents).not.toContain('versionName rootProject.ext.versionName')
+
+  expect(appBuildGradleContents).toContain('versionCode rootProject.ext.versionCode')
+  expect(appBuildGradleContents).toContain('versionName rootProject.ext.versionName')
+  expect(appBuildGradleContents).not.toContain('versionCode = 9')
+  expect(appBuildGradleContents).not.toContain('versionName = "1.9"')
 
   const setAndroidVersionAndRunPlugin = async (androidVersion: any) => {
     const pkg = readFile('package.json')
@@ -185,32 +196,84 @@ test('Built-in plugins always run when proper options are set.', async () => {
     resetOptions()
     await plugin()
 
-    return readFile('android/app/build.gradle')
+    return {
+      variables: readFile('android/build.gradle'),
+      app: readFile('android/app/build.gradle'),
+    }
   }
 
-  buildGradleContents = await setAndroidVersionAndRunPlugin([3333, '123.456.789'])
+  let contents = await setAndroidVersionAndRunPlugin([3333, '123.456.789'])
 
-  expect(buildGradleContents).toContain('versionCode 3333')
-  expect(buildGradleContents).toContain('versionName "123.456.789"')
+  expect(contents.variables).toContain('versionCode = 3333')
+  expect(contents.variables).toContain('versionName = "123.456.789"')
+  expect(contents.variables).not.toContain('versionCode rootProject.ext.versionCode')
+  expect(contents.variables).not.toContain('versionName rootProject.ext.versionName')
 
-  buildGradleContents = await setAndroidVersionAndRunPlugin(123456)
+  expect(contents.app).toContain('versionCode rootProject.ext.versionCode')
+  expect(contents.app).toContain('versionName rootProject.ext.versionName')
+  expect(contents.app).not.toContain('versionCode = 3333')
+  expect(contents.app).not.toContain('versionName = "123.456.789"')
 
-  expect(buildGradleContents).toContain('versionCode 123456')
-  expect(buildGradleContents).toContain('versionName "1.123456"')
+  contents = await setAndroidVersionAndRunPlugin(123456)
 
-  buildGradleContents = await setAndroidVersionAndRunPlugin([2, 'flappy-bird'])
+  expect(contents.variables).toContain('versionCode = 123456')
+  expect(contents.variables).toContain('versionName = "1.123456"')
 
-  expect(buildGradleContents).toContain('versionCode 2')
-  expect(buildGradleContents).toContain('versionName "flappy-bird"')
+  contents = await setAndroidVersionAndRunPlugin([2, 'flappy-bird'])
 
-  buildGradleContents = await setAndroidVersionAndRunPlugin(1)
+  expect(contents.variables).toContain('versionCode = 2')
+  expect(contents.variables).toContain('versionName = "flappy-bird"')
 
-  expect(buildGradleContents).toContain('versionCode 1')
-  expect(buildGradleContents).toContain('versionName "1.1"')
+  contents = await setAndroidVersionAndRunPlugin(1)
+
+  expect(contents.variables).toContain('versionCode = 1')
+  expect(contents.variables).toContain('versionName = "1.1"')
 
   // Remains unchanged for invalid values.
-  buildGradleContents = await setAndroidVersionAndRunPlugin('test')
+  contents = await setAndroidVersionAndRunPlugin('test')
 
-  expect(buildGradleContents).toContain('versionCode 1')
-  expect(buildGradleContents).toContain('versionName "1.1"')
+  expect(contents.variables).toContain('versionCode = 1')
+  expect(contents.variables).toContain('versionName = "1.1"')
+})
+
+test('Bundle ID will be adapted when configured.', async () => {
+  prepare([
+    packageJson('plugin-bundle-id', { numic: { bundleId: 'com.tobua.numic' } }),
+    reactNativePkg,
+  ])
+
+  await native()
+
+  const appBuildGradleContents = readFile('android/app/build.gradle')
+
+  expect(appBuildGradleContents).toContain('com.tobua.numic')
+  expect(appBuildGradleContents).toContain('namespace "com.tobua.numic"')
+  expect(appBuildGradleContents).toContain('applicationId "com.tobua.numic"')
+
+  const flipperFileContents = readFile(
+    'android/app/src/debug/java/com/numicapp/ReactNativeFlipper.java'
+  )
+
+  expect(flipperFileContents).toContain('package com.tobua.numic;')
+
+  const mainActivityContents = readFile('android/app/src/main/java/com/numicapp/MainActivity.java')
+
+  expect(mainActivityContents).toContain('package com.tobua.numic;')
+
+  const mainApplicationContents = readFile(
+    'android/app/src/main/java/com/numicapp/MainApplication.java'
+  )
+
+  expect(mainApplicationContents).toContain('package com.tobua.numic;')
+
+  const flipperReleaseFileContents = readFile(
+    'android/app/src/release/java/com/numicapp/ReactNativeFlipper.java'
+  )
+
+  expect(flipperReleaseFileContents).toContain('package com.tobua.numic;')
+
+  const iosProject = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
+
+  expect(iosProject).toContain('PRODUCT_BUNDLE_IDENTIFIER = com.tobua.numic;')
+  expect(iosProject).not.toContain('org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)')
 })

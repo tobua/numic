@@ -9,7 +9,7 @@ export default async ({ nativePath, log }) => {
   const podfilePath = join(nativePath, 'ios/Podfile')
   let podfileContents = readFileSync(podfilePath, 'utf-8')
 
-  podfileContents = podfileContents.replace('deterministic_uuids', 'numic_hash')
+  podfileContents = podfileContents.replace('use_native_modules', 'numic_hash')
 
   writeFileSync(podfilePath, podfileContents)
 

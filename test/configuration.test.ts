@@ -19,7 +19,10 @@ registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
 environment('configuration')
 
-const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')
+const reactNativePkg = file(
+  'node_modules/react-native/package.json',
+  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`
+)
 
 test('Properly configures empty project.', () => {
   prepare([packageJson('empty'), file('index.js', "console.log('Hello')"), reactNativePkg])

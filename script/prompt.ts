@@ -1,4 +1,5 @@
 import { existsSync, renameSync } from 'fs'
+import { EOL } from 'os'
 import { join } from 'path'
 import { execSync } from 'child_process'
 import prompts from 'prompts'
@@ -29,7 +30,7 @@ const getAdbDevices = () => {
   }
 
   const devices: string[] = []
-  const lines = adbDevicesOutput.replace('\r', '').split('\n')
+  const lines = adbDevicesOutput.split(EOL)
   lines.shift() // skip the help line
 
   lines.forEach((line) => {

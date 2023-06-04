@@ -1,5 +1,6 @@
 import { join } from 'node:path'
 import { readFileSync, unlinkSync, existsSync, writeFileSync } from 'node:fs'
+import { EOL } from 'node:os'
 import { SpawnSyncReturns } from 'node:child_process'
 import glob from 'fast-glob'
 import { basePath, log } from './helper'
@@ -33,7 +34,7 @@ const collectRejectedHunks = (location: string) => {
       // Inject file header, so that it can be applied like a patch.
       const contentsSplitByLine = contents.split(/\r?\n/)
       contentsSplitByLine.splice(1, 0, `--- a/${originalFileName}\n+++ b/${originalFileName}`)
-      contents = contentsSplitByLine.join('\n')
+      contents = contentsSplitByLine.join(EOL)
       rejectedHunks.push(contents)
     }
 
@@ -62,7 +63,7 @@ export const applyPatch = (
   let rejectedHunks = collectRejectedHunks(location)
 
   if (rejectedHunks.length) {
-    writeFileSync(rejectedHunksPath, rejectedHunks.join('\n'))
+    writeFileSync(rejectedHunksPath, rejectedHunks.join(EOL))
     // Check if some of the rejected hunks have already been applied, by applying them in reverse.
     git('apply', '--reject', '--reverse', rejectedHunksPath)
     unlinkSync(rejectedHunksPath)
@@ -74,7 +75,7 @@ export const applyPatch = (
     removeRejectedFiles(location)
 
     if (rejectedHunks.length) {
-      writeFileSync(rejectedHunksPath, rejectedHunks.join('\n'))
+      writeFileSync(rejectedHunksPath, rejectedHunks.join(EOL))
 
       log('Unable to apply some changes in the patch')
       log('Problematic parts have been moved to patch/rejected-hunks.patch')

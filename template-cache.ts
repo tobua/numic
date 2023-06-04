@@ -13,6 +13,8 @@ const removeExpiredTemplates = (version: string) => {
 
   // Don't remove requested version.
   templateVersions = templateVersions.filter((template) => template !== version)
+  // Filter dotfiles like .DS_Store
+  templateVersions = templateVersions.filter((item) => !/(^|\/)\.[^/.]/g.test(item))
   templateVersions = semverSort.asc(templateVersions)
   // Keep only the newest two versions, plus the one being installed.
   templateVersions = templateVersions.slice(0, -2)

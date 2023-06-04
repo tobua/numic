@@ -1,4 +1,5 @@
 import { readFileSync, existsSync, writeFileSync } from 'fs'
+import { EOL } from 'os'
 import { join } from 'path'
 
 interface Options {
@@ -47,22 +48,70 @@ export default async ({
     return
   }
 
-  const buildGradleFilePath = join(nativePath, 'android/app/build.gradle')
+  const appBuildGradleFilePath = join(nativePath, 'android/app/build.gradle')
+  const buildGradleFilePath = join(nativePath, 'android/build.gradle')
 
-  if (!existsSync(buildGradleFilePath)) {
+  if (!existsSync(appBuildGradleFilePath) || !existsSync(buildGradleFilePath)) {
+    log('build.gradle or app/build.gradle file missing', 'warning')
     return
   }
 
   let buildGradleContents = readFileSync(buildGradleFilePath, 'utf-8')
+  const buildGradleLines = buildGradleContents.split(EOL)
+
+  const hasVersionCodeVariable = buildGradleContents.includes('versionCode =')
+  const hasVersionNameVariable = buildGradleContents.includes('versionName =')
+
+  // Insert variables into build.gradle
+  if (!hasVersionCodeVariable || !hasVersionNameVariable) {
+    let extensionStartLine = buildGradleLines.findIndex((content) => content.includes('ext {'))
+
+    if (extensionStartLine !== -1) {
+      if (!hasVersionCodeVariable) {
+        buildGradleLines.splice(extensionStartLine + 1, 0, `        versionCode = ${versionCode}`)
+        extensionStartLine += 1
+      }
+      if (!hasVersionCodeVariable) {
+        buildGradleLines.splice(extensionStartLine + 1, 0, `        versionName = "${versionName}"`)
+      }
+
+      writeFileSync(buildGradleFilePath, buildGradleLines.join(EOL))
+    } else {
+      log('Unable to parse build.gradle file', 'warning')
+    }
+  }
+
+  buildGradleContents = readFileSync(buildGradleFilePath, 'utf-8')
+
+  // Update variables in build.gradle.
+  buildGradleContents = buildGradleContents.replace(
+    /versionCode\s=\s\d+/,
+    `versionCode = ${versionCode}`
+  )
 
   buildGradleContents = buildGradleContents.replace(
-    /versionCode\s\d+/,
-    `versionCode ${versionCode}`
-  )
-  buildGradleContents = buildGradleContents.replace(
-    /versionName\s"[^"]*"/,
-    `versionName "${versionName}"`
+    /versionName\s=\s"[^"]*"/,
+    `versionName = "${versionName}"`
   )
 
   writeFileSync(buildGradleFilePath, buildGradleContents)
+
+  // Ensure variables are used in app/build.gradle
+  let appBuildGradleContents = readFileSync(appBuildGradleFilePath, 'utf-8')
+
+  if (!appBuildGradleContents.includes('rootProject.ext.versionCode')) {
+    appBuildGradleContents = appBuildGradleContents.replace(
+      /versionCode\s\d+/,
+      'versionCode rootProject.ext.versionCode'
+    )
+  }
+
+  if (!appBuildGradleContents.includes('rootProject.ext.versionName')) {
+    appBuildGradleContents = appBuildGradleContents.replace(
+      /versionName\s"[^"]*"/,
+      'versionName rootProject.ext.versionName'
+    )
+  }
+
+  writeFileSync(appBuildGradleFilePath, appBuildGradleContents)
 }

@@ -21,7 +21,10 @@ environment('patch')
 
 const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
-const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.70.6" }')
+const reactNativePkg = file(
+  'node_modules/react-native/package.json',
+  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`
+)
 
 let singleLinePatchContents: string
 

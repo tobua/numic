@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readdirSync } from 'fs'
 import { join } from 'path'
 import { expect, test, beforeEach, afterEach, vi } from 'vitest'
-import { registerVitest, prepare, environment, packageJson, file } from 'jest-fixture'
+import { registerVitest, prepare, environment, packageJson, file, readFile } from 'jest-fixture'
 import { cacheTemplate, cacheDirectory, clearTemplateCache } from '../template-cache'
 import { resetOptions, defaultNativeOptions } from '../helper'
 
@@ -9,7 +9,7 @@ registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
 environment('native')
 
-const rnVersion = '0.71.0'
+const rnVersion = readFile('package.json').devDependencies['react-native'].replace('^', '')
 const olderRNVersion = '0.69.0'
 const reactNativePkg = file(
   'node_modules/react-native/package.json',
@@ -99,7 +99,7 @@ test('Removes expired templates added manually and adds new appName template.', 
 })
 
 test('Version sorting also works with prereleases.', () => {
-  const prereleaseVersion = '0.71.0-rc.6'
+  const prereleaseVersion = `${rnVersion}-rc.6`
   mkdirSync(join(cacheDirectory, prereleaseVersion, 'prerelease-app', 'android'), {
     recursive: true,
   })
@@ -116,5 +116,5 @@ test('Version sorting also works with prereleases.', () => {
   const templatePath = cacheTemplate(options)
 
   expect(existsSync(templatePath)).toBe(true)
-  expect(readdirSync(cacheDirectory)).toEqual(['0.69.0', rnVersion, prereleaseVersion])
+  expect(readdirSync(cacheDirectory)).toEqual([olderRNVersion, rnVersion, prereleaseVersion])
 })

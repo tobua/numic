@@ -23,7 +23,10 @@ registerVitest(beforeEach, afterEach, vi)
 beforeEach(resetOptions)
 environment('native')
 
-const reactNativePkg = file('node_modules/react-native/package.json', '{ "version": "0.69.0" }')
+const reactNativePkg = file(
+  'node_modules/react-native/package.json',
+  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`
+)
 
 test('Create native project for android and ios.', async () => {
   prepare([packageJson('native'), reactNativePkg])
@@ -69,8 +72,8 @@ test('Creates patch for simple change in android and ios user folder.', async ()
 
   const podfileContents = readFile('ios/Podfile')
   const changedPodfileContents = podfileContents.replace(
-    ':deterministic_uuids => false',
-    ':some_other_flag => true'
+    ':hermes_enabled => flags[:hermes_enabled],',
+    ':something_else_enabled => true,'
   )
 
   writeFile('ios/Podfile', changedPodfileContents)
@@ -83,9 +86,8 @@ test('Creates patch for simple change in android and ios user folder.', async ()
 
   expect(patchContents).toContain('mavenCentral()')
   expect(patchContents).toContain('navenUI()')
-
-  expect(patchContents).toContain("-install! 'cocoapods', :deterministic_uuids => false")
-  expect(patchContents).toContain("+install! 'cocoapods', :some_other_flag => true")
+  expect(patchContents).toContain('-    :hermes_enabled => flags[:hermes_enabled],')
+  expect(patchContents).toContain('+    :something_else_enabled => true,')
 
   // Restore initial native folder change.
   writeFile('android/build.gradle', buildGradleContents)
@@ -93,7 +95,7 @@ test('Creates patch for simple change in android and ios user folder.', async ()
 
   expect(readFile('android/build.gradle')).not.toContain('navenUI()')
   expect(readFile('android/build.gradle')).toContain('mavenCentral()')
-  expect(readFile('ios/Podfile')).not.toContain(':some_other_flag => true')
+  expect(readFile('ios/Podfile')).not.toContain(':something_else_enabled => true,')
 
   apply({})
 
@@ -103,8 +105,8 @@ test('Creates patch for simple change in android and ios user folder.', async ()
   expect(patchedBuildGradleContents).not.toContain('mavenCentral()')
   expect(patchedBuildGradleContents).toContain('navenUI()')
 
-  expect(patchedPodfileContents).not.toContain(':deterministic_uuids => false')
-  expect(patchedPodfileContents).toContain(':some_other_flag => true')
+  expect(patchedPodfileContents).not.toContain(':hermes_enabled => flags[:hermes_enabled],')
+  expect(patchedPodfileContents).toContain(':something_else_enabled => true,')
 })
 
 test('Patches nested changes as well as file additions, renames and removals.', async () => {
@@ -281,6 +283,7 @@ test('Patch not applied to repository during initialization.', async () => {
 
   // Patch is applied to regular native folders
   const buildGradleContents = readFile('android/build.gradle')
+  // WARN fails if build.gradle dependency version in build-gradle.patch is out-of-date.
   expect(buildGradleContents).not.toContain('mavenCentral()')
   expect(buildGradleContents).toContain('navenUI()')
 

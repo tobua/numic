@@ -4,8 +4,9 @@ import { commitChanges, resetRepository } from '../git'
 import { log, getFolders, basePath, options } from '../helper'
 import type { PluginInput } from '../types'
 import androidVersion from '../plugin/android-version'
+import bundleId from '../plugin/bundle-id'
 
-const builtInPlugins = [androidVersion]
+const builtInPlugins = [androidVersion, bundleId]
 
 type PluginFunction = (options?: PluginInput) => void
 type Plugin = string | PluginFunction
