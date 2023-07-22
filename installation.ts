@@ -5,7 +5,7 @@ import { apply } from './script/apply'
 
 log('Setting up native installation')
 
-configure()
+await configure()
 await native()
 apply({ skipEmpty: true })
 

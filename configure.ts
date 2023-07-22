@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
-import formatJson from 'pakag'
+import { formatPackageJson } from 'pakag'
 import merge from 'deepmerge'
 import parse from 'parse-gitignore'
 import { basePath, options } from './helper'
@@ -103,7 +103,7 @@ export const configureGitignore = () => {
   writeFileSync(gitIgnorePath, entries.join('\r\n'))
 }
 
-export const configurePackageJson = (isFirstInstall: boolean) => {
+const configurePackageJson = async (isFirstInstall: boolean) => {
   const packageJsonContents = options().pkg
   let generatedPackageJson = packageJson(isFirstInstall)
 
@@ -117,16 +117,16 @@ export const configurePackageJson = (isFirstInstall: boolean) => {
   // Format with prettier and sort before writing.
   writeFileSync(
     join(basePath(), './package.json'),
-    formatJson(JSON.stringify(generatedPackageJson))
+    await formatPackageJson(JSON.stringify(generatedPackageJson))
   )
 
   options().pkg = generatedPackageJson
 }
 
-export const configure = () => {
+export const configure = async () => {
   const isFirstInstall = !existsSync(join(basePath(), 'patch/current.patch'))
 
-  configurePackageJson(isFirstInstall)
+  await configurePackageJson(isFirstInstall)
   configureGitignore()
   configureTsConfig()
 }

@@ -33,7 +33,7 @@ if (!Object.keys(scripts).includes(script)) {
 // Configure package.json (again) before each script is run.
 // Also copies over user made configuration possibly required
 // for script to run properly.
-configure()
+await configure()
 
 try {
   scripts[script](cliOptions(script))
