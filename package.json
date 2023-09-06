@@ -37,13 +37,22 @@
     "global-cache-dir": "^5.0.0",
     "is-ci": "^3.0.1",
     "logua": "^2.3.0",
-    "pakag": "^3.0.0",
+    "pakag": "^3.1.1",
     "parse-gitignore": "^2.0.0",
-    "prettier": "^3.0.0",
+    "prettier": "^3.0.3",
     "prompts": "^2.4.2",
     "semver": "^7.5.4",
     "semver-sort": "^1.0.0",
     "skip-local-postinstall": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/command-exists": "^1.2.1",
+    "@types/prompts": "^2.4.4",
+    "@types/semver": "^7.5.1",
+    "jest-fixture": "^4.1.0",
+    "padua": "^2.0.3",
+    "react-native": "^0.72.4",
+    "vitest": "^0.34.3"
   },
   "peerDependencies": {
     "react-native": ">= 0.69"
@@ -68,15 +77,6 @@
     "ios",
     "android"
   ],
-  "devDependencies": {
-    "@types/command-exists": "^1.2.0",
-    "@types/prompts": "^2.4.4",
-    "@types/semver": "^7.5.0",
-    "jest-fixture": "^4.1.0",
-    "padua": "^2.0.1",
-    "react-native": "^0.72.3",
-    "vitest": "^0.33.0"
-  },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
     "extends": "./node_modules/padua/configuration/eslint.cjs"
