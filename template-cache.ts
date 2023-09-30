@@ -52,7 +52,9 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
       }
     )
   } catch (error) {
-    log(`Failed to install React Native template.\n\n${error.stdout}`, 'error')
+    console.log(error)
+    console.log(error.stdout)
+    log(`Failed to install React Native template.\n\n${error.stdout}`, 'warning')
   }
 
   // Only keep native assets.
