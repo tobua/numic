@@ -27,7 +27,7 @@
     }
   },
   "dependencies": {
-    "@react-native/eslint-config": "^0.72.2",
+    "@react-native/eslint-config": "^0.73.1",
     "@tsconfig/react-native": "^3.0.2",
     "arg": "^5.0.2",
     "command-exists": "^1.2.9",
@@ -47,12 +47,12 @@
   },
   "devDependencies": {
     "@types/command-exists": "^1.2.1",
-    "@types/prompts": "^2.4.4",
-    "@types/semver": "^7.5.1",
+    "@types/prompts": "^2.4.5",
+    "@types/semver": "^7.5.3",
     "jest-fixture": "^4.1.0",
-    "padua": "^2.0.3",
-    "react-native": "^0.72.4",
-    "vitest": "^0.34.3"
+    "padua": "^2.0.4",
+    "react-native": "^0.72.5",
+    "vitest": "^0.34.6"
   },
   "peerDependencies": {
     "react-native": ">= 0.69"
@@ -85,6 +85,6 @@
     "provenance": true
   },
   "engines": {
-    "node": ">= 16"
+    "node": ">= 18"
   }
 }

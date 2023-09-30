@@ -14,14 +14,15 @@ Utility to manage React Native projects. Commit only the changes made to native 
 
 Run the following in your React Native project and it will automatically add the necessary configurations and commands to your `package.json`.
 
-```
+```sh
 npm install numic --save-dev --foreground-scripts --legacy-peer-deps
 ```
 
 This will also create fresh `/android` and `/ios` native folders and generate a patch if any changes are found. See [Migration of an Existing Project](#migration-of-an-existing-project) for more details. When **starting from scratch** the following will setup a React Native TypeScript installation with numic preinstalled and much of the default bloat removed.
 
-```
-npm init --yes now numic ./my-app
+```sh
+npm init --yes now numic ./my-app # Basic default template with tests.
+npm init --yea now numic ./my-starter-app app # Tempalte with navigation, data, responsive and styles.
 ```
 
 This will prompt for an app name that can only contain **alphanumeric** characters and will be used as the initial bundle identifier. Using `NumicApp` as the name will result in `com.numicapp` as the bundle identifier. The name as well as the display name can later be configured in `app.json`.
