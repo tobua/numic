@@ -1,4 +1,3 @@
-import React from 'react'
 import { useBreakpoint } from '../helper/breakpoint'
 
 export function Description() {

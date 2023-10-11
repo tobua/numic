@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react'
+import { DetailedHTMLProps, HTMLAttributes } from 'react'
 import { proxy, useSnapshot, subscribe } from 'valtio'
 import { useBreakpoint } from '../helper/breakpoint'
 
@@ -47,14 +47,21 @@ export function Quality({ dpr, onDpr }) {
     >
       <span style={{ fontSize: mobile ? 10 : 12, lineHeight: 1.2 }}>
         Quality - {fps} FPS -{' '}
-        <label
-          style={{ fontWeight: 'bold', cursor: 'pointer' }}
+        <button
+          type="button"
+          style={{
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            background: 'none',
+            outline: 'none',
+            border: 'none',
+          }}
           onClick={() => {
             Performance.physics = !physics
           }}
         >
           {physics ? 'Disable' : 'Enable'} Physics
-        </label>
+        </button>
       </span>
       <div style={{ display: 'flex', gap: mobile ? 5 : 10 }}>
         <Button active={dpr === 0.5} onClick={() => onDpr(0.5)}>

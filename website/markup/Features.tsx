@@ -1,4 +1,3 @@
-import React from 'react'
 import { Color } from '../style'
 import { useBreakpoint } from '../helper/breakpoint'
 
@@ -26,9 +25,9 @@ const features = {
     title: 'Native Code as a Patch',
     description: (
       <span>
-        This plugin will manage the native <InlineCode>{`/android`}</InlineCode> and{' '}
-        <InlineCode>{`/ios`}</InlineCode> folders for you. No need to commit dozens of files. Only
-        the changes made have to be committed to the repository in the form of a patch.
+        This plugin will manage the native <InlineCode>/android</InlineCode> and{' '}
+        <InlineCode>/ios</InlineCode> folders for you. No need to commit dozens of files. Only the
+        changes made have to be committed to the repository in the form of a patch.
       </span>
     ),
     next: 'plugin',
@@ -113,6 +112,7 @@ export function Features({
           style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 10 }}
         >
           <button
+            type="button"
             disabled={!feature.previous}
             style={buttonStyles(feature.previous, mobile)}
             onClick={() => setFeature(feature.previous)}
@@ -120,6 +120,7 @@ export function Features({
             Previous
           </button>
           <button
+            type="button"
             disabled={!feature.next}
             style={buttonStyles(feature.next, mobile)}
             onClick={() => setFeature(feature.next)}

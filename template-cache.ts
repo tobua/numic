@@ -29,6 +29,8 @@ const removeExpiredTemplates = (version: string) => {
 export const cacheTemplate = (nativeOptions: NativeOptions) => {
   const directory = join(cacheDirectory, nativeOptions.version, nativeOptions.appName)
 
+  console.log(directory)
+
   removeExpiredTemplates(nativeOptions.version)
 
   if (existsSync(directory)) {

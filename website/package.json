@@ -1,34 +1,47 @@
 {
+  "$schema": "https://raw.githubusercontent.com/tobua/papua/main/schema.json",
   "name": "numic",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "start": "papua start"
+  },
+  "papua": {
+    "title": "numic for React Native",
+    "icon": "../logo.png"
   },
   "dependencies": {
-    "@react-three/drei": "^9.57.3",
-    "@react-three/fiber": "^8.12.0",
-    "@react-three/postprocessing": "^2.7.0",
-    "@react-three/rapier": "^0.14.0",
-    "@types/three": "^0.149.0",
-    "maath": "^0.5.2",
+    "@react-three/drei": "^9.88.0",
+    "@react-three/eslint-plugin": "^0.1.1",
+    "@react-three/fiber": "^8.14.5",
+    "@react-three/postprocessing": "^2.15.1",
+    "@react-three/rapier": "^1.1.1",
+    "@types/node": "^20.8.4",
+    "@types/react": "^18.2.28",
+    "@types/react-dom": "^18.2.13",
+    "@types/three": "^0.157.0",
+    "maath": "^0.10.4",
+    "papua": "^5.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "three": "^0.150.1",
-    "valtio": "^1.10.3"
+    "three": "^0.157.0",
+    "typescript": "^5.2.2",
+    "valtio": "^1.11.2"
   },
-  "devDependencies": {
-    "@types/node": "^18.15.2",
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@vitejs/plugin-react": "^3.1.0",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.4"
+  "type": "module",
+  "prettier": "papua/configuration/.prettierrc.json",
+  "eslintConfig": {
+    "extends": [
+      "./node_modules/papua/configuration/eslint.cjs",
+      "plugin:@react-three/recommended"
+    ],
+    "plugins": [
+      "@react-three"
+    ],
+    "root": true
   },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "printWidth": 100
+  "stylelint": {
+    "extends": "./node_modules/papua/configuration/stylelint.cjs"
+  },
+  "engines": {
+    "node": ">= 18"
   }
 }

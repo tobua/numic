@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { Canvas, Dpr, useFrame } from '@react-three/fiber'
 import { Vector3 } from 'three'
 import { OrthographicCamera, useGLTF } from '@react-three/drei'
@@ -16,7 +16,7 @@ function Scene({ rotate = true, hovered, ...props }) {
   // This ensures the rotation happens around the center.
   useEffect(() => {
     mesh.current.geometry.computeBoundingBox()
-    const boundingBox = mesh.current.geometry.boundingBox
+    const { boundingBox } = mesh.current.geometry
     const center = new Vector3()
     boundingBox.getCenter(center)
     mesh.current.geometry.translate(-center.x, -center.y, -center.z)
@@ -66,6 +66,7 @@ export function GitHubButton({ quality = 1, rotate = false }: { quality?: Dpr; r
 
   return (
     <button
+      type="button"
       style={{
         border: 'none',
         outline: 'none',
@@ -87,7 +88,7 @@ export function GitHubButton({ quality = 1, rotate = false }: { quality?: Dpr; r
           <Scene hovered={hovered} rotate={rotate} />
           <OrthographicCamera
             name="1"
-            makeDefault={true}
+            makeDefault
             zoom={1}
             far={100000}
             near={-100000}

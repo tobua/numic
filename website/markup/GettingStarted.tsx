@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useBreakpoint } from '../helper/breakpoint'
 import { Color } from '../style'
 
@@ -28,7 +28,8 @@ export function GettingStarted() {
 
   return (
     <>
-      <a
+      <button
+        type="button"
         style={{
           position: 'absolute',
           textDecoration: 'none',
@@ -39,6 +40,9 @@ export function GettingStarted() {
           fontWeight: 'bold',
           lineHeight: 1,
           cursor: 'pointer',
+          border: 'none',
+          outline: 'none',
+          background: 'none',
         }}
         onClick={(event) => {
           event.preventDefault()
@@ -46,7 +50,7 @@ export function GettingStarted() {
         }}
       >
         {mobile ? 'Guide' : 'Getting Started'} ➜
-      </a>
+      </button>
       {open && (
         <div
           style={{
@@ -75,6 +79,7 @@ export function GettingStarted() {
             .
           </p>
           <button
+            type="button"
             style={{
               position: 'absolute',
               top: mobile ? 10 : 20,

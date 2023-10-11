@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { Vector3, useFrame } from '@react-three/fiber'
 import { Nodes } from '../../types'
-import { Color, Material } from '../../style'
+import { Color } from '../../style'
 import { useRefs } from '../../helper/refs'
 import { MeshReflectorMaterial } from '@react-three/drei'
 
@@ -33,66 +33,24 @@ export function React({
     firstDot.current.position.set(
       Math.sin(time) * radius,
       (Math.cos(time) * radius * Math.atan(time)) / Math.PI / 1.85,
-      0
+      0,
     )
 
     secondDot.current.position.set(
       Math.sin(time) * radius,
       (Math.cos(time) * radius * Math.atan(time)) / Math.PI / 1.85,
-      0
+      0,
     )
 
     thirdDot.current.position.set(
       Math.sin(time) * radius,
       (Math.cos(time) * radius * Math.atan(time)) / Math.PI / 1.85,
-      0
+      0,
     )
   })
 
   return (
     <group ref={group} position={position}>
-      <mesh
-        ref={dot}
-        geometry={nodes.Ellipse.geometry}
-        material={Material.react}
-        castShadow
-        receiveShadow
-        position={[0, 0, 0]}
-        scale={1}
-      >
-        <MeshReflectorMaterial mirror={0} color={Color.react} />
-      </mesh>
-      <mesh
-        geometry={nodes['Boolean_2_1'].geometry}
-        material={Material.react}
-        castShadow
-        receiveShadow
-        position={[0, 0, 0]}
-        rotation={[0, 0, Math.PI / 3]}
-        scale={1}
-      >
-        <MeshReflectorMaterial mirror={0} color={Color.react} />
-      </mesh>
-      <mesh
-        geometry={nodes['Boolean_3'].geometry}
-        material={Material.react}
-        castShadow
-        receiveShadow
-        position={[0, 0, 0]}
-        rotation={[0, 0, -Math.PI / 3]}
-        scale={1}
-      >
-        <MeshReflectorMaterial mirror={0} color={Color.react} />
-      </mesh>
-      <mesh
-        geometry={nodes.Boolean.geometry}
-        castShadow
-        receiveShadow
-        position={[0, 0, 0]}
-        scale={1}
-      >
-        <MeshReflectorMaterial mirror={0} color={Color.react} toneMapped={false} />
-      </mesh>
       <mesh ref={firstDot}>
         <sphereGeometry args={[12, 16, 16]} />
         <MeshReflectorMaterial mirror={0} color={Color.highlight} />
@@ -109,6 +67,45 @@ export function React({
           <MeshReflectorMaterial mirror={0} color="yellow" />
         </mesh>
       </group>
+
+      <mesh
+        geometry={nodes.Ellipse.geometry}
+        material={nodes.Ellipse.material}
+        castShadow
+        receiveShadow
+        position={[0, 0, 0]}
+      >
+        <MeshReflectorMaterial mirror={0} color={Color.react} />
+      </mesh>
+      <mesh
+        geometry={nodes.Boolean_3.geometry}
+        material={nodes.Boolean_3.material}
+        castShadow
+        receiveShadow
+        position={[0, 0, 0]}
+        rotation={[0, 0, -Math.PI / 3]}
+      >
+        <MeshReflectorMaterial mirror={0} color={Color.react} />
+      </mesh>
+      <mesh
+        geometry={nodes.Boolean_2.geometry}
+        material={nodes.Boolean_2.material}
+        castShadow
+        receiveShadow
+        position={[0, 0, 0]}
+        rotation={[0, 0, Math.PI / 3]}
+      >
+        <MeshReflectorMaterial mirror={0} color={Color.react} />
+      </mesh>
+      <mesh
+        geometry={nodes.Boolean.geometry}
+        material={nodes.Boolean.material}
+        castShadow
+        receiveShadow
+        position={[0, 0, 0]}
+      >
+        <MeshReflectorMaterial mirror={0} color={Color.react} toneMapped={false} />
+      </mesh>
     </group>
   )
 }

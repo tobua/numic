@@ -9,7 +9,7 @@ import { Performance } from '../Quality'
 const circlePoints = (
   count: number,
   radius: number,
-  center: { x: number; y: number } = { x: 0, y: 0 }
+  center: { x: number; y: number } = { x: 0, y: 0 },
 ) => {
   const slice = (2 * Math.PI) / count
   const result: { x: number; y: number }[] = []
@@ -82,19 +82,19 @@ function Icon({ nodes }: { nodes: Nodes }) {
   return (
     <group name="Icon">
       <mesh
-        geometry={nodes['Shape_0'].geometry}
-        material={nodes['Shape_0'].material}
-        castShadow
-        receiveShadow
-        position={[45, 40, 0]}
-        scale={0.14}
-      />
-      <mesh
-        geometry={nodes['Shape_0_1'].geometry}
-        material={nodes['Shape_0_1'].material}
+        geometry={nodes.Shape_0.geometry}
+        material={nodes.Shape_0.material}
         castShadow
         receiveShadow
         position={[0, 0, 0]}
+        scale={0.14}
+      />
+      <mesh
+        geometry={nodes.Shape_0_1.geometry}
+        material={nodes.Shape_0_1.material}
+        castShadow
+        receiveShadow
+        position={[50, 40, 0]}
         scale={0.14}
       />
     </group>

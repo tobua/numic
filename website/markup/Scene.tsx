@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import { Canvas, Dpr, GroupProps, useFrame } from '@react-three/fiber'
 import { PerformanceMonitor, PerspectiveCamera, useGLTF } from '@react-three/drei'
 import { Vector3 } from 'three'
@@ -29,12 +29,12 @@ const cameraLookAtPosition = {
   migration: itemPositions.react,
 }
 
-let currentCameraLookAtPosition = {
+const currentCameraLookAtPosition = {
   feature: 'patch',
   position: new Vector3(
     cameraLookAtPosition.patch.x,
     cameraLookAtPosition.patch.y,
-    cameraLookAtPosition.patch.z
+    cameraLookAtPosition.patch.z,
   ),
 }
 
@@ -55,10 +55,11 @@ function Story({
     if (currentCameraLookAtPosition.feature !== feature) {
       currentCameraLookAtPosition.feature = feature
       const newLookAtPosition = cameraLookAtPosition[previousFeature]
+      // eslint-disable-next-line @react-three/no-new-in-loop
       currentCameraLookAtPosition.position = new Vector3(
         newLookAtPosition.x,
         newLookAtPosition.y,
-        newLookAtPosition.z
+        newLookAtPosition.z,
       )
     }
     damp3(currentCameraLookAtPosition.position, cameraLookAtPosition[feature], 1, delta)
@@ -68,7 +69,7 @@ function Story({
   return (
     <group position={[0, -120, 0]} {...props} dispose={null}>
       <PerspectiveCamera
-        makeDefault={true}
+        makeDefault
         far={8000}
         near={5}
         fov={45}
@@ -119,7 +120,7 @@ export function Scene({
           </mesh>
           <directionalLight
             castShadow
-            intensity={0.7}
+            intensity={1.5}
             shadow-mapSize-width={1024}
             shadow-mapSize-height={1024}
             shadow-camera-near={-10000}
@@ -130,7 +131,7 @@ export function Scene({
             shadow-camera-bottom={-500}
             position={[200, 300, 300]}
           />
-          <hemisphereLight intensity={0.3} color="#FFFFFF" />
+          <hemisphereLight intensity={1} color="#FFFFFF" />
         </Suspense>
       </Canvas>
     </div>

@@ -66,31 +66,12 @@ function Android({
     <Float speed={float ? undefined : 0} rotationIntensity={0.2}>
       <group position={position} rotation={rotation}>
         <mesh
-          geometry={nodes['Boolean_2'].geometry}
-          castShadow
-          receiveShadow
-          position={[0, 50, 0]}
-          rotation={[0, 0, 0]}
-        >
-          <MeshReflectorMaterial mirror={0} color={Color.highlight} />
-        </mesh>
-        <mesh
-          geometry={nodes['Cylinder_2'].geometry}
+          name="Merged Geometry"
+          geometry={nodes.Merged_Geometry.geometry}
           material={Material.highlight}
           castShadow
           receiveShadow
-          position={[-52.45, 83.03, 0]}
-          rotation={[0, 0, Math.PI / 6]}
-        >
-          <MeshReflectorMaterial mirror={0} color={Color.highlight} />
-        </mesh>
-        <mesh
-          geometry={nodes.Cylinder.geometry}
-          material={Material.highlight}
-          castShadow
-          receiveShadow
-          position={[52.45, 83.03, 0]}
-          rotation={[0, 0, -Math.PI / 6]}
+          position={[0, 43.25, 0]}
         >
           <MeshReflectorMaterial mirror={0} color={Color.highlight} />
         </mesh>

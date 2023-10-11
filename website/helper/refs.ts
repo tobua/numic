@@ -15,9 +15,10 @@ export function useRefs<T extends Tuple>(initialValue: T extends IsTuple<T> ? nu
 
   return {
     next() {
-      if (++count > MAX_ITERATIONS_COUNT) {
+      count += 1
+      if (count > MAX_ITERATIONS_COUNT) {
         throw new Error(
-          'useMultipleRefs: reached more than 50 refs. This hook can be used exclusively with the array destructuring syntax.'
+          'useMultipleRefs: reached more than 50 refs. This hook can be used exclusively with the array destructuring syntax.',
         )
       }
 
