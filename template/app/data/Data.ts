@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx'
-import { Language } from '../types'
+import { Language } from 'epic-language/native'
 
 export const Data = new (class {
-  language = Language.English
+  language = Language.en
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true })

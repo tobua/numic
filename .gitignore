@@ -2,5 +2,5 @@ node_modules
 package-lock.json
 jsconfig.json
 dist
-tsconfig.json
+/tsconfig.json
 test/fixture

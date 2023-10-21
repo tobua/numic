@@ -40,13 +40,13 @@ export const ios = async (inputs: RunInputs) => {
 
   if (!checkCommandVersion('gem -v', '3.4.0')) {
     log(
-      'The "gem" executable version is outdated, make sure to update soon, by running "gem update --system"'
+      'The "gem" executable version is outdated, make sure to update soon, by running "gem update --system"',
     )
   }
 
   if (!checkCommandVersion('pod --version', '1.12.0')) {
     log(
-      'The "pod" (cocoapods) executable version is outdated, make sure to update soon, by running "gem update"'
+      'The "pod" (cocoapods) executable version is outdated, make sure to update soon, by running "gem update"',
     )
   }
 
@@ -55,7 +55,7 @@ export const ios = async (inputs: RunInputs) => {
     try {
       execSync('pod update', { cwd: join(basePath(), 'ios'), encoding: 'utf8', stdio: 'pipe' })
     } catch (error) {
-      log('Failed to run "pod updated" in /ios', 'warning')
+      log('Failed to run "pod update" in /ios', 'warning')
       console.log(error.stdout)
     }
   } else {

@@ -56,7 +56,7 @@ const getIOSSimulators = () => {
     simctlOutput = JSON.parse(
       execSync('xcrun simctl list --json devices available', {
         encoding: 'utf8',
-      }).trim()
+      }).trim(),
     ).devices
   } catch (_) {
     log('Failed to get a list of available iOS simulators', 'error')
@@ -66,7 +66,7 @@ const getIOSSimulators = () => {
 
   Object.keys(simctlOutput).forEach((runtime) => {
     allDevices.push(
-      ...simctlOutput[runtime].map((device) => ({ name: device.name, state: device.state }))
+      ...simctlOutput[runtime].map((device) => ({ name: device.name, state: device.state })),
     )
   })
 
@@ -199,7 +199,7 @@ export const prompt = async () => {
       if (!commandExists('adb')) {
         log(
           'adb command required, install the Android SDK and make sure to add binaries to the PATH variable',
-          'error'
+          'error',
         )
       }
 
@@ -234,7 +234,7 @@ export const prompt = async () => {
         if (!commandExists('ios-deploy')) {
           log(
             'ios-deploy required to run on device, install with "sudo npm install -g ios-deploy" or "brew install ios-deploy"',
-            'error'
+            'error',
           )
         }
 
@@ -253,7 +253,7 @@ export const prompt = async () => {
         ).device
       }
 
-      ios({ location, mode, device })
+      ios({ location, mode, device, simulator })
     }
 
     if (script === 'android') {

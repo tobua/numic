@@ -2,14 +2,15 @@ import React from 'react'
 import { GestureResponderEvent, Text, View, Pressable } from 'react-native'
 import { back } from 'reactigation'
 import { createStyles } from 'responsive-react-native'
+import { Language, readableLanguage } from 'epic-language/native'
 import { Screen } from '../markup/Screen'
 import { Button } from '../markup/Button'
 import { Header } from '../markup/Header'
 import { Label } from '../label'
 import { observer } from 'mobx-react-lite'
 import { Data } from '../data/Data'
-import { Language } from '../types'
 import { Color, Font, Space } from '../style'
+import { translate } from '../translation'
 
 const styles = createStyles({
   row: {
@@ -49,31 +50,31 @@ const LanguageOption = ({
 export const Settings = observer(() => {
   return (
     <Screen>
-      <Header title="Settings">
+      <Header title={translate('settingsTitle', undefined, Data.language)}>
         <Button
           background
           accessibilityLabel={Label.settingsBackButton}
           onPress={() => back()}
-          title="Back"
+          title={translate('settingsBack', undefined, Data.language)}
         />
       </Header>
       <View style={styles.row}>
-        <Text style={Font.bold}>Language</Text>
+        <Text style={Font.bold}>{translate('settingsLanguage', undefined, Data.language)}</Text>
         <View style={styles.switch}>
           <LanguageOption
-            name="English"
-            active={Data.language === Language.English}
-            onPress={() => Data.setLanguage(Language.English)}
+            name={readableLanguage[Language.en]}
+            active={Data.language === Language.en}
+            onPress={() => Data.setLanguage(Language.en)}
           />
           <LanguageOption
-            name="Spanish"
-            active={Data.language === Language.Spanish}
-            onPress={() => Data.setLanguage(Language.Spanish)}
+            name={readableLanguage[Language.es]}
+            active={Data.language === Language.es}
+            onPress={() => Data.setLanguage(Language.es)}
           />
           <LanguageOption
-            name="Chinese"
-            active={Data.language === Language.Chinese}
-            onPress={() => Data.setLanguage(Language.Chinese)}
+            name={readableLanguage[Language.zh]}
+            active={Data.language === Language.zh}
+            onPress={() => Data.setLanguage(Language.zh)}
           />
         </View>
       </View>

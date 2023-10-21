@@ -14,6 +14,7 @@
     }
   },
   "dependencies": {
+    "epic-language": "^0.3.0",
     "mobx": "^6.10.2",
     "mobx-react-lite": "^4.0.5",
     "react": "^18.2.0",
@@ -41,12 +42,19 @@
     "react-test-renderer": "^18.2.0",
     "typescript": "^5.2.2"
   },
+  "overrides": {
+    "chalk": "^4.1.2"
+  },
   "type": "module",
   "prettier": "./node_modules/numic/configuration/.prettierrc.json",
   "eslintConfig": {
     "extends": "./node_modules/numic/configuration/.eslintrc.json"
   },
-  "metro": {},
+  "metro": {
+    "resolver": {
+      "unstable_enablePackageExports": true
+    }
+  },
   "jest": {
     "moduleFileExtensions": [
       "ts",
@@ -62,10 +70,11 @@
     },
     "preset": "react-native",
     "setupFilesAfterEnv": [
-      "@testing-library/jest-native/extend-expect"
+      "@testing-library/jest-native/extend-expect",
+      "./test/native.mock.ts"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!react-native|@react-native|responsive-react-native|reactigation)"
+      "node_modules/(?!react-native|@react-native|responsive-react-native|reactigation|epic-language|logua|chalk)"
     ]
   }
 }
