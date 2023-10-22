@@ -61,8 +61,7 @@
   "sideEffects": true,
   "main": "dist/index.js",
   "exports": {
-    ".": "./dist/index.js",
-    "./package.json": "./package.json"
+    ".": "./dist/index.js"
   },
   "bin": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -22,14 +22,12 @@ const removeExpiredTemplates = (version: string) => {
   // TODO Remove appNames if more than 10, by statSync => atimeMs (access time)
 
   templateVersions.forEach((templateVersion) =>
-    rmSync(join(cacheDirectory, templateVersion), { recursive: true })
+    rmSync(join(cacheDirectory, templateVersion), { recursive: true }),
   )
 }
 
 export const cacheTemplate = (nativeOptions: NativeOptions) => {
   const directory = join(cacheDirectory, nativeOptions.version, nativeOptions.appName)
-
-  console.log(directory)
 
   removeExpiredTemplates(nativeOptions.version)
 
@@ -51,11 +49,9 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
         encoding: 'utf8',
         // Write output to console if in debug mode.
         stdio: nativeOptions.debug ? 'inherit' : 'pipe',
-      }
+      },
     )
   } catch (error) {
-    console.log(error)
-    console.log(error.stdout)
     log(`Failed to install React Native template.\n\n${error.stdout}`, 'warning')
   }
 
