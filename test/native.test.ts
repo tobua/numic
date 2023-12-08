@@ -72,8 +72,8 @@ test('Creates patch for simple change in android and ios user folder.', async ()
 
   const podfileContents = readFile('ios/Podfile')
   const changedPodfileContents = podfileContents.replace(
-    ':hermes_enabled => flags[:hermes_enabled],',
-    ':something_else_enabled => true,'
+    'config = use_native_modules!',
+    'config = use_active_modules'
   )
 
   writeFile('ios/Podfile', changedPodfileContents)
@@ -86,8 +86,8 @@ test('Creates patch for simple change in android and ios user folder.', async ()
 
   expect(patchContents).toContain('mavenCentral()')
   expect(patchContents).toContain('navenUI()')
-  expect(patchContents).toContain('-    :hermes_enabled => flags[:hermes_enabled],')
-  expect(patchContents).toContain('+    :something_else_enabled => true,')
+  expect(patchContents).toContain('-  config = use_native_modules!')
+  expect(patchContents).toContain('+  config = use_active_modules')
 
   // Restore initial native folder change.
   writeFile('android/build.gradle', buildGradleContents)
@@ -95,7 +95,7 @@ test('Creates patch for simple change in android and ios user folder.', async ()
 
   expect(readFile('android/build.gradle')).not.toContain('navenUI()')
   expect(readFile('android/build.gradle')).toContain('mavenCentral()')
-  expect(readFile('ios/Podfile')).not.toContain(':something_else_enabled => true,')
+  expect(readFile('ios/Podfile')).not.toContain('config = use_active_modules')
 
   apply({})
 
@@ -105,8 +105,8 @@ test('Creates patch for simple change in android and ios user folder.', async ()
   expect(patchedBuildGradleContents).not.toContain('mavenCentral()')
   expect(patchedBuildGradleContents).toContain('navenUI()')
 
-  expect(patchedPodfileContents).not.toContain(':hermes_enabled => flags[:hermes_enabled],')
-  expect(patchedPodfileContents).toContain(':something_else_enabled => true,')
+  expect(patchedPodfileContents).not.toContain('config = use_native_modules!')
+  expect(patchedPodfileContents).toContain('config = use_active_modules')
 })
 
 test('Patches nested changes as well as file additions, renames and removals.', async () => {

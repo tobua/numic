@@ -7,7 +7,7 @@ const searchForFileAndReplace = (
   filePathGlob: string | string[],
   matcher: RegExp,
   replacement: string,
-  nativePath: string
+  nativePath: string,
 ) => {
   const files = glob.sync(filePathGlob, {
     cwd: nativePath,
@@ -57,7 +57,7 @@ export default async ({
   const cleanVersion = semver.coerce(version).version
   if (!cleanVersion || !semver.valid(cleanVersion) || !semver.gte(cleanVersion, '0.71.0')) {
     log(
-      `bundleId can only be customized with React Native >= 0.71 while the current version is "${cleanVersion}"`
+      `bundleId can only be customized with React Native >= 0.71 while the current version is "${cleanVersion}"`,
     )
     return
   }
@@ -67,31 +67,30 @@ export default async ({
 
   appBuildGradleContents = appBuildGradleContents.replaceAll(
     /namespace\s"[\w.]+"/g,
-    `namespace "${bundleId}"`
+    `namespace "${bundleId}"`,
   )
 
   appBuildGradleContents = appBuildGradleContents.replaceAll(
     /applicationId\s"[\w.]+"/g,
-    `applicationId "${bundleId}"`
+    `applicationId "${bundleId}"`,
   )
 
   writeFileSync(appBuildGradleFilePath, appBuildGradleContents)
 
   searchForFileAndReplace(
     [
-      'android/app/src/*/java/com/*/ReactNativeFlipper.java',
-      'android/app/src/main/java/com/*/MainActivity.java',
-      'android/app/src/main/java/com/*/MainApplication.java',
+      'android/app/src/main/java/com/*/MainActivity.kt',
+      'android/app/src/main/java/com/*/MainApplication.kt',
     ],
-    /package\s[\w.]+;/g,
-    `package ${bundleId};`,
-    nativePath
+    /package\s[\w.]+/g,
+    `package ${bundleId}`,
+    nativePath,
   )
 
   searchForFileAndReplace(
     'ios/*.xcodeproj/project.pbxproj',
     /PRODUCT_BUNDLE_IDENTIFIER = "org\.reactjs\.native\.example\.\$\(PRODUCT_NAME:rfc1034identifier\)";/g,
     `PRODUCT_BUNDLE_IDENTIFIER = ${bundleId};`,
-    nativePath
+    nativePath,
   )
 }

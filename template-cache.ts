@@ -41,9 +41,10 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
   // TODO necessary? writeFileSync(join(folders.numic, 'package.json'), '{ "name": "numic-native" }')
 
   // DOC https://github.com/react-native-community/cli/blob/master/packages/cli/src/commands/init/index.ts
+  // TODO --skip-git-init <boolean> not yet implemented
   try {
     execSync(
-      `npx react-native init ${nativeOptions.appName} --skip-install --version ${nativeOptions.version}`,
+      `npx react-native init ${nativeOptions.appName} --skip-install --install-pods false --version ${nativeOptions.version}`,
       {
         cwd: directory,
         encoding: 'utf8',

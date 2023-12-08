@@ -9,7 +9,7 @@
     "build": "padua build",
     "postinstall": "skip-local-postinstall dist/installation.js",
     "start": "padua watch",
-    "test": "vitest run --no-threads --dir test"
+    "test": "vitest run --pool=threads --poolOptions.threads.singleThread --dir test"
   },
   "padua": {
     "entry": [
@@ -33,26 +33,27 @@
     "command-exists": "^1.2.9",
     "deepmerge": "^4.3.1",
     "eslint-plugin-prettier": "^5.0.1",
-    "fast-glob": "^3.3.1",
-    "global-cache-dir": "^5.0.0",
+    "fast-glob": "^3.3.2",
+    "global-cache-dir": "^6.0.0",
     "is-ci": "^3.0.1",
-    "logua": "^3.0.2",
+    "json5": "^2.2.3",
+    "logua": "^3.0.3",
     "pakag": "^3.1.1",
     "parse-gitignore": "^2.0.0",
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.0",
     "prompts": "^2.4.2",
     "semver": "^7.5.4",
     "semver-sort": "^1.0.0",
     "skip-local-postinstall": "^2.0.4"
   },
   "devDependencies": {
-    "@types/command-exists": "^1.2.2",
-    "@types/prompts": "^2.4.7",
-    "@types/semver": "^7.5.4",
+    "@types/command-exists": "^1.2.3",
+    "@types/prompts": "^2.4.9",
+    "@types/semver": "^7.5.6",
     "jest-fixture": "^4.1.0",
-    "padua": "^2.0.6",
-    "react-native": "^0.72.6",
-    "vitest": "^0.34.6"
+    "padua": "^2.0.7",
+    "react-native": "^0.73.0",
+    "vitest": "^1.0.2"
   },
   "peerDependencies": {
     "react-native": ">= 0.69"

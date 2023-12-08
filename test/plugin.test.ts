@@ -23,7 +23,7 @@ environment('plugin')
 
 const reactNativePkg = file(
   'node_modules/react-native/package.json',
-  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`
+  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`,
 )
 
 test('Simple plugin modifies native files.', async () => {
@@ -38,7 +38,7 @@ test('Simple plugin modifies native files.', async () => {
     join(initialCwd, 'node_modules/simple-numic-plugin'),
     {
       recursive: true,
-    }
+    },
   )
 
   await native()
@@ -62,7 +62,7 @@ test('Asynchronous plugin modifies native files.', async () => {
     join(initialCwd, 'node_modules/asynchronous-numic-plugin'),
     {
       recursive: true,
-    }
+    },
   )
 
   await native()
@@ -115,7 +115,7 @@ test('Npm plugin can be configured.', async () => {
     join(initialCwd, 'node_modules/simple-numic-plugin'),
     {
       recursive: true,
-    }
+    },
   )
 
   await native()
@@ -147,7 +147,7 @@ test("Plugin changes are staged and don't cause patch even after initial reposit
     join(initialCwd, 'node_modules/simple-numic-plugin'),
     {
       recursive: true,
-    }
+    },
   )
 
   // Same commands as iOS and Android commands would run.
@@ -250,27 +250,15 @@ test('Bundle ID will be adapted when configured.', async () => {
   expect(appBuildGradleContents).toContain('namespace "com.tobua.numic"')
   expect(appBuildGradleContents).toContain('applicationId "com.tobua.numic"')
 
-  const flipperFileContents = readFile(
-    'android/app/src/debug/java/com/numicapp/ReactNativeFlipper.java'
-  )
+  const mainActivityContents = readFile('android/app/src/main/java/com/numicapp/MainActivity.kt')
 
-  expect(flipperFileContents).toContain('package com.tobua.numic;')
-
-  const mainActivityContents = readFile('android/app/src/main/java/com/numicapp/MainActivity.java')
-
-  expect(mainActivityContents).toContain('package com.tobua.numic;')
+  expect(mainActivityContents).toContain('package com.tobua.numic')
 
   const mainApplicationContents = readFile(
-    'android/app/src/main/java/com/numicapp/MainApplication.java'
+    'android/app/src/main/java/com/numicapp/MainApplication.kt',
   )
 
-  expect(mainApplicationContents).toContain('package com.tobua.numic;')
-
-  const flipperReleaseFileContents = readFile(
-    'android/app/src/release/java/com/numicapp/ReactNativeFlipper.java'
-  )
-
-  expect(flipperReleaseFileContents).toContain('package com.tobua.numic;')
+  expect(mainApplicationContents).toContain('package com.tobua.numic')
 
   const iosProject = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
 

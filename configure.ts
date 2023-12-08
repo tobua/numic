@@ -3,6 +3,7 @@ import { join } from 'path'
 import { formatPackageJson } from 'pakag'
 import merge from 'deepmerge'
 import parse from 'parse-gitignore'
+import { parse as parseJsonWithComments } from 'json5'
 import { basePath, options } from './helper'
 import { userGitignore, filterPluginIgnores } from './configuration/gitignore'
 import { packageJson } from './configuration/package'
@@ -46,7 +47,7 @@ export const configureTsConfig = () => {
 
   // Make sure extended properties aren't duplicated.
   try {
-    const extendedProperties = JSON.parse(readFileSync(rnTsconfigPath, 'utf-8'))
+    const extendedProperties = parseJsonWithComments(readFileSync(rnTsconfigPath, 'utf-8'))
 
     // Avoid duplicate values.
     Object.keys(configuration.compilerOptions).forEach((key) => {
@@ -60,7 +61,7 @@ export const configureTsConfig = () => {
 
     if (Array.isArray(configuration.exclude)) {
       configuration.exclude = configuration.exclude.filter(
-        (item: string) => !extendedProperties.exclude.includes(item)
+        (item: string) => !extendedProperties.exclude.includes(item),
       )
 
       if (configuration.exclude.length === 0) {
@@ -91,7 +92,7 @@ export const configureGitignore = () => {
 
   if (existsSync(gitIgnorePath)) {
     entries = filterPluginIgnores(
-      entries.concat(parse(readFileSync(gitIgnorePath, 'utf8')).patterns)
+      entries.concat(parse(readFileSync(gitIgnorePath, 'utf8')).patterns),
     )
   }
 
@@ -117,7 +118,7 @@ const configurePackageJson = async (isFirstInstall: boolean) => {
   // Format with prettier and sort before writing.
   writeFileSync(
     join(basePath(), './package.json'),
-    await formatPackageJson(JSON.stringify(generatedPackageJson))
+    await formatPackageJson(JSON.stringify(generatedPackageJson)),
   )
 
   options().pkg = generatedPackageJson
