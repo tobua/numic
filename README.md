@@ -28,7 +28,7 @@ npm init --yes now numic ./my-starter-app app # Tempalte with navigation, data, 
 This will prompt for an app name that can only contain **alphanumeric** characters and will be used as the initial bundle identifier. Using `NumicApp` as the name will result in `com.numicapp` as the bundle identifier. The name as well as the display name can later be configured in `app.json`.
 
 > [!IMPORTANT]  
-> This project follows an alwasy up-to-date policy. Make sure to migrate to the newest React Native version when upgrading.
+> This project follows an always up-to-date policy. Make sure to migrate to the newest React Native version when upgrading.
 
 ## Commands
 
@@ -36,7 +36,7 @@ This framework provides the following commands that will be added to `scripts` i
 
 ### `numic` - `npm start`
 
-Shortcut command that will promt for the commands below as well as specific options for each command.
+Shortcut command that will promt for the commands below as well as specific options for each command. This command also includes a `Distribute` option to bundle the app for Android, see [RELEASE.md](documentation/RELEASE.md).
 
 ### `numic ios` - `npm run ios`
 

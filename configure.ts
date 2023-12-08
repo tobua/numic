@@ -3,7 +3,7 @@ import { join } from 'path'
 import { formatPackageJson } from 'pakag'
 import merge from 'deepmerge'
 import parse from 'parse-gitignore'
-import { parse as parseJsonWithComments } from 'json5'
+import json5 from 'json5'
 import { basePath, options } from './helper'
 import { userGitignore, filterPluginIgnores } from './configuration/gitignore'
 import { packageJson } from './configuration/package'
@@ -47,7 +47,7 @@ export const configureTsConfig = () => {
 
   // Make sure extended properties aren't duplicated.
   try {
-    const extendedProperties = parseJsonWithComments(readFileSync(rnTsconfigPath, 'utf-8'))
+    const extendedProperties = json5.parse(readFileSync(rnTsconfigPath, 'utf-8'))
 
     // Avoid duplicate values.
     Object.keys(configuration.compilerOptions).forEach((key) => {
