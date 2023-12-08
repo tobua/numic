@@ -21,7 +21,7 @@ environment('configuration')
 
 const reactNativePkg = file(
   'node_modules/react-native/package.json',
-  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`
+  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`,
 )
 
 test('Properly configures empty project.', async () => {
@@ -148,7 +148,7 @@ test('Default native ignores from template are removed.', async () => {
     packageJson('ignore-duplicates'),
     file(
       '.gitignore',
-      `build/\r\n*.mode1v3\r\nlocal.properties\r\nlocal.properties\r\nnode_modules/`
+      `build/\r\n*.mode1v3\r\nlocal.properties\r\nlocal.properties\r\nnode_modules/`,
     ),
     reactNativePkg,
   ])
@@ -187,11 +187,13 @@ test('Properly configures typescript when dependency detected.', async () => {
     reactNativePkg,
   ])
 
-  mkdirSync(join(process.cwd(), 'node_modules/@tsconfig/react-native'), { recursive: true })
+  mkdirSync(join(process.cwd(), 'node_modules/@react-native/typescript-config'), {
+    recursive: true,
+  })
   cpSync(
-    join(initialCwd, 'node_modules/@tsconfig/react-native'),
-    join(process.cwd(), 'node_modules/@tsconfig/react-native'),
-    { recursive: true }
+    join(initialCwd, 'node_modules/@react-native/typescript-config'),
+    join(process.cwd(), 'node_modules/@react-native/typescript-config'),
+    { recursive: true },
   )
 
   await configure()
@@ -204,7 +206,7 @@ test('Properly configures typescript when dependency detected.', async () => {
   expect(gitignoreContents).toContain('tsconfig.json')
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
 })
 
 test('Properly configures typescript when tsconfig detected.', async () => {
@@ -212,16 +214,18 @@ test('Properly configures typescript when tsconfig detected.', async () => {
     packageJson('typescript-detect'),
     file(
       'tsconfig.json',
-      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "babel.config.js" ] }'
+      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "babel.config.js" ] }',
     ),
     reactNativePkg,
   ])
 
-  mkdirSync(join(process.cwd(), 'node_modules/@tsconfig/react-native'), { recursive: true })
+  mkdirSync(join(process.cwd(), 'node_modules/@react-native/typescript-config'), {
+    recursive: true,
+  })
   cpSync(
-    join(initialCwd, 'node_modules/@tsconfig/react-native'),
-    join(process.cwd(), 'node_modules/@tsconfig/react-native'),
-    { recursive: true }
+    join(initialCwd, 'node_modules/@react-native/typescript-config'),
+    join(process.cwd(), 'node_modules/@react-native/typescript-config'),
+    { recursive: true },
   )
 
   await configure()
@@ -231,7 +235,7 @@ test('Properly configures typescript when tsconfig detected.', async () => {
   const tsconfigContents = contents[1].contents as any
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
   expect(tsconfigContents.compilerOptions.skipLibCheck).toBe(true)
   // Extended excludes removed.
   expect(tsconfigContents.exclude).toBe(undefined)
@@ -242,16 +246,18 @@ test('Extended tsconfig properties are removed.', async () => {
     packageJson('typescript-extend', { devDependencies: { typescript: '^4.4.4' } }),
     file(
       'tsconfig.json',
-      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "node_modules", "my-stuff" ] }'
+      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "node_modules", "my-stuff" ] }',
     ),
     reactNativePkg,
   ])
 
-  mkdirSync(join(process.cwd(), 'node_modules/@tsconfig/react-native'), { recursive: true })
+  mkdirSync(join(process.cwd(), 'node_modules/@react-native/typescript-config'), {
+    recursive: true,
+  })
   cpSync(
-    join(initialCwd, 'node_modules/@tsconfig/react-native'),
-    join(process.cwd(), 'node_modules/@tsconfig/react-native'),
-    { recursive: true }
+    join(initialCwd, 'node_modules/@react-native/typescript-config'),
+    join(process.cwd(), 'node_modules/@react-native/typescript-config'),
+    { recursive: true },
   )
 
   await configure()
@@ -261,7 +267,7 @@ test('Extended tsconfig properties are removed.', async () => {
   const tsconfigContents = contents[1].contents as any
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
   // Always added.
   expect(tsconfigContents.compilerOptions.module).toBe('NodeNext')
   expect(tsconfigContents.compilerOptions.moduleResolution).toBe('node')
@@ -282,11 +288,13 @@ test('tsconfig from package.json is merged in.', async () => {
     reactNativePkg,
   ])
 
-  mkdirSync(join(process.cwd(), 'node_modules/@tsconfig/react-native'), { recursive: true })
+  mkdirSync(join(process.cwd(), 'node_modules/@react-native/typescript-config'), {
+    recursive: true,
+  })
   cpSync(
-    join(initialCwd, 'node_modules/@tsconfig/react-native'),
-    join(process.cwd(), 'node_modules/@tsconfig/react-native'),
-    { recursive: true }
+    join(initialCwd, 'node_modules/@react-native/typescript-config'),
+    join(process.cwd(), 'node_modules/@react-native/typescript-config'),
+    { recursive: true },
   )
 
   await configure()
@@ -296,7 +304,7 @@ test('tsconfig from package.json is merged in.', async () => {
   const tsconfigContents = contents[1].contents as any
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
   // Always added.
   expect(tsconfigContents.compilerOptions.skipLibCheck).toBe(false)
   expect(tsconfigContents.compilerOptions.moduleResolution).toBe('node')
@@ -315,16 +323,18 @@ test("Tsconfig array properties aren't duplicated upon merge.", async () => {
     }),
     file(
       'tsconfig.json',
-      '{ "compilerOptions": { "types": ["node"] }, "include": [ "global.d.ts", "another.d.ts" ] }'
+      '{ "compilerOptions": { "types": ["node"] }, "include": [ "global.d.ts", "another.d.ts" ] }',
     ),
     reactNativePkg,
   ])
 
-  mkdirSync(join(process.cwd(), 'node_modules/@tsconfig/react-native'), { recursive: true })
+  mkdirSync(join(process.cwd(), 'node_modules/@react-native/typescript-config'), {
+    recursive: true,
+  })
   cpSync(
-    join(initialCwd, 'node_modules/@tsconfig/react-native'),
-    join(process.cwd(), 'node_modules/@tsconfig/react-native'),
-    { recursive: true }
+    join(initialCwd, 'node_modules/@react-native/typescript-config'),
+    join(process.cwd(), 'node_modules/@react-native/typescript-config'),
+    { recursive: true },
   )
 
   await configure()
@@ -334,7 +344,7 @@ test("Tsconfig array properties aren't duplicated upon merge.", async () => {
   const tsconfigContents = contents[1].contents as any
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@tsconfig/react-native/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
   expect(tsconfigContents.compilerOptions.types.length).toBe(2)
   expect(tsconfigContents.compilerOptions.types).toContain('node')
   expect(tsconfigContents.compilerOptions.types).toContain('jest')

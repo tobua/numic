@@ -10,7 +10,10 @@ import { packageJson } from './configuration/package'
 
 export const configureTsConfig = () => {
   const tsconfigPath = join(basePath(), 'tsconfig.json')
-  const rnTsconfigPath = join(basePath(), 'node_modules/@tsconfig/react-native/tsconfig.json')
+  const rnTsconfigPath = join(
+    basePath(),
+    'node_modules/@react-native/typescript-config/tsconfig.json',
+  )
 
   if (!options().typescript) {
     return
@@ -39,7 +42,7 @@ export const configureTsConfig = () => {
   }
 
   // Always extend RN config.
-  configuration.extends = '@tsconfig/react-native/tsconfig.json'
+  configuration.extends = '@react-native/typescript-config/tsconfig.json'
 
   if (typeof configuration.compilerOptions !== 'object') {
     configuration.compilerOptions = {}
