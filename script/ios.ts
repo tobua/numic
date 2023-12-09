@@ -81,5 +81,5 @@ export const ios = async (inputs: RunInputs) => {
     stdio: 'inherit',
   })
   log('Build done, opening app and starting bundler..')
-  execSync('react-native start')
+  execSync('react-native start', { stdio: 'inherit' })
 }
