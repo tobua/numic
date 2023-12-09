@@ -45,4 +45,6 @@ export const android = async (inputs: RunInputs) => {
   execSync(`react-native run-android${runInputArguments} ${additionalCliArguments()}`, {
     stdio: 'inherit',
   })
+  log('Build done, opening app and starting bundler..')
+  execSync('react-native start')
 }

@@ -80,4 +80,6 @@ export const ios = async (inputs: RunInputs) => {
   execSync(`react-native run-ios${runInputArguments} ${additionalCliArguments()}`, {
     stdio: 'inherit',
   })
+  log('Build done, opening app and starting bundler..')
+  execSync('react-native start')
 }

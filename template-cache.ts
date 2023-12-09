@@ -35,18 +35,22 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
     return directory
   }
 
-  mkdirSync(directory, { recursive: true })
+  // When using --directory option ini init, the directory itself cannot already exist.
+  mkdirSync(join(directory, '..'), { recursive: true })
 
   // Empty package.json to bypass React Native CLI dependencies validation.
   // TODO necessary? writeFileSync(join(folders.numic, 'package.json'), '{ "name": "numic-native" }')
 
   // DOC https://github.com/react-native-community/cli/blob/master/packages/cli/src/commands/init/index.ts
-  // TODO --skip-git-init <boolean> not yet implemented
   try {
     execSync(
-      `npx react-native init ${nativeOptions.appName} --skip-install --install-pods false --version ${nativeOptions.version}`,
+      `react-native init ${
+        nativeOptions.appName
+      } --skip-install --install-pods false --skip-git-init true --version ${
+        nativeOptions.version
+      } --directory "${join(directory, nativeOptions.appName)}"`,
       {
-        cwd: directory,
+        cwd: process.cwd(),
         encoding: 'utf8',
         // Write output to console if in debug mode.
         stdio: nativeOptions.debug ? 'inherit' : 'pipe',

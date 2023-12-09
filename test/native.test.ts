@@ -25,7 +25,7 @@ environment('native')
 
 const reactNativePkg = file(
   'node_modules/react-native/package.json',
-  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`
+  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`,
 )
 
 test('Create native project for android and ios.', async () => {
@@ -73,7 +73,7 @@ test('Creates patch for simple change in android and ios user folder.', async ()
   const podfileContents = readFile('ios/Podfile')
   const changedPodfileContents = podfileContents.replace(
     'config = use_native_modules!',
-    'config = use_active_modules'
+    'config = use_active_modules',
   )
 
   writeFile('ios/Podfile', changedPodfileContents)
@@ -118,7 +118,7 @@ test('Patches nested changes as well as file additions, renames and removals.', 
   const manifestContents = readFile(manifestPath)
   const changedContents = manifestContents.replace(
     'android:allowBackup="false"',
-    'android:allowBackup="true"'
+    'android:allowBackup="true"',
   )
   writeFile(manifestPath, changedContents)
 
@@ -139,7 +139,7 @@ test('Patches nested changes as well as file additions, renames and removals.', 
   const stylesXMLPath = join(process.cwd(), 'android/app/src/main/res/values/styles.xml')
   const stylesXMLRenamedPath = join(
     process.cwd(),
-    'android/app/src/main/res/values/styles-renamed.xml'
+    'android/app/src/main/res/values/styles-renamed.xml',
   )
 
   renameSync(stylesXMLPath, stylesXMLRenamedPath)
@@ -200,7 +200,7 @@ test('Reverted changes disappear from patch.', async () => {
 
   const revertedButChangedContentChanges = buildGradleContents.replace(
     'buildToolsVersion',
-    'customToolsVersion'
+    'customToolsVersion',
   )
 
   writeFile('android/build.gradle', revertedButChangedContentChanges)
@@ -271,7 +271,7 @@ test('Patch not applied to repository during initialization.', async () => {
   cpSync(
     join(initialCwd, 'test/patch/build-gradle.patch'),
     join(process.cwd(), 'patch/current.patch'),
-    { recursive: true }
+    { recursive: true },
   )
 
   // Installation commands.

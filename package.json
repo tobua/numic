@@ -27,6 +27,7 @@
     }
   },
   "dependencies": {
+    "@react-native-community/cli": "^13.0.0",
     "@react-native/babel-preset": "^0.74.0",
     "@react-native/eslint-config": "^0.74.0",
     "@react-native/metro-config": "^0.73.2",
