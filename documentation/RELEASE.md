@@ -11,7 +11,7 @@ To release a React Native app for Android a few manual steps are currently requi
 sudo keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-Add the generated file to `/android/app/my-upload-key.keystore`, no need to commit this file as it will be integrated into the patch (it's fairly short). Once that's also done add the password you just entered as well as the file location to the end of `/android/gradle.properties`:
+Add the generated file to `/android/app/my-upload-key.keystore`, this file is sensitive, will be gitignored and not appear in the patch, make sure to **back it up** somewhere safe (app can no longer be released if this key is lost!). Once that's also done add the password you just entered as well as the file location to the end of `/android/gradle.properties`:
 
 ```sh
 
