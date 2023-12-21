@@ -76,7 +76,7 @@ export const ios = async (inputs: RunInputs) => {
       runInputArguments += ` --simulator "${inputs.simulator}"`
     }
   }
-
+  log('Starting native build')
   execSync(`react-native run-ios${runInputArguments} ${additionalCliArguments()}`, {
     stdio: 'inherit',
   })

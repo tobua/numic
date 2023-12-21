@@ -41,7 +41,7 @@ export const android = async (inputs: RunInputs) => {
       runInputArguments += ` --deviceId=${inputs.deviceId}`
     }
   }
-
+  log('Starting native build')
   execSync(`react-native run-android${runInputArguments} ${additionalCliArguments()}`, {
     stdio: 'inherit',
   })
