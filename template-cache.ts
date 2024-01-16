@@ -73,4 +73,5 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
 export const clearTemplateCache = () => {
   const templates = readdirSync(cacheDirectory)
   templates.forEach((template) => rmSync(join(cacheDirectory, template), { recursive: true }))
+  return cacheDirectory
 }

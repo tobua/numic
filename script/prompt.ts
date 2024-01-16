@@ -12,6 +12,7 @@ import { lint } from './lint'
 import { ios } from './ios'
 import { android } from './android'
 import { RunLocation, RunMode } from '../types'
+import { clearTemplateCache } from '../template-cache'
 
 const scriptToMethod = {
   plugin,
@@ -133,6 +134,7 @@ export const prompt = async () => {
       { title: 'Create or update patch', value: 'patch' },
       { title: 'Apply existing patch', value: 'apply' },
       { title: 'Lint project', value: 'lint' },
+      { title: 'Clear native cache', value: 'clear' },
     ],
   })
 
@@ -144,7 +146,7 @@ export const prompt = async () => {
     return
   }
 
-  if (script !== 'ios' && script !== 'android' && script !== 'distribute') {
+  if (script in scriptToMethod) {
     await scriptToMethod[script]()
   }
 
@@ -259,5 +261,10 @@ export const prompt = async () => {
     if (script === 'android') {
       android({ location, mode, deviceId, simulator })
     }
+  }
+
+  if (script === 'clear') {
+    const directory = clearTemplateCache()
+    log(`Template cache in ${directory} successfully cleared`)
   }
 }
