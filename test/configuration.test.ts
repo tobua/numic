@@ -214,7 +214,7 @@ test('Properly configures typescript when tsconfig detected.', async () => {
     packageJson('typescript-detect'),
     file(
       'tsconfig.json',
-      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "babel.config.js" ] }',
+      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "babel.config.js", "**/Pods/**" ] }',
     ),
     reactNativePkg,
   ])
@@ -238,7 +238,7 @@ test('Properly configures typescript when tsconfig detected.', async () => {
   expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
   expect(tsconfigContents.compilerOptions.skipLibCheck).toBe(true)
   // Extended excludes removed.
-  expect(tsconfigContents.exclude).toBe(undefined)
+  expect(tsconfigContents.exclude).toEqual(['babel.config.js'])
 })
 
 test('Extended tsconfig properties are removed.', async () => {
@@ -246,7 +246,7 @@ test('Extended tsconfig properties are removed.', async () => {
     packageJson('typescript-extend', { devDependencies: { typescript: '^4.4.4' } }),
     file(
       'tsconfig.json',
-      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "node_modules", "my-stuff" ] }',
+      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "node_modules", "my-stuff", "**/Pods/**" ] }',
     ),
     reactNativePkg,
   ])
@@ -273,7 +273,7 @@ test('Extended tsconfig properties are removed.', async () => {
   expect(tsconfigContents.compilerOptions.moduleResolution).toBe('node')
   expect(tsconfigContents.compilerOptions.skipLibCheck).toBe(true)
   // Extended excludes removed.
-  expect(tsconfigContents.exclude).toEqual(['my-stuff'])
+  expect(tsconfigContents.exclude).toEqual(['node_modules', 'my-stuff'])
 })
 
 test('tsconfig from package.json is merged in.', async () => {
