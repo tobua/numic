@@ -33,9 +33,9 @@ test('Properly configures empty project.', async () => {
   expect(contents[0].name).toBe('package.json')
   const packageContents = contents[0].contents as any
 
-  expect(packageContents.scripts.lint).toBe('numic lint')
-  expect(packageContents.scripts.ios).toBe('numic ios')
-  expect(packageContents.scripts.android).toBe('numic android')
+  expect(packageContents.scripts.lint).not.toBeDefined()
+  expect(packageContents.scripts.ios).not.toBeDefined()
+  expect(packageContents.scripts.android).not.toBeDefined()
   expect(packageContents.prettier).toContain('prettierrc')
   expect(packageContents.eslintConfig.extends).toContain('eslintrc')
 
@@ -46,7 +46,7 @@ test('Properly configures empty project.', async () => {
 test('Properly adapts existing scripts.', async () => {
   prepare([
     packageJson('empty', {
-      scripts: { lint: 'my-custom-eslint', android: 'react-native run-android' },
+      scripts: { start: 'whatever', lint: 'my-custom-eslint', android: 'react-native run-android' },
     }),
     reactNativePkg,
   ])
@@ -58,13 +58,14 @@ test('Properly adapts existing scripts.', async () => {
   const packageContents = contents[0].contents as any
 
   expect(packageContents.scripts.lint).not.toContain('numic')
-  expect(packageContents.scripts.android).toContain('numic')
+  expect(packageContents.scripts.android).not.toContain('numic')
+  expect(packageContents.scripts.start).toContain('numic')
 })
 
-test(`Overrides lint and format commands on first install.`, async () => {
+test(`Overrides start commands on first install.`, async () => {
   prepare([
     packageJson('empty', {
-      scripts: { android: 'react-native run-android' },
+      scripts: { start: 'react-native run-android' },
     }),
     reactNativePkg,
   ])
@@ -75,14 +76,14 @@ test(`Overrides lint and format commands on first install.`, async () => {
   expect(contents[0].name).toBe('package.json')
   const packageContents = contents[0].contents as any
 
-  expect(packageContents.scripts.lint).toBe('numic lint')
-  expect(packageContents.scripts.android).toContain('numic')
+  expect(packageContents.scripts.lint).not.toBeDefined()
+  expect(packageContents.scripts.start).toContain('numic')
 })
 
 test(`Skips lint and format commands on repeated install.`, async () => {
   prepare([
     packageJson('empty', {
-      scripts: { android: 'react-native run-android' },
+      scripts: { start: 'react-native run-android' },
     }),
     reactNativePkg,
     file('patch/current.patch', ''),
@@ -95,7 +96,7 @@ test(`Skips lint and format commands on repeated install.`, async () => {
   const packageContents = contents[0].contents as any
 
   expect(packageContents.scripts.lint).not.toBeDefined()
-  expect(packageContents.scripts.android).toContain('numic')
+  expect(packageContents.scripts.start).toContain('numic')
 })
 
 test('Adds new entries to gitignore.', async () => {
@@ -176,7 +177,8 @@ test('Properly configures empty project.', async () => {
   expect(contents[0].name).toBe('package.json')
   const packageContents = contents[0].contents as any
 
-  expect(packageContents.scripts.lint).toBeDefined()
+  expect(packageContents.scripts.start).toBeDefined()
+  expect(packageContents.scripts.lint).not.toBeDefined()
   expect(packageContents.prettier).toContain('prettierrc')
   expect(packageContents.eslintConfig.extends).toContain('eslintrc')
 })

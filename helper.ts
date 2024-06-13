@@ -159,7 +159,7 @@ export const options: () => Options = () => {
 
   try {
     result.reactNativeVersion = JSON.parse(
-      readFileSync(join(basePath(), 'node_modules/react-native/package.json'), 'utf8')
+      readFileSync(join(basePath(), 'node_modules/react-native/package.json'), 'utf8'),
     ).version
   } catch (error) {
     log('React native installation not found', 'warning')
@@ -225,7 +225,7 @@ export const hasRejectedHunks = () => {
   if (existsSync(rejectedHunksPath)) {
     log(
       `Parts of your patch couldn't be applied and are now in patch/rejected-hunks.patch. Apply the rejected hunks manually to the native folders and then run "npx numic patch" to update the patch. After this remove the rejected-hunks.patch file and try this command again`,
-      'warning'
+      'warning',
     )
     return true
   }

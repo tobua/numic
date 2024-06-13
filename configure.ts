@@ -125,12 +125,21 @@ const configurePackageJson = async (isFirstInstall: boolean) => {
   )
 
   options().pkg = generatedPackageJson
+
+  return (
+    (packageJsonContents.dependencies && packageJsonContents.dependencies['zero-configuration']) ||
+    (packageJsonContents.devDependencies &&
+      packageJsonContents.devDependencies['zero-configuration'])
+  )
 }
 
 export const configure = async () => {
   const isFirstInstall = !existsSync(join(basePath(), 'patch/current.patch'))
 
-  await configurePackageJson(isFirstInstall)
-  configureGitignore()
-  configureTsConfig()
+  const separateConfiguration = await configurePackageJson(isFirstInstall)
+
+  if (!separateConfiguration) {
+    configureGitignore()
+    configureTsConfig()
+  }
 }

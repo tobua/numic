@@ -16,24 +16,12 @@ export const packageJson = (isFirstInstall: boolean) => {
       pkg.scripts = {}
     }
 
-    pkg.scripts = Object.assign(
-      {
-        start: 'numic',
-        ios: 'numic ios',
-        android: 'numic android',
-        lint: 'numic lint',
-      },
-      pkg.scripts
-    )
+    pkg.scripts = Object.assign({ start: 'numic' }, pkg.scripts)
   }
 
   // Essential to plugin lifecycle.
-  if (pkg.scripts && !pkg.scripts.ios?.includes('numic')) {
-    pkg.scripts.ios = 'numic ios'
-  }
-
-  if (pkg.scripts && !pkg.scripts.android?.includes('numic')) {
-    pkg.scripts.android = 'numic android'
+  if (pkg.scripts && !pkg.scripts.start?.includes('numic')) {
+    pkg.scripts.start = 'numic'
   }
 
   return pkg
