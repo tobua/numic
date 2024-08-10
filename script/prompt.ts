@@ -235,7 +235,7 @@ export const prompt = async () => {
       if (location === RunLocation.device) {
         if (!commandExists('ios-deploy')) {
           log(
-            'ios-deploy required to run on device, install with "sudo npm install -g ios-deploy" or "brew install ios-deploy"',
+            'ios-deploy required to run on device, install with "sudo npm install -g ios-deploy", "bun pm trust ios-deploy && bun install -g ios-deploy" or "brew install ios-deploy"',
             'error',
           )
         }
