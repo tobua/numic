@@ -3,7 +3,6 @@ import semverSort from 'semver-sort'
 import { rmSync, readdirSync, renameSync, existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
-import { gte } from 'semver'
 import { log } from './helper'
 import { NativeOptions } from './types'
 
@@ -44,7 +43,6 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
 
   // DOC https://github.com/react-native-community/cli/blob/master/packages/cli/src/commands/init/index.ts
   try {
-    const separateTemplate = gte(nativeOptions.version, '0.75.0')
     const usesBun = typeof Bun !== 'undefined'
 
     execSync(
@@ -52,9 +50,7 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
         nativeOptions.appName
       } --skip-install --install-pods false --skip-git-init true --version ${
         nativeOptions.version
-      } --directory "${join(directory, nativeOptions.appName)}"${
-        separateTemplate ? ' --template @react-native-community/template' : ''
-      }${usesBun ? ' --pm bun' : ''}`,
+      } --directory "${join(directory, nativeOptions.appName)}"${usesBun ? ' --pm bun' : ''}`,
       {
         cwd: process.cwd(),
         encoding: 'utf8',

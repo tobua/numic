@@ -28,10 +28,10 @@
   },
   "dependencies": {
     "@react-native-community/cli": "^14.0.0",
-    "@react-native/babel-preset": "^0.75.0",
-    "@react-native/eslint-config": "^0.75.0",
-    "@react-native/metro-config": "^0.75.0",
-    "@react-native/typescript-config": "^0.75.0",
+    "@react-native/babel-preset": "^0.75.1",
+    "@react-native/eslint-config": "^0.75.1",
+    "@react-native/metro-config": "^0.75.1",
+    "@react-native/typescript-config": "^0.75.1",
     "arg": "^5.0.2",
     "command-exists": "^1.2.9",
     "deepmerge": "^4.3.1",
@@ -57,7 +57,7 @@
     "@types/semver": "^7.5.8",
     "jest-fixture": "^4.1.0",
     "padua": "^4.0.1",
-    "react-native": "^0.75.0",
+    "react-native": "^0.75.1",
     "vitest": "^2.0.5"
   },
   "peerDependencies": {

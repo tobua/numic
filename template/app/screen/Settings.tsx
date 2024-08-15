@@ -62,17 +62,17 @@ export const Settings = observer(() => {
         <Text style={Font.bold}>{translate('settingsLanguage', undefined, Data.language)}</Text>
         <View style={styles.switch}>
           <LanguageOption
-            name={readableLanguage[Language.en]}
+            name={readableLanguage[Language.en].local}
             active={Data.language === Language.en}
             onPress={() => Data.setLanguage(Language.en)}
           />
           <LanguageOption
-            name={readableLanguage[Language.es]}
+            name={readableLanguage[Language.es].local}
             active={Data.language === Language.es}
             onPress={() => Data.setLanguage(Language.es)}
           />
           <LanguageOption
-            name={readableLanguage[Language.zh]}
+            name={readableLanguage[Language.zh].local}
             active={Data.language === Language.zh}
             onPress={() => Data.setLanguage(Language.zh)}
           />

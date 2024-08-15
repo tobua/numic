@@ -17,7 +17,7 @@ test('App renders without crashing.', async () => {
   title = app.getByLabelText(Label.screenTitle)
   expect(title).toHaveTextContent('Settings')
   // Switch language.
-  const spanishButton = app.getByText(readableLanguage[Language.es])
+  const spanishButton = app.getByText(readableLanguage[Language.es].local)
   fireEvent.press(spanishButton)
   title = app.getByLabelText(Label.screenTitle)
   expect(title).toHaveTextContent('Ajustes')

@@ -5,6 +5,8 @@ import { createStyles } from 'responsive-react-native'
 import { Screen } from '../markup/Screen'
 import { Button } from '../markup/Button'
 import { Header } from '../markup/Header'
+import { Animation } from '../markup/Animation'
+import { Gesture } from '../markup/Gesture'
 import { Label } from '../label'
 import logo from '../logo.png'
 import { Font, Space, Color } from '../style'
@@ -36,6 +38,10 @@ export function Overview() {
         Welcome to <Text style={Font.highlight}>numic</Text>!
       </Text>
       <Text style={Font.text}>Running in {__DEV__ ? 'Debug' : 'Release'} Mode</Text>
+      <Text style={Font.title}>Animations</Text>
+      <Animation />
+      <Text style={Font.title}>Gestures</Text>
+      <Gesture />
     </Screen>
   )
 }

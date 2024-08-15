@@ -1,8 +1,7 @@
 {
-"extends": "@react-native/typescript-config/tsconfig.json",
-"compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "Bundler"
-}
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext"
+  }
 }
   
