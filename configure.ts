@@ -75,15 +75,8 @@ export const configureTsConfig = () => {
     // Ignored
   }
 
-  // Base package in our setup is ESM, type: module.
   if (typeof configuration.compilerOptions.module === 'undefined') {
-    configuration.compilerOptions.module = 'NodeNext'
-  }
-
-  // Avoid the need to add (.js) file endings (already handled by Metro bundler).
-  // Currently set to NodeNext in official React Native TypeScript Configuration.
-  if (typeof configuration.compilerOptions.moduleResolution === 'undefined') {
-    configuration.compilerOptions.moduleResolution = 'node'
+    configuration.compilerOptions.module = 'ESNext' // RN default is ES2015??
   }
 
   writeFileSync(tsconfigPath, JSON.stringify(configuration, null, 2))
