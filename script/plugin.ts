@@ -5,8 +5,9 @@ import { log, getFolders, basePath, options } from '../helper'
 import type { PluginInput } from '../types'
 import androidVersion from '../plugin/android-version'
 import bundleId from '../plugin/bundle-id'
+import newArchitecture from '../plugin/new-architecture'
 
-const builtInPlugins = [androidVersion, bundleId]
+const builtInPlugins = [androidVersion, bundleId, newArchitecture]
 
 type PluginFunction = (options?: PluginInput) => void
 type Plugin = string | PluginFunction
@@ -33,7 +34,7 @@ const runPluginsIn = async (plugins: Plugin[], location: string, silent = false)
       projectPath: basePath(),
       nativePath: location,
       log: silent ? () => {} : log,
-      options: typeof plugin === 'function' ? options() : options()[basename(plugin)] ?? {},
+      options: typeof plugin === 'function' ? options() : (options()[basename(plugin)] ?? {}),
       version: options().reactNativeVersion,
     })
   })

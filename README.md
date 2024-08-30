@@ -137,7 +137,9 @@ Adding a `numic` property allows to configure script and plugin behaviour. This 
     "androidVersion": 45,
     "androidVersion": [8, "2.31"],
     // Customize the Bundle ID for iOS and Android.
-    "bundleId": "com.tobua.numic"
+    "bundleId": "com.tobua.numic",
+    // Switch back to use the old React Native architecture.
+    "oldArchitecture": true
   },
   // Will be merged with tsconfig, that's by default gitignored.
   "tsconfig": {

@@ -264,4 +264,20 @@ test('Bundle ID will be adapted when configured.', async () => {
 
   expect(iosProject).toContain('PRODUCT_BUNDLE_IDENTIFIER = com.tobua.numic;')
   expect(iosProject).not.toContain('org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)')
+
+  const gradlePropertiesContents = readFile('android/gradle.properties')
+  // New architecture enabled by default.
+  expect(gradlePropertiesContents).toContain('newArchEnabled=true')
+})
+
+test('New architecture can optionally be disabled.', async () => {
+  prepare([
+    packageJson('plugin-new-architecture', { numic: { oldArchitecture: true } }),
+    reactNativePkg,
+  ])
+
+  await native()
+
+  const gradlePropertiesContents = readFile('android/gradle.properties')
+  expect(gradlePropertiesContents).toContain('newArchEnabled=false')
 })

@@ -17,6 +17,7 @@ export interface Options {
   nativeGitignore?: string[] | string
   reactNativeVersion?: string
   typescript: boolean
+  oldArchitecture?: boolean
 }
 
 export type NativeOptions = {

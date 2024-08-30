@@ -9,6 +9,7 @@ import {
   isOnline,
   checkCommandVersion,
   hasRejectedHunks,
+  options,
 } from '../helper'
 import { native } from './native'
 import { patch } from './patch'
@@ -53,7 +54,11 @@ export const ios = async (inputs: RunInputs) => {
   log('Updating iOS Pods')
   if (await isOnline()) {
     try {
-      execSync('pod update', { cwd: join(basePath(), 'ios'), encoding: 'utf8', stdio: 'pipe' })
+      execSync(`${options().oldArchitecture ? '' : 'RCT_NEW_ARCH_ENABLED=1 '}pod update`, {
+        cwd: join(basePath(), 'ios'),
+        encoding: 'utf8',
+        stdio: 'pipe',
+      })
     } catch (error) {
       log('Failed to run "pod update" in /ios', 'warning')
       console.log(error.stdout)
