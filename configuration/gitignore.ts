@@ -1,6 +1,8 @@
 import { EOL } from 'node:os'
 import { options } from '../helper'
 
+// Up to date version found at: https://github.com/react-native-community/template/blob/main/template/_gitignore
+
 const pluginGitignores = [
   // XCode
   'build/',
@@ -27,6 +29,7 @@ const pluginGitignores = [
   'local.properties',
   '*.iml',
   '*.hprof',
+  '.cxx/',
   '*.keystore',
   '!debug.keystore',
   // Cocoapods (generated with pod install / update)
