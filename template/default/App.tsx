@@ -1,3 +1,4 @@
+/// <reference types="numic/types" />
 import React from 'react'
 import { SafeAreaView, StatusBar, StyleSheet, View, Text, Image } from 'react-native'
 import logo from './logo.png'

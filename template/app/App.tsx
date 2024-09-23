@@ -1,3 +1,4 @@
+/// <reference types="numic/types" />
 import React from 'react'
 import Reactigation, { register } from 'reactigation'
 import { Overview } from './screen/Overview'
