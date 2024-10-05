@@ -50,4 +50,5 @@ export type RunInputs = {
   device?: string // iOS device.
   deviceId?: string // Android device.
   simulator?: string
+  emulator?: string
 }

@@ -1,7 +1,7 @@
 import { existsSync, renameSync } from 'fs'
 import { EOL } from 'os'
 import { join } from 'path'
-import { execSync } from 'child_process'
+import { execSync, spawn } from 'child_process'
 import prompts from 'prompts'
 import { sync as commandExists } from 'command-exists'
 import { basePath, hasRejectedHunks, log } from '../helper'
@@ -63,7 +63,7 @@ const getIOSSimulators = () => {
     log('Failed to get a list of available iOS simulators', 'error')
   }
 
-  const allDevices = []
+  const allDevices: { name: string; state: 'Booted' | 'Shutdown' }[] = []
 
   Object.keys(simctlOutput).forEach((runtime) => {
     allDevices.push(
@@ -74,7 +74,66 @@ const getIOSSimulators = () => {
   // Display booted simulators first.
   allDevices.sort((first) => (first.state === 'Shutdown' ? 1 : -1))
 
-  return allDevices as { name: string; state: 'Booted' | 'Shutdown' }[]
+  return allDevices
+}
+
+const getAndroidEmulators = () => {
+  let emulatorOutput = ''
+  let runningDevicesOutput = ''
+
+  try {
+    emulatorOutput = execSync('emulator -list-avds', {
+      encoding: 'utf8',
+    })
+  } catch (_) {
+    log('Failed to get a list of available Android emulators', 'error')
+  }
+
+  const emulators = emulatorOutput
+    .split('\n')
+    .filter((line) => !line.includes('|'))
+    .filter(Boolean)
+
+  try {
+    runningDevicesOutput = execSync('adb devices', {
+      encoding: 'utf8',
+    })
+  } catch (_) {
+    log('Failed to get a list of available Android emulators', 'error')
+  }
+
+  const emulatorRegex = /^emulator-\d+/gm
+  const runningEmulators = [...runningDevicesOutput.matchAll(emulatorRegex)].map(
+    (match) => match[0],
+  )
+
+  const runningEmulatorNames = runningEmulators
+    .map((runningEmulator) => {
+      let detailsOutput = ''
+
+      try {
+        detailsOutput = execSync(`adb -s ${runningEmulator} shell getprop`, {
+          encoding: 'utf8',
+        })
+      } catch (_) {
+        log(`Failed to emulator name for ${runningEmulator}`, 'warning')
+      }
+
+      const avdNameRegex = /\[ro\.boot\.qemu\.avd_name\]: \[(.+?)\]/
+
+      const match = detailsOutput.match(avdNameRegex)
+      const avdName = match ? match[1] : null
+
+      return avdName
+    })
+    .filter(Boolean)
+
+  const allDevices = emulators.map((emulator) => ({
+    name: emulator,
+    state: runningEmulatorNames.includes(emulator) ? 'Booted' : 'Shutdown',
+  }))
+
+  return allDevices
 }
 
 const getIOSDevices = () => {
@@ -138,9 +197,11 @@ export const prompt = async () => {
     ],
   })
 
-  let deviceId: string
-  let simulator: string
-  let device: string
+  let deviceId: string | undefined
+  let simulator: string | undefined
+  let emulator: string | undefined
+  let isEmulatorRunning = false
+  let device: string | undefined
 
   if (!script) {
     return
@@ -195,6 +256,27 @@ export const prompt = async () => {
           })),
         })
       ).simulator
+    }
+
+    if (script === 'android' && location === RunLocation.local) {
+      const emulators = getAndroidEmulators()
+
+      emulator = (
+        await prompts({
+          type: 'select',
+          name: 'emulator',
+          message: 'Which emulator do you want to run the app on?',
+          choices: emulators.map((item) => ({
+            title: `${item.name}${item.state === 'Booted' ? ' (Running)' : ''}`,
+            value: item.name,
+          })),
+        })
+      ).emulator
+
+      isEmulatorRunning = emulators.some(
+        (currentEmulator) =>
+          currentEmulator.name === emulator && currentEmulator.state === 'Booted',
+      )
     }
 
     if (script === 'android' && location === RunLocation.device) {
@@ -259,7 +341,13 @@ export const prompt = async () => {
     }
 
     if (script === 'android') {
-      android({ location, mode, deviceId, simulator })
+      if (emulator && !isEmulatorRunning) {
+        log(`Launching emulator ${emulator} in the background`)
+        spawn('emulator', ['-avd', emulator], { shell: true, detached: true })
+      }
+      deviceId = emulator
+
+      android({ location, mode, deviceId, simulator, emulator })
     }
   }
 

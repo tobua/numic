@@ -4,7 +4,7 @@ import { log, getFolders, additionalCliArguments, hasRejectedHunks } from '../he
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
-import { RunInputs, RunLocation, RunMode } from '../types'
+import { RunInputs, RunMode } from '../types'
 
 export const android = async (inputs: RunInputs) => {
   const folders = getFolders()
@@ -37,8 +37,11 @@ export const android = async (inputs: RunInputs) => {
     typeof inputs.location === 'number'
   ) {
     runInputArguments += ` --mode=${inputs.mode === RunMode.debug ? 'debug' : 'release'}`
-    if (inputs.location === RunLocation.device && inputs.deviceId) {
+    if (inputs.deviceId) {
       runInputArguments += ` --deviceId=${inputs.deviceId}`
+    }
+    if (inputs.emulator) {
+      runInputArguments += ' --active-arch-only' // Speeds up build.
     }
   }
   log('Starting native build')
