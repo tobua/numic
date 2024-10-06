@@ -47,8 +47,7 @@ export enum RunMode {
 export type RunInputs = {
   location: RunLocation
   mode: RunMode
-  device?: string // iOS device.
-  deviceId?: string // Android device.
+  device?: string // iOS or Android device.
   simulator?: string
   emulator?: string
 }

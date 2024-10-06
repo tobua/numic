@@ -37,8 +37,8 @@ export const android = async (inputs: RunInputs) => {
     typeof inputs.location === 'number'
   ) {
     runInputArguments += ` --mode=${inputs.mode === RunMode.debug ? 'debug' : 'release'}`
-    if (inputs.deviceId) {
-      runInputArguments += ` --deviceId=${inputs.deviceId}`
+    if (inputs.device) {
+      runInputArguments += ` --device=${inputs.device}`
     }
     if (inputs.emulator) {
       runInputArguments += ' --active-arch-only' // Speeds up build.

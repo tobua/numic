@@ -107,6 +107,9 @@ const getAndroidEmulators = () => {
     (match) => match[0],
   )
 
+  // Running emulator name functions as a device.
+  const emulatorNameToDevice: Record<string, string> = {}
+
   const runningEmulatorNames = runningEmulators
     .map((runningEmulator) => {
       let detailsOutput = ''
@@ -124,6 +127,10 @@ const getAndroidEmulators = () => {
       const match = detailsOutput.match(avdNameRegex)
       const avdName = match ? match[1] : null
 
+      if (avdName) {
+        emulatorNameToDevice[avdName] = runningEmulator
+      }
+
       return avdName
     })
     .filter(Boolean)
@@ -131,6 +138,7 @@ const getAndroidEmulators = () => {
   const allDevices = emulators.map((emulator) => ({
     name: emulator,
     state: runningEmulatorNames.includes(emulator) ? 'Booted' : 'Shutdown',
+    device: emulatorNameToDevice[emulator],
   }))
 
   return allDevices
@@ -197,7 +205,6 @@ export const prompt = async () => {
     ],
   })
 
-  let deviceId: string | undefined
   let simulator: string | undefined
   let emulator: string | undefined
   let isEmulatorRunning = false
@@ -273,6 +280,13 @@ export const prompt = async () => {
         })
       ).emulator
 
+      // Device is required to select the emulator in the RN CLI.
+      emulators.forEach((currentEmulator) => {
+        if (currentEmulator.name === emulator) {
+          device = currentEmulator.device
+        }
+      })
+
       isEmulatorRunning = emulators.some(
         (currentEmulator) =>
           currentEmulator.name === emulator && currentEmulator.state === 'Booted',
@@ -293,7 +307,7 @@ export const prompt = async () => {
         log('No attached devices found', 'error')
       }
 
-      deviceId = (
+      device = (
         await prompts({
           type: 'select',
           name: 'device',
@@ -345,9 +359,8 @@ export const prompt = async () => {
         log(`Launching emulator ${emulator} in the background`)
         spawn('emulator', ['-avd', emulator], { shell: true, detached: true })
       }
-      deviceId = emulator
 
-      android({ location, mode, deviceId, simulator, emulator })
+      android({ location, mode, device, simulator, emulator })
     }
   }
 
