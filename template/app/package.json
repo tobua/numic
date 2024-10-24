@@ -52,12 +52,12 @@
     ],
     "moduleNameMapper": {
       "react-dom": "react-native",
-      "\\.(png|jpg|ico|jpeg|gif|svg|woff|woff2|mp4)$": "<rootDir>/test/ImageMock.tsx"
+      "\\.(png|jpg|ico|jpeg|gif|svg|woff|woff2|mp4)$": "<rootDir>/test/helper/ImageMock.tsx"
     },
     "preset": "react-native",
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect",
-      "./test/native.mock.ts"
+      "./test/helper/jest-setup.js"
     ],
     "transformIgnorePatterns": [
       "node_modules/(?!react-native|@react-native|responsive-react-native|reactigation|epic-language|logua)"
