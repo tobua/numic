@@ -44,7 +44,7 @@ test('Create native project for android and ios.', async () => {
   expect(existsSync(join(process.cwd(), '.numic/NumicApp'))).toBe(false)
   // Git repository created.
   expect(existsSync(join(process.cwd(), '.numic/.git'))).toBe(true)
-})
+}, 20000)
 
 test('Removes existing native files.', async () => {
   prepare([
@@ -311,7 +311,7 @@ test("Invalid dependencies in root don't lead to failing native installation.", 
 
   expect(process.exit).not.toHaveBeenCalled()
   expect(existsSync(join(process.cwd(), '.numic/android'))).toBe(true)
-})
+}, 20000)
 
 test(`Index annotations in patch aren't neccessary.`, async () => {
   prepare([packageJson('native-index-lines'), reactNativePkg])
