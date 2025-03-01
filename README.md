@@ -15,16 +15,14 @@ Utility to manage React Native projects. Commit only the changes made to native 
 Run the following in your React Native project and it will automatically add the necessary configurations and commands to your `package.json`.
 
 ```sh
-npm install numic --save-dev --foreground-scripts --legacy-peer-deps
 bun install numic -D # Make sure to also add it manually as a trusted dependency: "trustedDependencies": [ "numic" ]
 ```
 
 This will also create fresh `/android` and `/ios` native folders and generate a patch if any changes are found. See [Migration of an Existing Project](#migration-of-an-existing-project) for more details. When **starting from scratch** the following will setup a React Native TypeScript installation with numic preinstalled and much of the default bloat removed.
 
 ```sh
-npm init --yes now numic ./my-app # Basic default template with tests.
-npm init --yes now numic ./my-starter-app app # Tempalte with navigation, data, responsive and styles.
-bun create now numic ./my-app app
+bun create now numic ./my-basic-app # Basic default template with tests.
+bun create now numic ./my-app app # Tempalte with navigation, data, responsive and styles.
 ```
 
 This will prompt for an app name that can only contain **alphanumeric** characters and will be used as the initial bundle identifier. Using `NumicApp` as the name will result in `com.numicapp` as the bundle identifier. The name as well as the display name can later be configured in `app.json`.
@@ -36,19 +34,19 @@ This will prompt for an app name that can only contain **alphanumeric** characte
 
 This framework provides the following commands that will be added to `scripts` in `package.json` upon installation.
 
-### `numic` - `npm start`
+### `numic` - `bun start`
 
 Shortcut command that will promt for the commands below as well as specific options for each command. This command also includes a `Distribute` option to bundle the app for Android, see [RELEASE.md](documentation/RELEASE.md).
 
-### `numic ios` - `npm run ios`
+### `numic ios` - `bun ios`
 
 Run native application on iOS device or Simulator. Updates patch and pods first. Alias for `react-native run-ios` where any additional arguments are passed as well.
 
-### `numic android` - `npm run android`
+### `numic android` - `bun android`
 
 Run native application on Android device or Emulator. Updates patch first. Alias for `react-native run-android` where any additional arguments are passed as well.
 
-### `numic lint` - `npm run lint`
+### `numic lint` - `bun lint`
 
 Lints and formats the whole project.
 
@@ -75,10 +73,14 @@ Apply installed plugins.
 
 ## Plugins
 
-In order to automate common changes to native folders, reusable plugins can be installed. Any node_module ending in `-numic-plugin` will be treated as such and automatically installed. Currently the following plugins are available:
+In order to automate common changes to native folders, reusable plugins can be installed. Any node_module ending in `-numic-plugin` will be treated as such and automatically installed. The previously separate [icon-numic-plugin](https://npmjs.com/icon-numic-plugin) and [android-sdk-numic-plugin](https://npmjs.com/android-sdk-numic-plugin) are now built into numic but can still be used as a reference on how to create plugins.
 
-- [icon-numic-plugin](https://npmjs.com/icon-numic-plugin) creates icons in various sizes for Android and iOS.
-- [android-sdk-numic-plugin](https://npmjs.com/android-sdk-numic-plugin) checks which Android SDK versions are installed and adapts Gradle configuration to ensure a successful build.
+Built in plugins:
+
+- `android-sdk`: Checks which Android SDK versions are installed and adapts Gradle configuration to ensure a successful build.
+  - [README in plugin/android-sdk](https://github.com/tobua/numic/blob/main/plugin/android-sdk/README.md)
+- `icon`: Creates icons in various sizes for Android and iOS.
+  - [README in plugin/icon](https://github.com/tobua/numic/blob/main/plugin/icon/README.md)
 
 ### Anatomy of a Plugin
 
@@ -121,9 +123,6 @@ Adding a `numic` property allows to configure script and plugin behaviour. This 
 {
   "name": "my-app",
   "numic": {
-    "icon-numic-plugin": {
-      "icon": "image/icon/app-icon.png"
-    },
     "my-plugin.js": {
       "icon": "asset/my-icon.png"
     },
@@ -139,7 +138,14 @@ Adding a `numic` property allows to configure script and plugin behaviour. This 
     // Customize the Bundle ID for iOS and Android.
     "bundleId": "com.tobua.numic",
     // Switch back to use the old React Native architecture.
-    "oldArchitecture": true
+    "oldArchitecture": true,
+    // Plugins with separate documentations.
+    "icon": {
+      "icon": "image/icon/app-icon.png"
+    },
+    "android-sdk": {
+      "minSdkVersion": 24
+    },
   },
   // Will be merged with tsconfig, that's by default gitignored.
   "tsconfig": {

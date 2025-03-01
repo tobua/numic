@@ -7,7 +7,7 @@ import { Nodes } from '../types'
 import { useBreakpoint } from '../helper/breakpoint'
 
 function Scene({ rotate = true, hovered, ...props }) {
-  const mesh = useRef<any>()
+  const mesh = useRef<any>(null)
   const {
     nodes: { Shape_0: shape },
   } = useGLTF('/button.gltf') as unknown as { nodes: Nodes }

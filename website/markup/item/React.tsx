@@ -14,8 +14,8 @@ export function React({
   position?: Vector3
   rotate?: boolean
 }) {
-  const group = useRef<any>()
-  const dot = useRef<any>()
+  const group = useRef<any>(null)
+  const dot = useRef<any>(null)
   const [firstDot, secondDot, thirdDot] = useRefs<any>(null)
 
   useFrame((state, delta) => {

@@ -17,6 +17,10 @@ jobs:
       - run: bun check
       - run: bun types
       - run: bun run test # Skips tests inside templates.
+      - run: bun test
+        working-directory: plugin/icon
+      - run: bun test
+        working-directory: plugin/android-sdk
       - uses: tobua/release-npm-action@v3
         with:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

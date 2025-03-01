@@ -1,0 +1,14 @@
+Installed packages:
+  Path                                                           | Version       | Description                                                    | Location                                                      
+  -------                                                        | -------       | -------                                                        | -------                                                       
+  build-tools;35.0.0                                             | 35.0.0        | Android SDK Build-Tools 35                                     | build-tools/35.0.0                                            
+  cmake;3.22.1                                                   | 3.22.1        | CMake 3.22.1                                                   | cmake/3.22.1                                                  
+  cmdline-tools;latest                                           | 16.0.0 rc1    | Android SDK Command-line Tools (latest)                        | cmdline-tools/latest                                          
+  emulator                                                       | 34.2.16       | Android Emulator                                               | emulator                                                      
+  ndk;25.1.8937393                                               | 25.1.8937393  | NDK (Side by side) 25.1.8937393                                | ndk/25.1.8937393                                              
+  ndk;26.1.10909125                                              | 26.1.10909125 | NDK (Side by side) 26.1.10909125                               | ndk/26.1.10909125                                             
+  ndk;27.0.12077973                                              | 27.0.12077973 | NDK (Side by side) 27.0.12077973                               | ndk/27.0.12077973                                             
+  platform-tools                                                 | 35.0.2        | Android SDK Platform-Tools                                     | platform-tools                                                
+  platforms;android-35                                           | 1             | Android SDK Platform 35                                        | platforms/android-35                                          
+  sources;android-35                                             | 1             | Sources for Android 35                                         | sources/android-35                                            
+  system-images;android-35;google_apis_playstore_ps16k;arm64-v8a | 3             | Google Play Experimental 16k Page Size ARM 64 v8a System Image | system-images/android-35/google_apis_playstore_ps16k/arm64-v8a

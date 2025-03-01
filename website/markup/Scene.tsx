@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { Canvas, Dpr, GroupProps, useFrame } from '@react-three/fiber'
+import { Canvas, Dpr, useFrame } from '@react-three/fiber'
 import { PerformanceMonitor, PerspectiveCamera, useGLTF } from '@react-three/drei'
 import { Vector3 } from 'three'
 import { damp3 } from 'maath/easing'
@@ -7,6 +7,8 @@ import { SceneItems } from './Items'
 import { Nodes } from '../types'
 import { Loader } from './Loader'
 import { Performance } from './Quality'
+
+type GroupProps = any
 
 const itemPositions = {
   android: new Vector3(-200, 0, 300),

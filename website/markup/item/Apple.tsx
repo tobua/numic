@@ -48,7 +48,7 @@ function StaticRings({ count = 10 }) {
 }
 
 function Rings({ count = 10, rotate = true, active = false }) {
-  const group = useRef<any>()
+  const group = useRef<any>(null)
   const points = circlePoints(count, 100)
   const [released, setReleased] = useState(active)
 
