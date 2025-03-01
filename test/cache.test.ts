@@ -68,6 +68,21 @@ test('Downloads and caches another template.', () => {
   expect(readdirSync(cacheDirectory).length).toBe(2)
 }, 10000)
 
+const sortVersions = (versions: string[]): string[] => {
+  return versions.sort((a, b) => {
+    const versionA = a.split('.').map(Number)
+    const versionB = b.split('.').map(Number)
+    for (let i = 0; i < Math.max(versionA.length, versionB.length); i++) {
+      const numA = versionA[i] || 0
+      const numB = versionB[i] || 0
+      if (numA !== numB) {
+        return numA - numB
+      }
+    }
+    return 0
+  })
+}
+
 test('Removes expired templates added manually and adds new appName template.', () => {
   mkdirSync(join(cacheDirectory, '0.1.2', 'oldest-app', 'android'), {
     recursive: true,
@@ -100,7 +115,7 @@ test('Removes expired templates added manually and adds new appName template.', 
   expect(existsSync(join(templatePath, 'android'))).toBe(true)
   expect(existsSync(join(templatePath, `ios/${appName}.xcodeproj`))).toBe(true)
 
-  expect(readdirSync(cacheDirectory)).toEqual(['0.68.5', '0.69.0', rnVersion])
+  expect(sortVersions(readdirSync(cacheDirectory))).toEqual(['0.68.5', '0.69.0', rnVersion])
 })
 
 test('Version sorting also works with prereleases.', () => {
@@ -121,5 +136,5 @@ test('Version sorting also works with prereleases.', () => {
   const templatePath = cacheTemplate(options)
 
   expect(existsSync(templatePath)).toBe(true)
-  expect(readdirSync(cacheDirectory)).toEqual([olderRNVersion, rnVersion, prereleaseVersion])
+  expect(sortVersions(readdirSync(cacheDirectory))).toEqual([olderRNVersion, rnVersion, prereleaseVersion])
 })

@@ -22,8 +22,7 @@ test('Properly configures empty project.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[0].name).toBe('package.json')
-  const packageContents = contents[0].contents as any
+  const packageContents = contents.find((content) => content.name === 'package.json').contents as any
 
   expect(packageContents.scripts.lint).not.toBeDefined()
   expect(packageContents.scripts.ios).not.toBeDefined()
@@ -50,8 +49,7 @@ test('Properly adapts existing scripts.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[0].name).toBe('package.json')
-  const packageContents = contents[0].contents as any
+  const packageContents = contents.find((content) => content.name === 'package.json').contents as any
 
   expect(packageContents.scripts.lint).not.toContain('numic')
   expect(packageContents.scripts.android).not.toContain('numic')
@@ -69,8 +67,7 @@ test('Overrides start commands on first install.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[0].name).toBe('package.json')
-  const packageContents = contents[0].contents as any
+  const packageContents = contents.find((content) => content.name === 'package.json').contents as any
 
   expect(packageContents.scripts.lint).not.toBeDefined()
   expect(packageContents.scripts.start).toContain('numic')
@@ -88,8 +85,7 @@ test('Skips lint and format commands on repeated install.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[0].name).toBe('package.json')
-  const packageContents = contents[0].contents as any
+  const packageContents = contents.find((content) => content.name === 'package.json').contents as any
 
   expect(packageContents.scripts.lint).not.toBeDefined()
   expect(packageContents.scripts.start).toContain('numic')
@@ -101,8 +97,7 @@ test('Adds new entries to gitignore.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('.*')
-  expect(contents[0].name).toBe('.gitignore')
-  const gitignoreContents = contents[0].contents as any
+  const gitignoreContents = contents.find((content) => content.name === '.gitignore').contents as any
 
   expect(gitignoreContents).toContain('.numic')
   expect(gitignoreContents).toContain('node_modules')
@@ -116,8 +111,7 @@ test('Adds new entries to gitignore.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('.*')
-  expect(contents[0].name).toBe('.gitignore')
-  const gitignoreContents = contents[0].contents as any
+  const gitignoreContents = contents.find((content) => content.name === '.gitignore').contents as any
 
   expect(gitignoreContents).toContain('my-folder')
 })
@@ -134,8 +128,7 @@ test('No duplicates are added.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('.*')
-  expect(contents[0].name).toBe('.gitignore')
-  const gitignoreContents = contents[0].contents as any
+  const gitignoreContents = contents.find((content) => content.name === '.gitignore').contents as any
 
   expect(gitignoreContents).toContain('node_modules')
   const occurrences = gitignoreContents.split('node_modules').length
@@ -152,8 +145,7 @@ test('Default native ignores from template are removed.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('.*')
-  expect(contents[0].name).toBe('.gitignore')
-  const gitignoreContents = contents[0].contents as any
+  const gitignoreContents = contents.find((content) => content.name === '.gitignore').contents as any
 
   expect(gitignoreContents).toContain('node_modules')
   expect(gitignoreContents).toContain('node_modules/')
@@ -169,8 +161,7 @@ test('Properly configures empty project.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[0].name).toBe('package.json')
-  const packageContents = contents[0].contents as any
+  const packageContents = contents.find((content) => content.name === 'package.json').contents as any
 
   expect(packageContents.scripts.start).toBeDefined()
   expect(packageContents.scripts.lint).not.toBeDefined()
@@ -193,8 +184,7 @@ test('Properly configures typescript when dependency detected.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[1].name).toBe('tsconfig.json')
-  const tsconfigContents = contents[1].contents as any
+  const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   const gitignoreContents = readFile('.gitignore')
   expect(gitignoreContents).toContain('tsconfig.json')
@@ -222,8 +212,7 @@ test('Properly configures typescript when tsconfig detected.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[1].name).toBe('tsconfig.json')
-  const tsconfigContents = contents[1].contents as any
+  const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   // Always extend RN template config.
   expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
@@ -253,8 +242,7 @@ test('Extended tsconfig properties are removed.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[1].name).toBe('tsconfig.json')
-  const tsconfigContents = contents[1].contents as any
+  const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   // Always extend RN template config.
   expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
@@ -290,8 +278,7 @@ test('tsconfig from package.json is merged in.', async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[1].name).toBe('tsconfig.json')
-  const tsconfigContents = contents[1].contents as any
+  const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   // Always extend RN template config.
   expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
@@ -327,8 +314,7 @@ test("Tsconfig array properties aren't duplicated upon merge.", async () => {
   await configure()
 
   const contents = contentsForFilesMatching('*.json')
-  expect(contents[1].name).toBe('tsconfig.json')
-  const tsconfigContents = contents[1].contents as any
+  const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   // Always extend RN template config.
   expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
