@@ -1,11 +1,11 @@
-import { existsSync, cpSync, rmSync } from 'fs'
+import { cpSync, existsSync, rmSync } from 'node:fs'
 import { createPatch } from '../git'
-import { log, getFolders, filterIOS, filterAndroid } from '../helper'
+import { filterAndroid, filterIOS, getFolders, log } from '../helper'
 
 export const patch = () => {
   const folders = getFolders()
 
-  if (!existsSync(folders.user.android) || !existsSync(folders.user.ios)) {
+  if (!(existsSync(folders.user.android) && existsSync(folders.user.ios))) {
     log('Missing native folders, run "numic native" to initialize', 'error')
   }
 
@@ -18,7 +18,7 @@ export const patch = () => {
       recursive: true,
       filter: filterIOS,
     })
-  } catch (error) {
+  } catch (_error) {
     log('Failed to copy native files', 'error')
   }
 

@@ -1,25 +1,25 @@
-import { existsSync } from 'fs'
-import { execSync } from 'child_process'
-import { log, getFolders, additionalCliArguments, hasRejectedHunks } from '../helper'
+import { execSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
+import { additionalCliArguments, getFolders, hasRejectedHunks, log } from '../helper'
+import { type RunInputs, RunMode } from '../types'
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
-import { RunInputs, RunMode } from '../types'
 
 export const android = async (inputs: RunInputs) => {
   const folders = getFolders()
   log('Android')
 
   if (
-    !existsSync(folders.user.android) ||
-    !existsSync(folders.user.ios) ||
-    !existsSync(folders.plugin.android) ||
-    !existsSync(folders.plugin.ios)
+    existsSync(folders.user.android) &&
+    existsSync(folders.user.ios) &&
+    existsSync(folders.plugin.android) &&
+    existsSync(folders.plugin.ios)
   ) {
-    await native({})
-  } else {
     // Apply plugins in case new plugins installed.
     await plugin()
+  } else {
+    await native()
   }
 
   if (hasRejectedHunks()) {
@@ -31,12 +31,8 @@ export const android = async (inputs: RunInputs) => {
 
   let runInputArguments = ''
 
-  if (
-    typeof inputs === 'object' &&
-    typeof inputs.mode === 'number' &&
-    typeof inputs.location === 'number'
-  ) {
-    runInputArguments += ` --mode=${inputs.mode === RunMode.debug ? 'debug' : 'release'}`
+  if (typeof inputs === 'object' && typeof inputs.mode === 'number' && typeof inputs.location === 'number') {
+    runInputArguments += ` --mode=${inputs.mode === RunMode.Debug ? 'debug' : 'release'}`
     if (inputs.device) {
       if (inputs.emulator) {
         // --deviceId is deprecated, but --device will not work.

@@ -1,10 +1,10 @@
+import { execSync } from 'node:child_process'
+import { existsSync, mkdirSync, readdirSync, renameSync, rmSync } from 'node:fs'
+import { join } from 'node:path'
 import globalCacheDirectory from 'global-cache-dir'
 import semverSort from 'semver-sort'
-import { rmSync, readdirSync, renameSync, existsSync, mkdirSync } from 'node:fs'
-import { join } from 'node:path'
-import { execSync } from 'node:child_process'
 import { log } from './helper'
-import { NativeOptions } from './types'
+import type { NativeOptions } from './types'
 
 export const cacheDirectory = await globalCacheDirectory('numic')
 
@@ -21,9 +21,9 @@ const removeExpiredTemplates = (version: string) => {
 
   // TODO Remove appNames if more than 10, by statSync => atimeMs (access time)
 
-  templateVersions.forEach((templateVersion) =>
-    rmSync(join(cacheDirectory, templateVersion), { recursive: true }),
-  )
+  for (const templateVersion of templateVersions) {
+    rmSync(join(cacheDirectory, templateVersion), { recursive: true })
+  }
 }
 
 export const cacheTemplate = (nativeOptions: NativeOptions) => {
@@ -43,14 +43,10 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
 
   // DOC https://github.com/react-native-community/cli/blob/master/packages/cli/src/commands/init/index.ts
   try {
-    const usesBun = typeof Bun !== 'undefined'
-
     execSync(
-      `${usesBun ? 'bunx' : 'npx'} @react-native-community/cli init ${
-        nativeOptions.appName
-      } --skip-install --install-pods false --skip-git-init true --version ${
+      `bunx @react-native-community/cli init ${nativeOptions.appName} --skip-install --install-pods false --skip-git-init true --version ${
         nativeOptions.version
-      } --directory "${join(directory, nativeOptions.appName)}"${usesBun ? ' --pm bun' : ''}`,
+      } --directory "${join(directory, nativeOptions.appName)}" --pm bun`,
       {
         cwd: process.cwd(),
         encoding: 'utf8',
@@ -58,7 +54,7 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
         stdio: nativeOptions.debug ? 'inherit' : 'pipe',
       },
     )
-  } catch (error) {
+  } catch (error: any) {
     log(`Failed to install React Native template.\n\n${error.stdout}`, 'warning')
   }
 
@@ -74,6 +70,8 @@ export const cacheTemplate = (nativeOptions: NativeOptions) => {
 
 export const clearTemplateCache = () => {
   const templates = readdirSync(cacheDirectory)
-  templates.forEach((template) => rmSync(join(cacheDirectory, template), { recursive: true }))
+  for (const template of templates) {
+    rmSync(join(cacheDirectory, template), { recursive: true })
+  }
   return cacheDirectory
 }

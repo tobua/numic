@@ -1,11 +1,11 @@
-import { existsSync, readdirSync } from 'fs'
-import { join, basename } from 'path'
+import { existsSync, readdirSync } from 'node:fs'
+import { basename, join } from 'node:path'
 import { commitChanges, resetRepository } from '../git'
-import { log, getFolders, basePath, options } from '../helper'
-import type { PluginInput } from '../types'
+import { basePath, getFolders, log, options } from '../helper'
 import androidVersion from '../plugin/android-version'
 import bundleId from '../plugin/bundle-id'
 import newArchitecture from '../plugin/new-architecture'
+import type { PluginInput } from '../types'
 
 const builtInPlugins = [androidVersion, bundleId, newArchitecture]
 
@@ -15,7 +15,7 @@ type Plugin = string | PluginFunction
 const runPluginsIn = async (plugins: Plugin[], location: string, silent = false) => {
   const promises = plugins.map(async (plugin) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let runner: PluginFunction = (..._args: any) => {}
+    let runner: PluginFunction = (..._args: any) => undefined
 
     if (typeof plugin === 'function') {
       runner = plugin
@@ -25,7 +25,7 @@ const runPluginsIn = async (plugins: Plugin[], location: string, silent = false)
         if ((runner as any).default) {
           runner = (runner as any).default
         }
-      } catch (error) {
+      } catch (_error) {
         log(`Failed to load plugin ${plugin}`)
       }
     }
@@ -33,7 +33,8 @@ const runPluginsIn = async (plugins: Plugin[], location: string, silent = false)
     return runner({
       projectPath: basePath(),
       nativePath: location,
-      log: silent ? () => {} : log,
+      log: silent ? () => undefined : log,
+      // @ts-ignore
       options: typeof plugin === 'function' ? options() : (options()[basename(plugin)] ?? {}),
       version: options().reactNativeVersion,
     })
@@ -45,11 +46,11 @@ const runPluginsIn = async (plugins: Plugin[], location: string, silent = false)
 export const plugin = async () => {
   const folders = getFolders()
 
-  if (!existsSync(folders.user.android) || !existsSync(folders.user.ios)) {
+  if (!(existsSync(folders.user.android) && existsSync(folders.user.ios))) {
     log('Missing native user folders, run "numic native" to initialize', 'error')
   }
 
-  if (!existsSync(folders.plugin.android) || !existsSync(folders.plugin.ios)) {
+  if (!(existsSync(folders.plugin.android) && existsSync(folders.plugin.ios))) {
     log('Missing native plugin folders, run "numic native" to initialize', 'error')
   }
 
@@ -77,6 +78,7 @@ export const plugin = async () => {
   }
 
   // Always run all built-in plugins.
+  // @ts-ignore
   installedPlugins = installedPlugins.concat(builtInPlugins)
 
   if (installedPlugins.length > 0) {

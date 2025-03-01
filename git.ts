@@ -1,9 +1,9 @@
-import { writeFileSync, existsSync, mkdirSync, rmSync, readFileSync } from 'fs'
-import { join } from 'path'
-import { spawnSync } from 'child_process'
-import { basePath, log, replaceIndexLinesFromPatch } from './helper'
-import { pluginGitignore } from './configuration/gitignore'
+import { spawnSync } from 'node:child_process'
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { applyPatch } from './apply'
+import { pluginGitignore } from './configuration/gitignore'
+import { basePath, log, replaceIndexLinesFromPatch } from './helper'
 
 const createGitShell =
   (cwd = join(basePath(), '.numic')) =>
@@ -54,14 +54,7 @@ export const createPatch = () => {
 
   git('add', '.') // Includes modifications, additions and removals.
 
-  const diffResult = git(
-    'diff',
-    '--cached',
-    '--no-color',
-    '--ignore-space-at-eol',
-    '--no-ext-diff',
-    '--binary'
-  )
+  const diffResult = git('diff', '--cached', '--no-color', '--ignore-space-at-eol', '--no-ext-diff', '--binary')
 
   const patchFileName = join(basePath(), 'patch/current.patch')
   const patchContents = replaceIndexLinesFromPatch(diffResult.stdout.toString())

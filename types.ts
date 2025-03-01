@@ -1,9 +1,9 @@
 export interface Package {
   name: string
   numic?: object
-  dependencies?: object
-  peerDependencies?: object
-  devDependencies?: {
+  dependencies?: Record<string, string>
+  peerDependencies?: Record<string, string>
+  devDependencies?: Record<string, string> & {
     typescript?: string
   }
   scripts?: object
@@ -21,9 +21,9 @@ export interface Options {
 }
 
 export type NativeOptions = {
-  appName?: string
+  appName: string
   debug?: boolean
-  version?: string
+  version: string
 }
 
 export interface PluginInput {
@@ -35,13 +35,13 @@ export interface PluginInput {
 }
 
 export enum RunLocation {
-  local,
-  device,
+  Local = 0,
+  Device = 1,
 }
 
 export enum RunMode {
-  debug,
-  release,
+  Debug = 0,
+  Release = 1,
 }
 
 export type RunInputs = {

@@ -1,18 +1,18 @@
-import { existsSync, renameSync } from 'fs'
-import { EOL } from 'os'
-import { join } from 'path'
-import { execSync, spawn } from 'child_process'
-import prompts from 'prompts'
+import { execSync, spawn } from 'node:child_process'
+import { existsSync, renameSync } from 'node:fs'
+import { EOL } from 'node:os'
+import { join } from 'node:path'
 import { sync as commandExists } from 'command-exists'
+import prompts from 'prompts'
 import { basePath, hasRejectedHunks, log } from '../helper'
+import { clearTemplateCache } from '../template-cache'
+import { RunLocation, RunMode } from '../types'
+import { android } from './android'
+import { apply } from './apply'
+import { ios } from './ios'
+import { lint } from './lint'
 import { patch } from './patch'
 import { plugin } from './plugin'
-import { apply } from './apply'
-import { lint } from './lint'
-import { ios } from './ios'
-import { android } from './android'
-import { RunLocation, RunMode } from '../types'
-import { clearTemplateCache } from '../template-cache'
 
 const scriptToMethod = {
   plugin,
@@ -34,14 +34,13 @@ const getAdbDevices = () => {
   const lines = adbDevicesOutput.split(EOL)
   lines.shift() // skip the help line
 
-  lines.forEach((line) => {
-    // eslint-disable-next-line no-param-reassign
-    line = line.trim()
-    const match = line.match(/^([^ \t]+)(\t| )/)
-    if (match) {
+  for (const line of lines) {
+    const trimmedLine = line.trim()
+    const match = trimmedLine.match(/^([^ \t]+)(\t| )/)
+    if (match?.[1]) {
       devices.push(match[1])
     }
-  })
+  }
 
   return devices
 }
@@ -50,7 +49,7 @@ interface SimctlOutput {
   devices: { [key: string]: [] }
 }
 
-const getIOSSimulators = () => {
+const getIosSimulators = () => {
   let simctlOutput: SimctlOutput = { devices: {} }
 
   try {
@@ -65,11 +64,15 @@ const getIOSSimulators = () => {
 
   const allDevices: { name: string; state: 'Booted' | 'Shutdown' }[] = []
 
-  Object.keys(simctlOutput).forEach((runtime) => {
-    allDevices.push(
-      ...simctlOutput[runtime].map((device) => ({ name: device.name, state: device.state })),
-    )
-  })
+  for (const runtime of Object.keys(simctlOutput)) {
+    // @ts-ignore
+    for (const device of simctlOutput[runtime]) {
+      allDevices.push({
+        name: device.name,
+        state: device.state,
+      })
+    }
+  }
 
   // Display booted simulators first.
   allDevices.sort((first) => (first.state === 'Shutdown' ? 1 : -1))
@@ -103,9 +106,7 @@ const getAndroidEmulators = () => {
   }
 
   const emulatorRegex = /^emulator-\d+/gm
-  const runningEmulators = [...runningDevicesOutput.matchAll(emulatorRegex)].map(
-    (match) => match[0],
-  )
+  const runningEmulators = [...runningDevicesOutput.matchAll(emulatorRegex)].map((match) => match[0])
 
   // Running emulator name functions as a device.
   const emulatorNameToDevice: Record<string, string> = {}
@@ -144,7 +145,7 @@ const getAndroidEmulators = () => {
   return allDevices
 }
 
-const getIOSDevices = () => {
+const getIosDevices = () => {
   let output = ''
 
   try {
@@ -215,6 +216,7 @@ export const prompt = async () => {
   }
 
   if (script in scriptToMethod) {
+    // @ts-ignore
     await scriptToMethod[script]()
   }
 
@@ -244,13 +246,16 @@ export const prompt = async () => {
       name: 'location',
       message: 'Where do you want to run the app?',
       choices: [
-        { title: script === 'ios' ? 'Simulator' : 'Emulator', value: RunLocation.local },
-        { title: 'Device', value: RunLocation.device },
+        {
+          title: script === 'ios' ? 'Simulator' : 'Emulator',
+          value: RunLocation.Local,
+        },
+        { title: 'Device', value: RunLocation.Device },
       ],
     })
 
-    if (script === 'ios' && location === RunLocation.local) {
-      const simulators = getIOSSimulators()
+    if (script === 'ios' && location === RunLocation.Local) {
+      const simulators = getIosSimulators()
 
       simulator = (
         await prompts({
@@ -265,7 +270,7 @@ export const prompt = async () => {
       ).simulator
     }
 
-    if (script === 'android' && location === RunLocation.local) {
+    if (script === 'android' && location === RunLocation.Local) {
       const emulators = getAndroidEmulators()
 
       emulator = (
@@ -281,29 +286,23 @@ export const prompt = async () => {
       ).emulator
 
       // Device is required to select the emulator in the RN CLI.
-      emulators.forEach((currentEmulator) => {
+      for (const currentEmulator of emulators) {
         if (currentEmulator.name === emulator) {
           device = currentEmulator.device
         }
-      })
+      }
 
-      isEmulatorRunning = emulators.some(
-        (currentEmulator) =>
-          currentEmulator.name === emulator && currentEmulator.state === 'Booted',
-      )
+      isEmulatorRunning = emulators.some((currentEmulator) => currentEmulator.name === emulator && currentEmulator.state === 'Booted')
     }
 
-    if (script === 'android' && location === RunLocation.device) {
+    if (script === 'android' && location === RunLocation.Device) {
       if (!commandExists('adb')) {
-        log(
-          'adb command required, install the Android SDK and make sure to add binaries to the PATH variable',
-          'error',
-        )
+        log('adb command required, install the Android SDK and make sure to add binaries to the PATH variable', 'error')
       }
 
       const devices = getAdbDevices()
 
-      if (!devices.length) {
+      if (devices.length === 0) {
         log('No attached devices found', 'error')
       }
 
@@ -322,13 +321,13 @@ export const prompt = async () => {
       name: 'mode',
       message: 'Which configuration do you want to use?',
       choices: [
-        { title: 'Debug (Development)', value: RunMode.debug },
-        { title: 'Release (Production)', value: RunMode.release },
+        { title: 'Debug (Development)', value: RunMode.Debug },
+        { title: 'Release (Production)', value: RunMode.Release },
       ],
     })
 
     if (script === 'ios') {
-      if (location === RunLocation.device) {
+      if (location === RunLocation.Device) {
         if (!commandExists('ios-deploy')) {
           log(
             'ios-deploy required to run on device, install with "sudo npm install -g ios-deploy", "bun pm trust ios-deploy && bun install -g ios-deploy" or "brew install ios-deploy"',
@@ -336,7 +335,7 @@ export const prompt = async () => {
           )
         }
 
-        const devices = getIOSDevices()
+        const devices = getIosDevices()
 
         device = (
           await prompts({
@@ -344,7 +343,7 @@ export const prompt = async () => {
             name: 'device',
             message: 'Which device do you want to run the app on?',
             choices: devices.map((item) => ({
-              title: item,
+              title: item as string,
               value: item,
             })),
           })

@@ -1,21 +1,13 @@
-import { mkdirSync, cpSync } from 'fs'
-import { join } from 'path'
-import { expect, test, beforeEach, afterEach, vi } from 'vitest'
-import {
-  registerVitest,
-  prepare,
-  environment,
-  packageJson,
-  file,
-  contentsForFilesMatching,
-  readFile,
-} from 'jest-fixture'
+import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
+import { cpSync, mkdirSync } from 'node:fs'
+import { join } from 'node:path'
+import { contentsForFilesMatching, environment, file, packageJson, prepare, readFile, registerVitest } from 'jest-fixture'
 import { configure } from '../configure'
 import { resetOptions } from '../helper'
 
 const initialCwd = process.cwd()
 
-registerVitest(beforeEach, afterEach, vi)
+registerVitest(beforeEach, afterEach, { spyOn })
 beforeEach(resetOptions)
 environment('configuration')
 
@@ -46,7 +38,11 @@ test('Properly configures empty project.', async () => {
 test('Properly adapts existing scripts.', async () => {
   prepare([
     packageJson('empty', {
-      scripts: { start: 'whatever', lint: 'my-custom-eslint', android: 'react-native run-android' },
+      scripts: {
+        start: 'whatever',
+        lint: 'my-custom-eslint',
+        android: 'react-native run-android',
+      },
     }),
     reactNativePkg,
   ])
@@ -62,7 +58,7 @@ test('Properly adapts existing scripts.', async () => {
   expect(packageContents.scripts.start).toContain('numic')
 })
 
-test(`Overrides start commands on first install.`, async () => {
+test('Overrides start commands on first install.', async () => {
   prepare([
     packageJson('empty', {
       scripts: { start: 'react-native run-android' },
@@ -80,7 +76,7 @@ test(`Overrides start commands on first install.`, async () => {
   expect(packageContents.scripts.start).toContain('numic')
 })
 
-test(`Skips lint and format commands on repeated install.`, async () => {
+test('Skips lint and format commands on repeated install.', async () => {
   prepare([
     packageJson('empty', {
       scripts: { start: 'react-native run-android' },
@@ -128,8 +124,10 @@ test('Adds new entries to gitignore.', async () => {
 
 test('No duplicates are added.', async () => {
   prepare([
-    packageJson('ignore-duplicates', { numic: { gitignore: ['node_modules'] } }),
-    file('.gitignore', `node_modules`),
+    packageJson('ignore-duplicates', {
+      numic: { gitignore: ['node_modules'] },
+    }),
+    file('.gitignore', 'node_modules'),
     reactNativePkg,
   ])
 
@@ -147,10 +145,7 @@ test('No duplicates are added.', async () => {
 test('Default native ignores from template are removed.', async () => {
   prepare([
     packageJson('ignore-duplicates'),
-    file(
-      '.gitignore',
-      `build/\r\n*.mode1v3\r\nlocal.properties\r\nlocal.properties\r\nnode_modules/`,
-    ),
+    file('.gitignore', 'build/\r\n*.mode1v3\r\nlocal.properties\r\nlocal.properties\r\nnode_modules/'),
     reactNativePkg,
   ])
 
@@ -184,10 +179,7 @@ test('Properly configures empty project.', async () => {
 })
 
 test('Properly configures typescript when dependency detected.', async () => {
-  prepare([
-    packageJson('typescript', { devDependencies: { typescript: '^4.4.4' } }),
-    reactNativePkg,
-  ])
+  prepare([packageJson('typescript', { devDependencies: { typescript: '^4.4.4' } }), reactNativePkg])
 
   mkdirSync(join(process.cwd(), 'node_modules/@react-native/typescript-config'), {
     recursive: true,
@@ -214,10 +206,7 @@ test('Properly configures typescript when dependency detected.', async () => {
 test('Properly configures typescript when tsconfig detected.', async () => {
   prepare([
     packageJson('typescript-detect'),
-    file(
-      'tsconfig.json',
-      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "babel.config.js", "**/Pods/**" ] }',
-    ),
+    file('tsconfig.json', '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "babel.config.js", "**/Pods/**" ] }'),
     reactNativePkg,
   ])
 
@@ -245,11 +234,10 @@ test('Properly configures typescript when tsconfig detected.', async () => {
 
 test('Extended tsconfig properties are removed.', async () => {
   prepare([
-    packageJson('typescript-extend', { devDependencies: { typescript: '^4.4.4' } }),
-    file(
-      'tsconfig.json',
-      '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "node_modules", "my-stuff", "**/Pods/**" ] }',
-    ),
+    packageJson('typescript-extend', {
+      devDependencies: { typescript: '^4.4.4' },
+    }),
+    file('tsconfig.json', '{ "compilerOptions": { "skipLibCheck": true }, "exclude": [ "node_modules", "my-stuff", "**/Pods/**" ] }'),
     reactNativePkg,
   ])
 
@@ -323,10 +311,7 @@ test("Tsconfig array properties aren't duplicated upon merge.", async () => {
         include: ['global.d.ts'],
       },
     }),
-    file(
-      'tsconfig.json',
-      '{ "compilerOptions": { "types": ["node"] }, "include": [ "global.d.ts", "another.d.ts" ] }',
-    ),
+    file('tsconfig.json', '{ "compilerOptions": { "types": ["node"] }, "include": [ "global.d.ts", "another.d.ts" ] }'),
     reactNativePkg,
   ])
 

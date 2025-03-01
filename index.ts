@@ -1,14 +1,14 @@
-#!/usr/bin/env node
-import isCI from 'is-ci'
-import { log, cliOptions } from './helper'
+#!/usr/bin/env bun
+import isCi from 'is-ci'
 import { configure } from './configure'
+import { cliOptions, log } from './helper'
+import { android } from './script/android'
+import { apply } from './script/apply'
+import { ios } from './script/ios'
 import { lint } from './script/lint'
 import { native } from './script/native'
-import { apply } from './script/apply'
 import { patch } from './script/patch'
 import { plugin } from './script/plugin'
-import { android } from './script/android'
-import { ios } from './script/ios'
 import { prompt } from './script/prompt'
 
 export type { PluginInput } from './types'
@@ -24,7 +24,7 @@ const scripts = {
   prompt,
 }
 
-const script = process.argv.slice(2)[0] ?? 'prompt'
+const script = (process.argv.slice(2)[0] ?? 'prompt') as keyof typeof scripts
 
 if (!Object.keys(scripts).includes(script)) {
   log('Please provide a valid script', 'error')
@@ -36,16 +36,15 @@ if (!Object.keys(scripts).includes(script)) {
 await configure()
 
 try {
-  scripts[script](cliOptions(script))
-} catch (error) {
+  scripts[script](cliOptions(script) as any)
+} catch (error: any) {
   log(`Script ${script} exited with an error`)
 
-  if (script !== 'test' && !isCI) {
-    // eslint-disable-next-line no-console
-    console.error(error)
+  if (!isCi) {
+    log(error, 'warning')
   }
 
-  if (isCI) {
+  if (isCi) {
     throw new Error(error)
   }
 }

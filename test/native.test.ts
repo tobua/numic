@@ -1,25 +1,17 @@
-import { existsSync, rmSync, cpSync, renameSync, mkdirSync } from 'fs'
-import { join } from 'path'
-import { execSync } from 'child_process'
-import { expect, test, beforeEach, afterEach, vi } from 'vitest'
-import {
-  registerVitest,
-  prepare,
-  environment,
-  packageJson,
-  readFile,
-  writeFile,
-  file,
-} from 'jest-fixture'
+import { afterEach, beforeEach, expect, mock, spyOn, test } from 'bun:test'
+import { execSync } from 'node:child_process'
+import { cpSync, existsSync, mkdirSync, renameSync, rmSync } from 'node:fs'
+import { join } from 'node:path'
+import { environment, file, packageJson, prepare, readFile, registerVitest, writeFile } from 'jest-fixture'
+import { replaceIndexLinesFromPatch, resetOptions } from '../helper'
+import { apply } from '../script/apply'
 import { native } from '../script/native'
 import { patch } from '../script/patch'
 import { plugin } from '../script/plugin'
-import { apply } from '../script/apply'
-import { replaceIndexLinesFromPatch, resetOptions } from '../helper'
 
 const initialCwd = process.cwd()
 
-registerVitest(beforeEach, afterEach, vi)
+registerVitest(beforeEach, afterEach, { spyOn })
 beforeEach(resetOptions)
 environment('native')
 
@@ -47,11 +39,7 @@ test('Create native project for android and ios.', async () => {
 }, 20000)
 
 test('Removes existing native files.', async () => {
-  prepare([
-    packageJson('native-remove'),
-    file('ios/hello.js', 'console.log("hello")'),
-    reactNativePkg,
-  ])
+  prepare([packageJson('native-remove'), file('ios/hello.js', 'console.log("hello")'), reactNativePkg])
 
   expect(existsSync(join(process.cwd(), 'ios/hello.js'))).toBe(true)
 
@@ -71,10 +59,7 @@ test('Creates patch for simple change in android and ios user folder.', async ()
   writeFile('android/build.gradle', changedContents)
 
   const podfileContents = readFile('ios/Podfile')
-  const changedPodfileContents = podfileContents.replace(
-    'config = use_native_modules!',
-    'config = use_active_modules',
-  )
+  const changedPodfileContents = podfileContents.replace('config = use_native_modules!', 'config = use_active_modules')
 
   writeFile('ios/Podfile', changedPodfileContents)
 
@@ -116,10 +101,7 @@ test('Patches nested changes as well as file additions, renames and removals.', 
 
   const manifestPath = 'android/app/src/main/AndroidManifest.xml'
   const manifestContents = readFile(manifestPath)
-  const changedContents = manifestContents.replace(
-    'android:allowBackup="false"',
-    'android:allowBackup="true"',
-  )
+  const changedContents = manifestContents.replace('android:allowBackup="false"', 'android:allowBackup="true"')
   writeFile(manifestPath, changedContents)
 
   // Add new file
@@ -137,10 +119,7 @@ test('Patches nested changes as well as file additions, renames and removals.', 
 
   // Rename file (git doesn't really do rename, will result in a remove and an add).
   const stylesXMLPath = join(process.cwd(), 'android/app/src/main/res/values/styles.xml')
-  const stylesXMLRenamedPath = join(
-    process.cwd(),
-    'android/app/src/main/res/values/styles-renamed.xml',
-  )
+  const stylesXMLRenamedPath = join(process.cwd(), 'android/app/src/main/res/values/styles-renamed.xml')
 
   renameSync(stylesXMLPath, stylesXMLRenamedPath)
   expect(existsSync(stylesXMLPath)).toBe(false)
@@ -198,10 +177,7 @@ test('Reverted changes disappear from patch.', async () => {
   expect(patchedBuildGradleContents).not.toContain('mavenCentral()')
   expect(patchedBuildGradleContents).toContain('navenUI()')
 
-  const revertedButChangedContentChanges = buildGradleContents.replace(
-    'buildToolsVersion',
-    'customToolsVersion',
-  )
+  const revertedButChangedContentChanges = buildGradleContents.replace('buildToolsVersion', 'customToolsVersion')
 
   writeFile('android/build.gradle', revertedButChangedContentChanges)
 
@@ -245,11 +221,7 @@ test('Patches binary files like images.', async () => {
 })
 
 test('Picks up existing appName from app.json.', async () => {
-  prepare([
-    packageJson('native-app-name'),
-    file('app.json', '{ "name": "ThisReact" }'),
-    reactNativePkg,
-  ])
+  prepare([packageJson('native-app-name'), file('app.json', '{ "name": "ThisReact" }'), reactNativePkg])
 
   await native()
 
@@ -268,11 +240,7 @@ test('Picks up existing appName from app.json.', async () => {
 test('Patch not applied to repository during initialization.', async () => {
   prepare([packageJson('native-initial-patch'), reactNativePkg])
 
-  cpSync(
-    join(initialCwd, 'test/patch/build-gradle.patch'),
-    join(process.cwd(), 'patch/current.patch'),
-    { recursive: true },
-  )
+  cpSync(join(initialCwd, 'test/patch/build-gradle.patch'), join(process.cwd(), 'patch/current.patch'), { recursive: true })
 
   // Installation commands.
   await native()
@@ -299,13 +267,15 @@ test("Invalid dependencies in root don't lead to failing native installation.", 
 
   execSync('npm i --legacy-peer-deps', { cwd: process.cwd() })
 
-  mkdirSync(join(process.cwd(), 'node_modules/react-native'), { recursive: true })
+  mkdirSync(join(process.cwd(), 'node_modules/react-native'), {
+    recursive: true,
+  })
   writeFile('node_modules/react-native/package.json', { version: '0.69.0' })
 
   expect(existsSync(join(process.cwd(), 'node_modules/laier'))).toBe(true)
 
   // @ts-ignore
-  process.exit = vi.fn(() => {})
+  process.exit = mock(() => {})
 
   await native()
 

@@ -1,12 +1,12 @@
-import { resolve } from 'dns/promises'
 import { execSync } from 'node:child_process'
+import { resolve } from 'node:dns/promises'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { readFileSync, existsSync } from 'node:fs'
-import merge from 'deepmerge'
 import arg from 'arg'
-import semver from 'semver'
+import merge from 'deepmerge'
 import { create } from 'logua'
-import { NativeOptions, Options, Package } from './types'
+import semver from 'semver'
+import type { NativeOptions, Options, Package } from './types'
 
 export const log = create('numic', 'green')
 
@@ -19,10 +19,7 @@ export const basePath = () => {
     return process.env.INIT_CWD
   }
 
-  if (
-    currentWorkingDirectory.includes('node_modules/numic') ||
-    currentWorkingDirectory.includes('node_modules\\numic')
-  ) {
+  if (currentWorkingDirectory.includes('node_modules/numic') || currentWorkingDirectory.includes('node_modules\\numic')) {
     return join(currentWorkingDirectory, '../..')
   }
 
@@ -44,19 +41,20 @@ const optionsSpecificationByScript = {
 }
 
 export const cliOptions = (script: string) => {
-  const result = {}
+  const result: Record<string, string> = {}
 
   if (script === 'ios' || script === 'android' || script === 'prompt') {
     return result
   }
 
-  const parsed = arg(optionsSpecificationByScript[script], {
+  const parsed = arg(optionsSpecificationByScript[script as keyof typeof optionsSpecificationByScript], {
     permissive: false,
     argv: process.argv.slice(3),
   })
-  Object.keys(parsed).forEach((option) => {
+  for (const option of Object.keys(parsed)) {
+    // @ts-ignore
     result[option.replace('--', '')] = parsed[option]
-  })
+  }
   return result
 }
 
@@ -102,7 +100,7 @@ export const isOnline = async () => {
   }
 }
 
-export const checkCommandVersion = (command, version) => {
+export const checkCommandVersion = (command: string, version: string) => {
   let commandOutput: string
 
   try {
@@ -122,8 +120,7 @@ export const checkCommandVersion = (command, version) => {
   return true
 }
 
-const isTypeScript = (pkg: Package) =>
-  Boolean(pkg.devDependencies?.typescript || existsSync(join(basePath(), 'tsconfig.json')))
+const isTypeScript = (pkg: Package) => Boolean(pkg.devDependencies?.typescript || existsSync(join(basePath(), 'tsconfig.json')))
 
 // Default options.
 const defaultOptions = (pkg: Package) => ({
@@ -142,12 +139,12 @@ export const options: () => Options = () => {
     return cache
   }
 
-  let packageContents: Package
+  let packageContents: Package = { name: '' }
 
   try {
     const packageContentsFile = readFileSync(join(basePath(), 'package.json'), 'utf8')
     packageContents = JSON.parse(packageContentsFile)
-  } catch (error) {
+  } catch (_error) {
     log('Unable to load package.json', 'error')
   }
 
@@ -158,10 +155,8 @@ export const options: () => Options = () => {
   let result: Options = defaultOptions(packageContents)
 
   try {
-    result.reactNativeVersion = JSON.parse(
-      readFileSync(join(basePath(), 'node_modules/react-native/package.json'), 'utf8'),
-    ).version
-  } catch (error) {
+    result.reactNativeVersion = JSON.parse(readFileSync(join(basePath(), 'node_modules/react-native/package.json'), 'utf8')).version
+  } catch (_error) {
     log('React native installation not found', 'warning')
   }
 
@@ -190,7 +185,7 @@ export const getAppJsonName = () => {
     if (typeof contents.name === 'string' && contents.name.length > 0) {
       return contents.name
     }
-  } catch (error) {
+  } catch (_error) {
     // Ignored
   }
 
@@ -234,5 +229,4 @@ export const hasRejectedHunks = () => {
 }
 
 // Remove lines like "index c9bc539..eaaabea 100644"
-export const replaceIndexLinesFromPatch = (input: string) =>
-  input.replaceAll(/index\s[a-zA-Z0-9]{7}\.\.[a-zA-Z0-9]{7}\s\d{6}[\n\r]/g, '')
+export const replaceIndexLinesFromPatch = (input: string) => input.replaceAll(/index\s[a-zA-Z0-9]{7}\.\.[a-zA-Z0-9]{7}\s\d{6}[\n\r]/g, '')

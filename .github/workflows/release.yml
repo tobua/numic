@@ -14,10 +14,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - name: 🧪 Test
-        run: bun run test
-      - name: 🚧 Build
-        run: bun run build
+      - run: bun check
+      - run: bun types
+      - run: bun run test # Skips tests inside templates.
       - uses: tobua/release-npm-action@v3
         with:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

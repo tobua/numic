@@ -1,29 +1,21 @@
-import { existsSync } from 'fs'
-import { join } from 'path'
-import { expect, test, beforeEach, afterEach, vi } from 'vitest'
-import {
-  registerVitest,
-  prepare,
-  environment,
-  packageJson,
-  readFile,
-  writeFile,
-  file,
-} from 'jest-fixture'
+import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
+import { environment, file, packageJson, prepare, readFile, registerVitest, writeFile } from 'jest-fixture'
 import { initializeRepository } from '../git'
-import { patch } from '../script/patch'
-import { apply } from '../script/apply'
 import { resetOptions } from '../helper'
+import { apply } from '../script/apply'
+import { patch } from '../script/patch'
 
-registerVitest(beforeEach, afterEach, vi)
+registerVitest(beforeEach, afterEach, { spyOn })
 beforeEach(resetOptions)
 environment('patch')
 
-const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+const consoleLogSpy = spyOn(console, 'log').mockImplementation(() => {})
 
 const reactNativePkg = file(
   'node_modules/react-native/package.json',
-  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`
+  `{ "version": "${readFile('package.json').devDependencies['react-native'].replace('^', '')}" }`,
 )
 
 let singleLinePatchContents: string
@@ -142,9 +134,7 @@ test('Corrupt patch parts will be rejected and patch can be reapplied.', () => {
 
   apply({})
 
-  expect(consoleLogSpy.mock.calls[nextLog][0]).toContain(
-    'Unable to apply some changes in the patch'
-  )
+  expect(consoleLogSpy.mock.calls[nextLog][0]).toContain('Unable to apply some changes in the patch')
 
   expect(readFile('ios/first.txt')).toBe('one\ntwo\nthree\n')
   expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(true)
@@ -219,9 +209,7 @@ test('Patching also works with nested files and multiple changes.', () => {
 
   nextLog = consoleLogSpy.mock.calls.length
   apply({}) // Second change is rejected.
-  expect(consoleLogSpy.mock.calls[nextLog][0]).toContain(
-    'Unable to apply some changes in the patch'
-  )
+  expect(consoleLogSpy.mock.calls[nextLog][0]).toContain('Unable to apply some changes in the patch')
 
   expect(existsSync(rejectedHunksPath)).toBe(true)
   expect(readFile(join('.numic', firstFileName))).toEqual(firstInitialContents)
@@ -250,9 +238,7 @@ test('Patching also works with nested files and multiple changes.', () => {
 
   nextLog = consoleLogSpy.mock.calls.length
   apply({})
-  expect(consoleLogSpy.mock.calls[nextLog][0]).toContain(
-    'Unable to apply some changes in the patch'
-  )
+  expect(consoleLogSpy.mock.calls[nextLog][0]).toContain('Unable to apply some changes in the patch')
 
   expect(existsSync(rejectedHunksPath)).toBe(true)
   expect(readFile(secondFileName)).toEqual(secondThirdChangedContents)
@@ -266,7 +252,9 @@ test('Patching also works with nested files and multiple changes.', () => {
 
 test('Changes can be excluded from patch with nativeGitignore option.', () => {
   prepare([
-    packageJson('patch', { numic: { nativeGitignore: ['first.txt', 'second.txt'] } }),
+    packageJson('patch', {
+      numic: { nativeGitignore: ['first.txt', 'second.txt'] },
+    }),
     reactNativePkg,
     file('.numic/ios/first.txt', 'one\ntwo\nthree'),
     file('.numic/android/second.txt', 'one\ntwo\nthree'),
@@ -286,17 +274,13 @@ test('Changes can be excluded from patch with nativeGitignore option.', () => {
 
 test('nativeGitignore option can be used to include otherwise ignored files.', () => {
   prepare([
-    packageJson('patch', { numic: { nativeGitignore: '!IDEWorkspaceChecks.plist' } }),
+    packageJson('patch', {
+      numic: { nativeGitignore: '!IDEWorkspaceChecks.plist' },
+    }),
     reactNativePkg,
-    file(
-      '.numic/ios/numic.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist',
-      'one\ntwo\nthree'
-    ),
+    file('.numic/ios/numic.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist', 'one\ntwo\nthree'),
     file('.numic/android/second.txt', 'one\ntwo\nthree'),
-    file(
-      'ios/numic.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist',
-      'one\nfour\nthree'
-    ),
+    file('ios/numic.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist', 'one\nfour\nthree'),
     file('android/second.txt', 'one\ntwo\nthree'),
   ])
 

@@ -72,16 +72,16 @@ export const userGitignore = () => {
 }
 
 // Remove unnecessary RN default ignores that apply to native folders that are ignored anyways.
-export const filterPluginIgnores = (input: string[]) =>
-  input.filter((element) => !pluginGitignores.includes(element))
+export const filterPluginIgnores = (input: string[]) => input.filter((element) => !pluginGitignores.includes(element))
 
 export const pluginGitignore = () => {
   let gitignoreEntries = pluginGitignores
+  const nativeGitignore = options().nativeGitignore
 
-  if (typeof options().nativeGitignore === 'string') {
-    gitignoreEntries.push(options().nativeGitignore as string)
-  } else if (Array.isArray(options().nativeGitignore)) {
-    gitignoreEntries = gitignoreEntries.concat(options().nativeGitignore)
+  if (typeof nativeGitignore === 'string') {
+    gitignoreEntries.push(nativeGitignore as string)
+  } else if (Array.isArray(nativeGitignore)) {
+    gitignoreEntries = gitignoreEntries.concat(nativeGitignore)
   }
 
   return gitignoreEntries.join(EOL)

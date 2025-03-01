@@ -1,35 +1,26 @@
-import { existsSync } from 'fs'
-import { join } from 'path'
-import { execSync } from 'child_process'
-import {
-  log,
-  getFolders,
-  basePath,
-  additionalCliArguments,
-  isOnline,
-  checkCommandVersion,
-  hasRejectedHunks,
-  options,
-} from '../helper'
+import { execSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
+import { additionalCliArguments, basePath, checkCommandVersion, getFolders, hasRejectedHunks, isOnline, log, options } from '../helper'
+import { type RunInputs, RunLocation, RunMode } from '../types'
 import { native } from './native'
 import { patch } from './patch'
 import { plugin } from './plugin'
-import { RunInputs, RunLocation, RunMode } from '../types'
 
 export const ios = async (inputs: RunInputs) => {
   const folders = getFolders()
   log('iOS')
 
   if (
-    !existsSync(folders.user.android) ||
-    !existsSync(folders.user.ios) ||
-    !existsSync(folders.plugin.android) ||
-    !existsSync(folders.plugin.ios)
+    existsSync(folders.user.android) &&
+    existsSync(folders.user.ios) &&
+    existsSync(folders.plugin.android) &&
+    existsSync(folders.plugin.ios)
   ) {
-    await native({})
-  } else {
     // Apply plugins in case new plugins installed.
     await plugin()
+  } else {
+    await native()
   }
 
   if (hasRejectedHunks()) {
@@ -40,15 +31,11 @@ export const ios = async (inputs: RunInputs) => {
   patch()
 
   if (!checkCommandVersion('gem -v', '3.4.0')) {
-    log(
-      'The "gem" executable version is outdated, make sure to update soon, by running "gem update --system"',
-    )
+    log('The "gem" executable version is outdated, make sure to update soon, by running "gem update --system"')
   }
 
   if (!checkCommandVersion('pod --version', '1.12.0')) {
-    log(
-      'The "pod" (cocoapods) executable version is outdated, make sure to update soon, by running "gem update"',
-    )
+    log('The "pod" (cocoapods) executable version is outdated, make sure to update soon, by running "gem update"')
   }
 
   log('Updating iOS Pods')
@@ -59,7 +46,7 @@ export const ios = async (inputs: RunInputs) => {
         encoding: 'utf8',
         stdio: 'pipe',
       })
-    } catch (error) {
+    } catch (error: any) {
       log('Failed to run "pod update" in /ios', 'warning')
       console.log(error.stdout)
     }
@@ -69,13 +56,9 @@ export const ios = async (inputs: RunInputs) => {
 
   let runInputArguments = ''
 
-  if (
-    typeof inputs === 'object' &&
-    typeof inputs.mode === 'number' &&
-    typeof inputs.location === 'number'
-  ) {
-    runInputArguments += ` --mode=${inputs.mode === RunMode.debug ? 'Debug' : 'Release'}`
-    if (inputs.location === RunLocation.device) {
+  if (typeof inputs === 'object' && typeof inputs.mode === 'number' && typeof inputs.location === 'number') {
+    runInputArguments += ` --mode=${inputs.mode === RunMode.Debug ? 'Debug' : 'Release'}`
+    if (inputs.location === RunLocation.Device) {
       runInputArguments += ` --device "${inputs.device}"`
     } else {
       runInputArguments += ` --simulator "${inputs.simulator}"`

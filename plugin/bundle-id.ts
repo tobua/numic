@@ -1,30 +1,25 @@
-import { readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import glob from 'fast-glob'
 import semver from 'semver'
 
-const searchForFileAndReplace = (
-  filePathGlob: string | string[],
-  matcher: RegExp,
-  replacement: string,
-  nativePath: string,
-) => {
+const searchForFileAndReplace = (filePathGlob: string | string[], matcher: RegExp, replacement: string, nativePath: string) => {
   const files = glob.sync(filePathGlob, {
     cwd: nativePath,
   })
 
-  if (!files || !files.length) {
+  if (files?.length === 0) {
     return
   }
 
-  files.forEach((file) => {
+  for (const file of files) {
     const filePath = join(nativePath, file)
     let contents = readFileSync(filePath, 'utf-8')
 
     contents = contents.replaceAll(matcher, replacement)
 
     writeFileSync(filePath, contents)
-  })
+  }
 }
 
 interface Options {
@@ -42,46 +37,30 @@ interface PluginInput {
   version?: string
 }
 
-export default async ({
-  nativePath = process.cwd(),
-  log = console.log,
-  options = {},
-  version,
-}: PluginInput) => {
+export default ({ nativePath = process.cwd(), log = console.log, options = {}, version }: PluginInput) => {
   const { bundleId } = options
   // Bundle ID only adapted if configured in options.
   if (typeof bundleId !== 'string') {
     return
   }
 
-  const cleanVersion = semver.coerce(version).version
-  if (!cleanVersion || !semver.valid(cleanVersion) || !semver.gte(cleanVersion, '0.71.0')) {
-    log(
-      `bundleId can only be customized with React Native >= 0.71 while the current version is "${cleanVersion}"`,
-    )
+  const cleanVersion = semver.coerce(version)?.version
+  if (!(cleanVersion && semver.valid(cleanVersion) && semver.gte(cleanVersion, '0.71.0'))) {
+    log(`bundleId can only be customized with React Native >= 0.71 while the current version is "${cleanVersion}"`)
     return
   }
 
   const appBuildGradleFilePath = join(nativePath, 'android/app/build.gradle')
   let appBuildGradleContents = readFileSync(appBuildGradleFilePath, 'utf-8')
 
-  appBuildGradleContents = appBuildGradleContents.replaceAll(
-    /namespace\s"[\w.]+"/g,
-    `namespace "${bundleId}"`,
-  )
+  appBuildGradleContents = appBuildGradleContents.replaceAll(/namespace\s"[\w.]+"/g, `namespace "${bundleId}"`)
 
-  appBuildGradleContents = appBuildGradleContents.replaceAll(
-    /applicationId\s"[\w.]+"/g,
-    `applicationId "${bundleId}"`,
-  )
+  appBuildGradleContents = appBuildGradleContents.replaceAll(/applicationId\s"[\w.]+"/g, `applicationId "${bundleId}"`)
 
   writeFileSync(appBuildGradleFilePath, appBuildGradleContents)
 
   searchForFileAndReplace(
-    [
-      'android/app/src/main/java/com/*/MainActivity.kt',
-      'android/app/src/main/java/com/*/MainApplication.kt',
-    ],
+    ['android/app/src/main/java/com/*/MainActivity.kt', 'android/app/src/main/java/com/*/MainApplication.kt'],
     /package\s[\w.]+/g,
     `package ${bundleId}`,
     nativePath,

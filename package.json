@@ -1,98 +1,109 @@
 {
-  "name": "numic",
-  "description": "Utility to manage React Native projects.",
-  "version": "0.0.0-development",
-  "repository": "github:tobua/numic",
-  "license": "MIT",
-  "author": "Matthias Giger",
-  "scripts": {
-    "build": "padua build",
-    "postinstall": "skip-local-postinstall dist/installation.js",
-    "start": "padua watch",
-    "templates": "folders './template/*' 'update --no-install' --output",
-    "test": "vitest run --pool=threads --poolOptions.threads.singleThread --dir test"
-  },
-  "padua": {
-    "entry": [
-      "installation.ts"
-    ],
-    "esbuild": {
-      "platform": "node",
-      "format": "esm",
-      "target": "node16"
-    },
-    "tsconfig": {
-      "compilerOptions": {
-        "target": "es2022"
-      }
-    }
-  },
-  "dependencies": {
-    "@react-native-community/cli": "^15.1.3",
-    "@react-native/babel-preset": "^0.78.0",
-    "@react-native/eslint-config": "^0.78.0",
-    "@react-native/metro-config": "^0.78.0",
-    "@react-native/typescript-config": "^0.78.0",
-    "arg": "^5.0.2",
-    "command-exists": "^1.2.9",
-    "deepmerge": "^4.3.1",
-    "eslint": "8.57.0",
-    "eslint-plugin-prettier": "^5.2.3",
-    "fast-glob": "^3.3.3",
-    "global-cache-dir": "^6.0.0",
-    "is-ci": "^4.1.0",
-    "json5": "^2.2.3",
-    "logua": "^3.0.3",
-    "pakag": "^3.1.4",
-    "parse-gitignore": "^2.0.0",
-    "prettier": "^3.5.1",
-    "prompts": "^2.4.2",
-    "semver": "^7.7.1",
-    "semver-sort": "^1.0.0",
-    "skip-local-postinstall": "^2.0.4"
-  },
-  "devDependencies": {
-    "@types/bun": "^1.2.2",
-    "@types/command-exists": "^1.2.3",
-    "@types/prompts": "^2.4.9",
-    "@types/semver": "^7.5.8",
-    "jest-fixture": "^4.1.0",
-    "padua": "^4.0.1",
-    "react-native": "^0.78.0",
-    "vitest": "^3.0.6"
-  },
-  "peerDependencies": {
-    "react-native": ">= 0.73"
-  },
-  "type": "module",
-  "sideEffects": true,
-  "main": "dist/index.js",
-  "exports": {
-    ".": "./dist/index.js",
-    "./types": "./image.d.ts"
-  },
-  "bin": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "configuration/*.json",
-    "*.d.ts"
-  ],
-  "keywords": [
-    "react-native",
-    "patch",
-    "utility",
-    "ios",
-    "android"
-  ],
-  "prettier": "padua/configuration/.prettierrc.json",
-  "eslintConfig": {
-    "extends": "./node_modules/padua/configuration/eslint.cjs"
-  },
-  "publishConfig": {
-    "provenance": true
-  },
-  "engines": {
-    "node": ">= 18"
-  }
+	"name": "numic",
+	"description": "Utility to manage React Native projects.",
+	"version": "0.0.0-development",
+	"repository": "github:tobua/numic",
+	"license": "MIT",
+	"author": "Matthias Giger",
+	"scripts": {
+		"postinstall": "bun installation.ts",
+		"templates": "folders './template/*' 'update --no-install' --output",
+		"check": "biome check --write . && biome check --write --config-path=test ./test/*",
+		"types": "tsc && tsc --project ./test/tsconfig.json",
+		"test": "bun test test/cache test/configuration test/native test/patch test/plugin"
+	},
+	"dependencies": {
+		"@react-native-community/cli": "^15.1.3",
+		"@react-native/babel-preset": "^0.78.0",
+		"@react-native/eslint-config": "^0.78.0",
+		"@react-native/metro-config": "^0.78.0",
+		"@react-native/typescript-config": "^0.78.0",
+		"arg": "^5.0.2",
+		"command-exists": "^1.2.9",
+		"deepmerge": "^4.3.1",
+		"eslint": "8.57.0",
+		"eslint-plugin-prettier": "^5.2.3",
+		"fast-glob": "^3.3.3",
+		"global-cache-dir": "^6.0.0",
+		"is-ci": "^4.1.0",
+		"json5": "^2.2.3",
+		"logua": "^3.0.3",
+		"pakag": "^3.1.4",
+		"parse-gitignore": "^2.0.0",
+		"prettier": "^3.5.2",
+		"prompts": "^2.4.2",
+		"semver": "^7.7.1",
+		"semver-sort": "^1.0.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/bun": "^1.2.4",
+		"@types/command-exists": "^1.2.3",
+		"@types/parse-gitignore": "^1.0.2",
+		"@types/prompts": "^2.4.9",
+		"@types/semver": "^7.5.8",
+		"@types/semver-sort": "^0.0.5",
+		"jest-fixture": "^4.1.0",
+		"react-native": "^0.78.0",
+		"typescript": "^5.8.2",
+		"zero-configuration": "^0.18.1"
+	},
+	"trustedDependencies": ["zero-configuration"],
+	"peerDependencies": {
+		"react-native": ">= 0.73"
+	},
+	"type": "module",
+	"sideEffects": true,
+	"exports": {
+		".": "./index.ts",
+		"./types": "./image.d.ts"
+	},
+	"bin": "./index.ts",
+	"files": ["*.ts", "configuration/*", "plugin/*", "script/*", "*.d.ts"],
+	"keywords": ["react-native", "patch", "utility", "ios", "android"],
+	"publishConfig": {
+		"provenance": true
+	},
+	"configuration": {
+		"gitignore": ["extends:bundle", "test/fixture"],
+		"vscode": "biome",
+		"biome": [
+			{
+				"extends": "recommended",
+				"linter": {
+					"rules": {
+						"correctness": {
+							"noNodejsModules": "off"
+						},
+						"suspicious": {
+							"noExplicitAny": "off"
+						},
+						"performance": {
+							"useTopLevelRegex": "off"
+						}
+					}
+				},
+				"files": {
+					"ignore": ["template", "test", "website", "*.d.ts"]
+				}
+			},
+			{
+				"folder": "test",
+				"extends": "test"
+			}
+		],
+		"typescript": [
+			{
+				"extends": "plugin",
+				"files": ["index.ts", "installation.ts"]
+			},
+			{
+				"extends": "plugin",
+				"folder": "test",
+				"compilerOptions": {
+          "strict": false
+        }
+			}
+		]
+	}
 }

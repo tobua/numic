@@ -1,6 +1,6 @@
-import { readFileSync, existsSync, writeFileSync } from 'fs'
-import { EOL } from 'os'
-import { join } from 'path'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { EOL } from 'node:os'
+import { join } from 'node:path'
 
 interface Options {
   androidVersion?: number | [number, string]
@@ -17,18 +17,14 @@ interface PluginInput {
   version?: string
 }
 
-export default async ({
-  nativePath = process.cwd(),
-  log = console.log,
-  options = {},
-}: PluginInput) => {
+export default async ({ nativePath = process.cwd(), log = console.log, options = {} }: PluginInput) => {
   // Android version only customized when explicitly configured by user.
   if (!options.androidVersion) {
     return
   }
 
-  let versionCode
-  let versionName
+  let versionCode: number
+  let versionName: string
 
   if (typeof options.androidVersion === 'number') {
     versionCode = options.androidVersion
@@ -41,17 +37,14 @@ export default async ({
   ) {
     ;[versionCode, versionName] = options.androidVersion
   } else {
-    log(
-      'Invalid "androidVersion" value provided, must be a number or and array of [number, string]',
-      'warning'
-    )
+    log('Invalid "androidVersion" value provided, must be a number or and array of [number, string]', 'warning')
     return
   }
 
   const appBuildGradleFilePath = join(nativePath, 'android/app/build.gradle')
   const buildGradleFilePath = join(nativePath, 'android/build.gradle')
 
-  if (!existsSync(appBuildGradleFilePath) || !existsSync(buildGradleFilePath)) {
+  if (!(existsSync(appBuildGradleFilePath) && existsSync(buildGradleFilePath))) {
     log('build.gradle or app/build.gradle file missing', 'warning')
     return
   }
@@ -63,7 +56,7 @@ export default async ({
   const hasVersionNameVariable = buildGradleContents.includes('versionName =')
 
   // Insert variables into build.gradle
-  if (!hasVersionCodeVariable || !hasVersionNameVariable) {
+  if (!(hasVersionCodeVariable && hasVersionNameVariable)) {
     let extensionStartLine = buildGradleLines.findIndex((content) => content.includes('ext {'))
 
     if (extensionStartLine !== -1) {
@@ -84,15 +77,9 @@ export default async ({
   buildGradleContents = readFileSync(buildGradleFilePath, 'utf-8')
 
   // Update variables in build.gradle.
-  buildGradleContents = buildGradleContents.replace(
-    /versionCode\s=\s\d+/,
-    `versionCode = ${versionCode}`
-  )
+  buildGradleContents = buildGradleContents.replace(/versionCode\s=\s\d+/, `versionCode = ${versionCode}`)
 
-  buildGradleContents = buildGradleContents.replace(
-    /versionName\s=\s"[^"]*"/,
-    `versionName = "${versionName}"`
-  )
+  buildGradleContents = buildGradleContents.replace(/versionName\s=\s"[^"]*"/, `versionName = "${versionName}"`)
 
   writeFileSync(buildGradleFilePath, buildGradleContents)
 
@@ -100,17 +87,11 @@ export default async ({
   let appBuildGradleContents = readFileSync(appBuildGradleFilePath, 'utf-8')
 
   if (!appBuildGradleContents.includes('rootProject.ext.versionCode')) {
-    appBuildGradleContents = appBuildGradleContents.replace(
-      /versionCode\s\d+/,
-      'versionCode rootProject.ext.versionCode'
-    )
+    appBuildGradleContents = appBuildGradleContents.replace(/versionCode\s\d+/, 'versionCode rootProject.ext.versionCode')
   }
 
   if (!appBuildGradleContents.includes('rootProject.ext.versionName')) {
-    appBuildGradleContents = appBuildGradleContents.replace(
-      /versionName\s"[^"]*"/,
-      'versionName rootProject.ext.versionName'
-    )
+    appBuildGradleContents = appBuildGradleContents.replace(/versionName\s"[^"]*"/, 'versionName rootProject.ext.versionName')
   }
 
   writeFileSync(appBuildGradleFilePath, appBuildGradleContents)

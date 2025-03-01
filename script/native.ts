@@ -1,14 +1,14 @@
-import { join } from 'path'
-import { existsSync, mkdirSync, rmSync, cpSync } from 'fs'
-import { getFolders, filterAndroid, filterIOS, defaultNativeOptions, log } from '../helper'
+import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
+import { join } from 'node:path'
 import { initializeRepository } from '../git'
-import { plugin } from './plugin'
-import { NativeOptions } from '../types'
+import { defaultNativeOptions, filterAndroid, filterIOS, getFolders, log } from '../helper'
 import { cacheTemplate } from '../template-cache'
+import type { NativeOptions } from '../types'
+import { plugin } from './plugin'
 
-export const native = async (nativeOptions: NativeOptions = {}) => {
+export const native = async (nativeOptions: NativeOptions = { appName: '', version: '' }) => {
   const folders = getFolders()
-  // eslint-disable-next-line no-param-reassign
+  // biome-ignore lint/style/noParameterAssign: Much easier in this case.
   nativeOptions = defaultNativeOptions(nativeOptions)
 
   if (existsSync(folders.numic)) {

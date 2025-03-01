@@ -1,19 +1,16 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
-import { formatPackageJson } from 'pakag'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import merge from 'deepmerge'
-import parse from 'parse-gitignore'
 import json5 from 'json5'
-import { basePath, options } from './helper'
-import { userGitignore, filterPluginIgnores } from './configuration/gitignore'
+import { formatPackageJson } from 'pakag'
+import parse from 'parse-gitignore'
+import { filterPluginIgnores, userGitignore } from './configuration/gitignore'
 import { packageJson } from './configuration/package'
+import { basePath, options } from './helper'
 
 export const configureTsConfig = () => {
   const tsconfigPath = join(basePath(), 'tsconfig.json')
-  const rnTsconfigPath = join(
-    basePath(),
-    'node_modules/@react-native/typescript-config/tsconfig.json',
-  )
+  const rnTsconfigPath = join(basePath(), 'node_modules/@react-native/typescript-config/tsconfig.json')
 
   if (!options().typescript) {
     return
@@ -24,14 +21,15 @@ export const configureTsConfig = () => {
   if (existsSync(tsconfigPath)) {
     try {
       configuration = JSON.parse(readFileSync(tsconfigPath, 'utf-8'))
-    } catch (error) {
+    } catch (_error) {
       // Ignored
     }
   }
 
   // Properties from package.json tsconfig property.
-  if (options().tsconfig) {
-    configuration = merge(configuration, options().tsconfig, {
+  const tsconfig = options().tsconfig
+  if (tsconfig) {
+    configuration = merge(configuration, tsconfig, {
       clone: false,
       // Assumes all arrays in tsconfig.json are arrays of strings.
       arrayMerge: (target, source) => {
@@ -53,25 +51,20 @@ export const configureTsConfig = () => {
     const extendedProperties = json5.parse(readFileSync(rnTsconfigPath, 'utf-8'))
 
     // Avoid duplicate values.
-    Object.keys(configuration.compilerOptions).forEach((key) => {
-      if (
-        key !== 'skipLibCheck' &&
-        configuration.compilerOptions[key] === extendedProperties.compilerOptions[key]
-      ) {
+    for (const key of Object.keys(configuration.compilerOptions)) {
+      if (key !== 'skipLibCheck' && configuration.compilerOptions[key] === extendedProperties.compilerOptions[key]) {
         delete configuration.compilerOptions[key]
       }
-    })
+    }
 
     if (Array.isArray(configuration.exclude)) {
-      configuration.exclude = configuration.exclude.filter(
-        (item: string) => !extendedProperties.exclude.includes(item),
-      )
+      configuration.exclude = configuration.exclude.filter((item: string) => !extendedProperties.exclude.includes(item))
 
       if (configuration.exclude.length === 0) {
-        delete configuration.exclude
+        configuration.exclude = undefined
       }
     }
-  } catch (error) {
+  } catch (_error) {
     // Ignored
   }
 
@@ -87,9 +80,8 @@ export const configureGitignore = () => {
   let entries: string[] = []
 
   if (existsSync(gitIgnorePath)) {
-    entries = filterPluginIgnores(
-      entries.concat(parse(readFileSync(gitIgnorePath, 'utf8')).patterns),
-    )
+    // @ts-ignore Types published in @types/parse-gitignore are wrong.
+    entries = filterPluginIgnores(entries.concat(parse(readFileSync(gitIgnorePath, 'utf8')).patterns))
   }
 
   entries = entries.concat(userGitignore())
@@ -112,18 +104,11 @@ const configurePackageJson = async (isFirstInstall: boolean) => {
   })
 
   // Format with prettier and sort before writing.
-  writeFileSync(
-    join(basePath(), './package.json'),
-    await formatPackageJson(JSON.stringify(generatedPackageJson)),
-  )
+  writeFileSync(join(basePath(), './package.json'), await formatPackageJson(JSON.stringify(generatedPackageJson)))
 
   options().pkg = generatedPackageJson
 
-  return (
-    (packageJsonContents.dependencies && packageJsonContents.dependencies['zero-configuration']) ||
-    (packageJsonContents.devDependencies &&
-      packageJsonContents.devDependencies['zero-configuration'])
-  )
+  return packageJsonContents.dependencies?.['zero-configuration'] || packageJsonContents.devDependencies?.['zero-configuration']
 }
 
 export const configure = async () => {

@@ -1,23 +1,15 @@
-import { cpSync, existsSync } from 'fs'
-import { join } from 'path'
-import { expect, test, beforeEach, afterEach, vi } from 'vitest'
-import {
-  registerVitest,
-  prepare,
-  environment,
-  packageJson,
-  readFile,
-  file,
-  writeFile,
-} from 'jest-fixture'
-import { native } from '../script/native'
-import { plugin } from '../script/plugin'
-import { patch } from '../script/patch'
+import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
+import { cpSync, existsSync } from 'node:fs'
+import { join } from 'node:path'
+import { environment, file, packageJson, prepare, readFile, registerVitest, writeFile } from 'jest-fixture'
 import { resetOptions } from '../helper'
+import { native } from '../script/native'
+import { patch } from '../script/patch'
+import { plugin } from '../script/plugin'
 
 const initialCwd = process.cwd()
 
-registerVitest(beforeEach, afterEach, vi)
+registerVitest(beforeEach, afterEach, { spyOn })
 beforeEach(resetOptions)
 environment('plugin')
 
@@ -27,19 +19,12 @@ const reactNativePkg = file(
 )
 
 test('Simple plugin modifies native files.', async () => {
-  prepare([
-    packageJson('plugin', { dependencies: { 'simple-numic-plugin': 'latest' } }),
-    reactNativePkg,
-  ])
+  prepare([packageJson('plugin', { dependencies: { 'simple-numic-plugin': 'latest' } }), reactNativePkg])
 
   // Dynamic import happens in root modules.
-  cpSync(
-    join(initialCwd, 'test/simple-numic-plugin'),
-    join(initialCwd, 'node_modules/simple-numic-plugin'),
-    {
-      recursive: true,
-    },
-  )
+  cpSync(join(initialCwd, 'test/simple-numic-plugin'), join(initialCwd, 'node_modules/simple-numic-plugin'), {
+    recursive: true,
+  })
 
   await native()
 
@@ -48,22 +33,15 @@ test('Simple plugin modifies native files.', async () => {
   expect(buildGradleContents).toContain('com.numic:plugin')
   // Plugin changes don't cause patch creation.
   expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(false)
-})
+}, 10000)
 
 test('Asynchronous plugin modifies native files.', async () => {
-  prepare([
-    packageJson('async-plugin', { dependencies: { 'asynchronous-numic-plugin': 'latest' } }),
-    reactNativePkg,
-  ])
+  prepare([packageJson('async-plugin', { dependencies: { 'asynchronous-numic-plugin': 'latest' } }), reactNativePkg])
 
   // Dynamic import happens in root modules.
-  cpSync(
-    join(initialCwd, 'test/asynchronous-numic-plugin'),
-    join(initialCwd, 'node_modules/asynchronous-numic-plugin'),
-    {
-      recursive: true,
-    },
-  )
+  cpSync(join(initialCwd, 'test/asynchronous-numic-plugin'), join(initialCwd, 'node_modules/asynchronous-numic-plugin'), {
+    recursive: true,
+  })
 
   await native()
 
@@ -110,13 +88,9 @@ test('Npm plugin can be configured.', async () => {
   ])
 
   // Dynamic import happens in root modules.
-  cpSync(
-    join(initialCwd, 'test/simple-numic-plugin'),
-    join(initialCwd, 'node_modules/simple-numic-plugin'),
-    {
-      recursive: true,
-    },
-  )
+  cpSync(join(initialCwd, 'test/simple-numic-plugin'), join(initialCwd, 'node_modules/simple-numic-plugin'), {
+    recursive: true,
+  })
 
   await native()
 
@@ -142,13 +116,9 @@ test("Plugin changes are staged and don't cause patch even after initial reposit
   writeFile('package.json', JSON.stringify(pkg))
 
   // Dynamic import happens in root modules.
-  cpSync(
-    join(initialCwd, 'test/simple-numic-plugin'),
-    join(initialCwd, 'node_modules/simple-numic-plugin'),
-    {
-      recursive: true,
-    },
-  )
+  cpSync(join(initialCwd, 'test/simple-numic-plugin'), join(initialCwd, 'node_modules/simple-numic-plugin'), {
+    recursive: true,
+  })
 
   // Same commands as iOS and Android commands would run.
   await plugin()
@@ -237,10 +207,7 @@ test('Built-in plugins always run when proper options are set.', async () => {
 })
 
 test('Bundle ID will be adapted when configured.', async () => {
-  prepare([
-    packageJson('plugin-bundle-id', { numic: { bundleId: 'com.tobua.numic' } }),
-    reactNativePkg,
-  ])
+  prepare([packageJson('plugin-bundle-id', { numic: { bundleId: 'com.tobua.numic' } }), reactNativePkg])
 
   await native()
 
@@ -254,9 +221,7 @@ test('Bundle ID will be adapted when configured.', async () => {
 
   expect(mainActivityContents).toContain('package com.tobua.numic')
 
-  const mainApplicationContents = readFile(
-    'android/app/src/main/java/com/numicapp/MainApplication.kt',
-  )
+  const mainApplicationContents = readFile('android/app/src/main/java/com/numicapp/MainApplication.kt')
 
   expect(mainApplicationContents).toContain('package com.tobua.numic')
 
@@ -271,10 +236,7 @@ test('Bundle ID will be adapted when configured.', async () => {
 })
 
 test('New architecture can optionally be disabled.', async () => {
-  prepare([
-    packageJson('plugin-new-architecture', { numic: { oldArchitecture: true } }),
-    reactNativePkg,
-  ])
+  prepare([packageJson('plugin-new-architecture', { numic: { oldArchitecture: true } }), reactNativePkg])
 
   await native()
 

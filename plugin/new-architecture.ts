@@ -1,5 +1,5 @@
-import { readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 interface Options {
   oldArchitecture?: boolean
@@ -16,11 +16,7 @@ interface PluginInput {
   version?: string
 }
 
-export default async ({
-  nativePath = process.cwd(),
-  log = console.log,
-  options = {},
-}: PluginInput) => {
+export default ({ nativePath = process.cwd(), log = console.log, options = {} }: PluginInput) => {
   const { oldArchitecture } = options
   const gradlePropertiesFilePath = join(nativePath, 'android/gradle.properties')
   let gradlePropertiesContents = readFileSync(gradlePropertiesFilePath, 'utf-8')
@@ -28,16 +24,10 @@ export default async ({
   // Android requires gradle flag to be set, while iOS requires flag to be set during "pod install".
   if (oldArchitecture) {
     log('Using old architecture')
-    gradlePropertiesContents = gradlePropertiesContents.replaceAll(
-      'newArchEnabled=true',
-      'newArchEnabled=false',
-    )
+    gradlePropertiesContents = gradlePropertiesContents.replaceAll('newArchEnabled=true', 'newArchEnabled=false')
   } else {
     log('Using new architecture')
-    gradlePropertiesContents = gradlePropertiesContents.replaceAll(
-      'newArchEnabled=false',
-      'newArchEnabled=true',
-    )
+    gradlePropertiesContents = gradlePropertiesContents.replaceAll('newArchEnabled=false', 'newArchEnabled=true')
   }
   writeFileSync(gradlePropertiesFilePath, gradlePropertiesContents)
 }
