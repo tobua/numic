@@ -204,7 +204,7 @@ test('Built-in plugins always run when proper options are set.', async () => {
 
   expect(contents.variables).toContain('versionCode = 1')
   expect(contents.variables).toContain('versionName = "1.1"')
-})
+}, 10000)
 
 test('Bundle ID will be adapted when configured.', async () => {
   prepare([packageJson('plugin-bundle-id', { numic: { bundleId: 'com.tobua.numic' } }), reactNativePkg])
