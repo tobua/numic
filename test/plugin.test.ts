@@ -243,3 +243,33 @@ test('New architecture can optionally be disabled.', async () => {
   const gradlePropertiesContents = readFile('android/gradle.properties')
   expect(gradlePropertiesContents).toContain('newArchEnabled=false')
 })
+
+test('XCode development team is automatically added.', async () => {
+  prepare([packageJson('plugin-xcode', { numic: { xcode: true } }), reactNativePkg])
+
+  await native()
+
+  const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
+  expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 8VG65V3BLT;')
+})
+
+test('Custom development team, name and category are added.', async () => {
+  prepare([packageJson('plugin-xcode', { numic: { xcode: { developmentTeam: '123', category: 'public.app-category.productivity', displayName: 'My App'} } }), reactNativePkg])
+
+  await native()
+
+  const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
+  expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 123;')
+  expect(xcodeProjectContents).toContain('INFOPLIST_KEY_CFBundleDisplayName = My App;')
+  expect(xcodeProjectContents).toContain('INFOPLIST_KEY_LSApplicationCategoryType = public.app-category.productivity;')
+})
+
+test('Nothing added unless configured.', async () => {
+  prepare([packageJson('plugin-xcode', { numic: { }}), reactNativePkg])
+
+  await native()
+
+  const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
+  expect(xcodeProjectContents).not.toContain('DEVELOPMENT_TEAM')
+  expect(xcodeProjectContents).not.toContain('INFOPLIST_KEY_CFBundleDisplayName')
+})

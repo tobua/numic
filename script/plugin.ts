@@ -7,9 +7,10 @@ import androidVersion from '../plugin/android-version'
 import bundleId from '../plugin/bundle-id'
 import icon from '../plugin/icon/index'
 import newArchitecture from '../plugin/new-architecture'
+import xcode from '../plugin/xcode'
 import type { PluginInput } from '../types'
 
-const builtInPlugins = [androidVersion, bundleId, newArchitecture, androidSdk, icon]
+const builtInPlugins = [androidVersion, bundleId, newArchitecture, xcode, androidSdk, icon]
 
 type PluginFunction = (options?: PluginInput) => void
 type Plugin = string | PluginFunction
