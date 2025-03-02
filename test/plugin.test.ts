@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
 import { cpSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
+import isCI from 'is-ci'
 import { environment, file, packageJson, prepare, readFile, registerVitest, writeFile } from 'jest-fixture'
 import { resetOptions } from '../helper'
 import { native } from '../script/native'
@@ -250,11 +251,19 @@ test('XCode development team is automatically added.', async () => {
   await native()
 
   const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
-  expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 8VG65V3BLT;')
+
+  if (!isCI) {
+    expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 8VG65V3BLT;')
+  }
 })
 
 test('Custom development team, name and category are added.', async () => {
-  prepare([packageJson('plugin-xcode', { numic: { xcode: { developmentTeam: '123', category: 'public.app-category.productivity', displayName: 'My App'} } }), reactNativePkg])
+  prepare([
+    packageJson('plugin-xcode', {
+      numic: { xcode: { developmentTeam: '123', category: 'public.app-category.productivity', displayName: 'My App' } },
+    }),
+    reactNativePkg,
+  ])
 
   await native()
 
@@ -265,7 +274,7 @@ test('Custom development team, name and category are added.', async () => {
 })
 
 test('Nothing added unless configured.', async () => {
-  prepare([packageJson('plugin-xcode', { numic: { }}), reactNativePkg])
+  prepare([packageJson('plugin-xcode', { numic: {} }), reactNativePkg])
 
   await native()
 

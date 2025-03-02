@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import type { Options } from './types'
 
 export const replaceVersions = (
-  { compileSdkVersion, targetSdkVersion, minSdkVersion, buildToolsVersion }: Options,
+  { compileSdkVersion, targetSdkVersion, minSdkVersion, buildToolsVersion, ndkVersion }: Options,
   androidFolder: string,
 ) => {
   const buildGradlePath = join(androidFolder, 'build.gradle')
@@ -26,6 +26,10 @@ export const replaceVersions = (
 
   if (targetSdkVersion) {
     buildGradleContents = buildGradleContents.replace(/(targetSdkVersion\s*=\s*)(\d{1,3})/, `$1${targetSdkVersion}`)
+  }
+
+  if (ndkVersion) {
+    buildGradleContents = buildGradleContents.replace(/(ndkVersion\s*=\s*")(\d{1,3}\.\d{1,3}\.\d{1,10})(")/, `$1${ndkVersion}$3`)
   }
 
   writeFileSync(buildGradlePath, buildGradleContents)

@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process'
 import { join } from 'node:path'
-import { latestSdkManagerPath } from './helper'
+import { latestNdkVersion, latestSdkManagerPath } from './helper'
 import { matchVersion } from './match-version'
 import { replaceVersions } from './replace-versions'
 import type { Options } from './types'
@@ -48,6 +48,13 @@ export default ({
   options.compileSdkVersion ||= matchedInstalledVersions.compileSdkVersion ?? 35
   options.targetSdkVersion ||= matchedInstalledVersions.targetSdkVersion ?? 35
   options.minSdkVersion ||= 24
+
+  if (options.ndkVersion === true || options.ndkVersion === undefined) {
+    options.ndkVersion = latestNdkVersion(androidHome)
+  }
+  if (options.ndkVersion === false) {
+    options.ndkVersion = undefined
+  }
 
   replaceVersions(options, androidFolder)
 }

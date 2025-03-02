@@ -18,6 +18,7 @@ test('Extracts the correct versions for various script outputs.', () => {
   const newMinSdkVersion = 398
   const newCompileSdkVersion = '4'
   const newTargetSdkVersion = 12
+  const newNdkVersion = '123.456.789'
 
   replaceVersions(
     {
@@ -25,6 +26,7 @@ test('Extracts the correct versions for various script outputs.', () => {
       minSdkVersion: newMinSdkVersion,
       compileSdkVersion: newCompileSdkVersion,
       targetSdkVersion: newTargetSdkVersion,
+      ndkVersion: newNdkVersion
     },
     androidPath
   )
@@ -35,4 +37,5 @@ test('Extracts the correct versions for various script outputs.', () => {
   expect(modifiedBuildGradleContents).toContain(`minSdkVersion = ${newMinSdkVersion}`)
   expect(modifiedBuildGradleContents).toContain(`compileSdkVersion = ${newCompileSdkVersion}`)
   expect(modifiedBuildGradleContents).toContain(`targetSdkVersion = ${newTargetSdkVersion}`)
+  expect(modifiedBuildGradleContents).toContain(`ndkVersion = "${newNdkVersion}"`)
 })

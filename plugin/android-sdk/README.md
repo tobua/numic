@@ -32,7 +32,8 @@ The detailed Android SDK versions can be configured in `package.json` under the 
       "compileSdkVersion": 35,
       "targetSdkVersion": 35,
       "minSdkVersion": 24,
-      "buildToolsVersion": "35.0.0"
+      "buildToolsVersion": "35.0.0",
+      "ndkVersion": true
     }
   }
 }

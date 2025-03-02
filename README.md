@@ -150,7 +150,8 @@ Adding a `numic` property allows to configure script and plugin behaviour. This 
       "icon": "image/icon/app-icon.png"
     },
     "android-sdk": {
-      "minSdkVersion": 24
+      "minSdkVersion": 24,
+      "ndkVersion": false
     },
   },
   // Will be merged with tsconfig, that's by default gitignored.
