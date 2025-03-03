@@ -4,8 +4,7 @@ import { matchVersion } from '../match-version'
 
 test('Extracts the correct versions for various script outputs.', async () => {
   const initialMacScriptOutput = await Bun.file('test/script/initial-mac-installed.txt').text()
-  const { buildToolsVersion, compileSdkVersion, targetSdkVersion } =
-    matchVersion(initialMacScriptOutput)
+  const { buildToolsVersion, compileSdkVersion, targetSdkVersion } = matchVersion(initialMacScriptOutput)
 
   expect(buildToolsVersion).toEqual('33.0.1')
   expect(compileSdkVersion).toBe(33)

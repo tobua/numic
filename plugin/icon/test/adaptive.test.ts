@@ -29,8 +29,10 @@ test('Creates proper description XML files when adaptive icon input is supplied.
 
   await plugin({
     options: {
-      androidBackground: 'image/my-background.svg',
-      androidForeground: 'image/my-foreground.svg',
+      icon: {
+        androidBackground: 'image/my-background.svg',
+        androidForeground: 'image/my-foreground.svg',
+      },
     },
   })
 
@@ -81,8 +83,10 @@ test('SVG images are properly converted.', async () => {
 
   await plugin({
     options: {
-      androidBackground: 'background.svg',
-      androidForeground: 'foreground.svg',
+      icon: {
+        androidBackground: 'background.svg',
+        androidForeground: 'foreground.svg',
+      },
     },
   })
 
@@ -123,8 +127,10 @@ test('Solid background color is added when configured.', async () => {
 
   await plugin({
     options: {
-      androidBackgroundColor: color,
-      androidForeground: 'foreground.svg',
+      icon: {
+        androidBackgroundColor: color,
+        androidForeground: 'foreground.svg',
+      },
     },
   })
 
@@ -139,8 +145,10 @@ test('Solid background color is added when configured.', async () => {
 
   await plugin({
     options: {
-      androidBackgroundColor: color,
-      androidForeground: 'foreground.svg',
+      icon: {
+        androidBackgroundColor: color,
+        androidForeground: 'foreground.svg',
+      },
     },
   })
 

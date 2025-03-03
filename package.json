@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "check": "biome check --write . && biome check --write --config-path=test ./test/*",
+    "check": "biome check --write . && biome check --write --config-path=test ./test/* && biome check --write --config-path=test ./plugin/*/test/*",
     "postinstall": "bun installation.ts",
     "templates": "folders './template/*' 'update --no-install' --output",
     "test": "bun test test/cache test/configuration test/native test/patch test/plugin",
@@ -115,6 +115,14 @@
       },
       {
         "folder": "test",
+        "extends": "test"
+      },
+      {
+        "folder": "plugin/android-sdk/test",
+        "extends": "test"
+      },
+      {
+        "folder": "plugin/icon/test",
         "extends": "test"
       }
     ],

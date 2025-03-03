@@ -1,6 +1,6 @@
+import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
 import { join } from 'node:path'
-import { expect, test, beforeEach, afterEach, spyOn } from 'bun:test'
-import { registerVitest, prepare, environment, packageJson, file, readFile } from 'jest-fixture'
+import { environment, file, packageJson, prepare, readFile, registerVitest } from 'jest-fixture'
 import { replaceVersions } from '../replace-versions'
 
 registerVitest(beforeEach, afterEach, { spyOn })
@@ -26,9 +26,9 @@ test('Extracts the correct versions for various script outputs.', () => {
       minSdkVersion: newMinSdkVersion,
       compileSdkVersion: newCompileSdkVersion,
       targetSdkVersion: newTargetSdkVersion,
-      ndkVersion: newNdkVersion
+      ndkVersion: newNdkVersion,
     },
-    androidPath
+    androidPath,
   )
 
   const modifiedBuildGradleContents = readFile('android/build.gradle')

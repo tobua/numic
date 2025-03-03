@@ -47,7 +47,7 @@ test('Icon path can be configured.', async () => {
 
   expect(existsSync(filePath('icon/my-image.png'))).toBe(true)
 
-  await plugin({ options: { icon: 'icon/my-image.png' } })
+  await plugin({ options: { icon: { icon: 'icon/my-image.png' } } })
 
   const files = listFilesMatching('**/*.png')
 
@@ -84,7 +84,7 @@ test('Also works with svg input file.', async () => {
 
   expect(existsSync(logoPath)).toBe(true)
 
-  await plugin({ options: { icon: 'logo.svg' } })
+  await plugin({ options: { icon: { icon: 'logo.svg' } } })
 
   const files = listFilesMatching('**/*.png')
 
@@ -143,7 +143,9 @@ test('iOS background transparency can be configured.', async () => {
 
   await plugin({
     options: {
-      iOSBackground: black,
+      icon: {
+        iOSBackground: black,
+      },
     },
   })
 
@@ -158,7 +160,9 @@ test('iOS background transparency can be configured.', async () => {
 
   await plugin({
     options: {
-      iOSBackground: white,
+      icon: {
+        iOSBackground: white,
+      },
     },
   })
 
