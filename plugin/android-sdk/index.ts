@@ -9,15 +9,16 @@ interface PluginInput {
   projectPath?: string
   nativePath?: string
   log?: (message: string, type?: 'error' | 'warning') => void
-  options?: Options
+  options?: { 'android-sdk': Options }
 }
 
 export default ({
   nativePath = process.cwd(),
   // eslint-disable-next-line no-console
   log = console.log,
-  options = {},
+  options = { 'android-sdk': {} },
 }: PluginInput) => {
+  const androidSdk = options['android-sdk'] ?? {}
   const androidFolder = join(nativePath, 'android')
   const androidHome = execSync('echo $ANDROID_HOME').toString()
 
@@ -44,17 +45,17 @@ export default ({
   const matchedInstalledVersions = matchVersion(output)
 
   // Unless user explicitly specifies versions, use installed version or current defaults.
-  options.buildToolsVersion ||= matchedInstalledVersions.buildToolsVersion ?? '35.0.0'
-  options.compileSdkVersion ||= matchedInstalledVersions.compileSdkVersion ?? 35
-  options.targetSdkVersion ||= matchedInstalledVersions.targetSdkVersion ?? 35
-  options.minSdkVersion ||= 24
+  androidSdk.buildToolsVersion ||= matchedInstalledVersions.buildToolsVersion ?? '35.0.0'
+  androidSdk.compileSdkVersion ||= matchedInstalledVersions.compileSdkVersion ?? 35
+  androidSdk.targetSdkVersion ||= matchedInstalledVersions.targetSdkVersion ?? 35
+  androidSdk.minSdkVersion ||= 24
 
-  if (options.ndkVersion === true || options.ndkVersion === undefined) {
-    options.ndkVersion = latestNdkVersion(androidHome)
+  if (androidSdk.ndkVersion === true || androidSdk.ndkVersion === undefined) {
+    androidSdk.ndkVersion = latestNdkVersion(androidHome)
   }
-  if (options.ndkVersion === false) {
-    options.ndkVersion = undefined
+  if (androidSdk.ndkVersion === false) {
+    androidSdk.ndkVersion = undefined
   }
 
-  replaceVersions(options, androidFolder)
+  replaceVersions(androidSdk, androidFolder)
 }

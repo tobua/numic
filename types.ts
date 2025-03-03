@@ -51,3 +51,5 @@ export type RunInputs = {
   simulator?: string
   emulator?: string
 }
+
+export type PluginLog = (message: string, type?: 'error' | 'warning') => void

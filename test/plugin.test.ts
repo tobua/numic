@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
 import { cpSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import isCI from 'is-ci'
-import { environment, file, packageJson, prepare, readFile, registerVitest, writeFile } from 'jest-fixture'
+import { environment, file, json, packageJson, prepare, readFile, registerVitest, writeFile } from 'jest-fixture'
 import { resetOptions } from '../helper'
 import { native } from '../script/native'
 import { patch } from '../script/patch'
@@ -271,6 +271,21 @@ test('Custom development team, name and category are added.', async () => {
   expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 123;')
   expect(xcodeProjectContents).toContain('INFOPLIST_KEY_CFBundleDisplayName = My App;')
   expect(xcodeProjectContents).toContain('INFOPLIST_KEY_LSApplicationCategoryType = public.app-category.productivity;')
+
+  const developmentTeamCount = (xcodeProjectContents.match(/DEVELOPMENT_TEAM/g) || []).length
+  expect(developmentTeamCount).toBeGreaterThan(0)
+
+  const packageJsonContents = readFile('package.json')
+  packageJsonContents.numic.xcode.developmentTeam = '456'
+  writeFile('package.json', packageJsonContents)
+
+  resetOptions()
+  await native()
+
+  const newXcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
+  // Previous plugin runs are discarded.
+  expect((newXcodeProjectContents.match(/DEVELOPMENT_TEAM/g) || []).length).toBe(developmentTeamCount)
+  expect(newXcodeProjectContents).toContain('DEVELOPMENT_TEAM = 456;')
 })
 
 test('Nothing added unless configured.', async () => {
@@ -281,4 +296,26 @@ test('Nothing added unless configured.', async () => {
   const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
   expect(xcodeProjectContents).not.toContain('DEVELOPMENT_TEAM')
   expect(xcodeProjectContents).not.toContain('INFOPLIST_KEY_CFBundleDisplayName')
+})
+
+test('Enabling XCode without customization will write defaults.', async () => {
+  prepare([
+    packageJson('plugin-xcode', {
+      numic: { xcode: true },
+    }),
+    reactNativePkg,
+    json('app.json', {
+      name: 'NumicApp',
+      displayName: 'Display Name',
+    }),
+  ])
+
+  await native()
+
+  const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
+  expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 8VG65V3BLT;')
+  // Default from app.json
+  expect(xcodeProjectContents).toContain('INFOPLIST_KEY_CFBundleDisplayName = Display Name;')
+  // Default productivity
+  expect(xcodeProjectContents).toContain('INFOPLIST_KEY_LSApplicationCategoryType = public.app-category.productivity;')
 })

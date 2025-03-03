@@ -12,7 +12,7 @@ type Input = {
   // Location of the /android and /ios folder where changes should be applied.
   nativePath?: string
   log?: Log
-  options?: Options
+  options?: { icon: Options }
 }
 
 const iconSourcePaths = (projectPath: string) => [
@@ -97,13 +97,14 @@ export default async ({
   nativePath = process.cwd(),
   // eslint-disable-next-line no-console
   log = console.log,
-  options = {},
+  options = { icon: {} },
 }: Input) => {
-  const inputFile = getInput(projectPath, options)
+  const iconOptions = options.icon ?? {}
+  const inputFile = getInput(projectPath, iconOptions)
   const sizes = getSizes(nativePath, log)
 
   if (!inputFile) {
-    return log(`No icon image found in ${join(projectPath, options.icon ?? 'icon.png')} or any other default path`, 'warning')
+    return log(`No icon image found in ${join(projectPath, iconOptions.icon ?? 'icon.png')} or any other default path`, 'warning')
   }
 
   const androidPromises = sizes.android.map((icon) => {
@@ -117,7 +118,7 @@ export default async ({
 
   await Promise.all(androidPromises)
 
-  await generateAndroidAdaptiveIcons(nativePath, projectPath, options, log)
+  await generateAndroidAdaptiveIcons(nativePath, projectPath, iconOptions, log)
 
   const iosPromises = sizes.ios.map((icon) => {
     const destinationFile = join(nativePath, icon.path)
@@ -127,7 +128,7 @@ export default async ({
     }
     // iOS doesn't support transparent icons and will add a black background, this plugin by default adds a white background.
     return sharp(inputFile)
-      .flatten({ background: options.iOSBackground ?? '#FFFFFF' })
+      .flatten({ background: iconOptions.iOSBackground ?? '#FFFFFF' })
       .resize(icon.size, icon.size)
       .toFile(destinationFile)
   })

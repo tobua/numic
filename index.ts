@@ -11,7 +11,7 @@ import { patch } from './script/patch'
 import { plugin } from './script/plugin'
 import { prompt } from './script/prompt'
 
-export type { PluginInput } from './types'
+export type { PluginInput, PluginLog } from './types'
 
 const scripts = {
   lint,
