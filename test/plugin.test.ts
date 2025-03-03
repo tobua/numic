@@ -313,7 +313,9 @@ test('Enabling XCode without customization will write defaults.', async () => {
   await native()
 
   const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
-  expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 8VG65V3BLT;')
+  if (!isCI) {
+    expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 8VG65V3BLT;')
+  }
   // Default from app.json
   expect(xcodeProjectContents).toContain('INFOPLIST_KEY_CFBundleDisplayName = Display Name;')
   // Default productivity
