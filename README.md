@@ -141,10 +141,17 @@ Adding a `numic` property allows to configure script and plugin behaviour. This 
     "oldArchitecture": true,
     // XCode customizations.
     "xcode": {
-      developmentTeam: '123-456-789', // Automatically read from system distribution certificate if missing.
-      category: 'public.app-category.productivity',
-      displayName: 'My App'
-    }
+      "developmentTeam": "123-456-789", // Automatically read from system distribution certificate if missing.
+      "category": "public.app-category.productivity",
+      "displayName": "My App"
+    },
+    "launchscreen": {
+      "background": "#FFFFFF",
+      "title": "Hello World",
+      "titleColor": "#000000",
+      "subtitle": "year",
+      "subtitleColor": "#EFEFEF"
+    },
     // Plugins with separate documentations.
     "icon": {
       "icon": "image/icon/app-icon.png"

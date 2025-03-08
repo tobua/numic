@@ -32,6 +32,7 @@ export interface PluginInput {
   log?: (message: string, type?: 'error' | 'warning') => void
   options?: object
   version?: string
+  name: string
 }
 
 export enum RunLocation {

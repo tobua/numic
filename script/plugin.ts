@@ -1,16 +1,17 @@
 import { existsSync, readdirSync } from 'node:fs'
 import { basename, join } from 'node:path'
 import { commitChanges, resetRepository } from '../git'
-import { basePath, getFolders, log, options } from '../helper'
+import { basePath, getAppJsonName, getFolders, log, options } from '../helper'
 import androidSdk from '../plugin/android-sdk/index'
 import androidVersion from '../plugin/android-version'
 import bundleId from '../plugin/bundle-id'
 import icon from '../plugin/icon/index'
+import launchscreen from '../plugin/launchscreen'
 import newArchitecture from '../plugin/new-architecture'
 import xcode from '../plugin/xcode'
 import type { PluginInput } from '../types'
 
-const builtInPlugins = [androidVersion, bundleId, newArchitecture, xcode, androidSdk, icon]
+const builtInPlugins = [androidVersion, bundleId, newArchitecture, xcode, launchscreen, androidSdk, icon]
 
 type PluginFunction = (options?: PluginInput) => void
 type Plugin = string | PluginFunction
@@ -40,6 +41,7 @@ const runPluginsIn = async (plugins: Plugin[], location: string, silent = false)
       // @ts-ignore
       options: typeof plugin === 'function' ? options() : (options()[basename(plugin)] ?? {}),
       version: options().reactNativeVersion,
+      name: getAppJsonName() ?? options().pkg.name,
     })
   })
 

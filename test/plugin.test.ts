@@ -321,3 +321,20 @@ test('Enabling XCode without customization will write defaults.', async () => {
   // Default productivity
   expect(xcodeProjectContents).toContain('INFOPLIST_KEY_LSApplicationCategoryType = public.app-category.productivity;')
 })
+
+test('Generates iOS launchscreen.', async () => {
+  prepare([
+    packageJson('plugin-launchscreen', {
+      numic: { launchscreen: { background: '#EFEFEF', title: 'My Title', titleColor: '#ABABAB', subtitle: 'year' } },
+    }),
+    reactNativePkg,
+  ])
+
+  await native()
+
+  const launchscreenContents = readFile('ios/NumicApp/launchscreen.storyboard')
+  expect(launchscreenContents).toContain('text="My Title"')
+  expect(launchscreenContents).toContain(`text="${new Date().getFullYear()}"`) // Subtitle year.
+
+  console.log(launchscreenContents)
+})
