@@ -332,9 +332,7 @@ test('Generates iOS launchscreen.', async () => {
 
   await native()
 
-  const launchscreenContents = readFile('ios/NumicApp/launchscreen.storyboard')
+  const launchscreenContents = readFile('ios/NumicApp/LaunchScreen.storyboard')
   expect(launchscreenContents).toContain('text="My Title"')
   expect(launchscreenContents).toContain(`text="${new Date().getFullYear()}"`) // Subtitle year.
-
-  console.log(launchscreenContents)
 })
