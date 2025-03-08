@@ -4,7 +4,8 @@ module.exports = {
   gitignore: 'numic',
   metro: {
     resolver: {
-      unstable_enablePackageExports: true,
+      // "true" currently results in a runtime error.
+      unstable_enablePackageExports: false,
     },
   },
   babel: {

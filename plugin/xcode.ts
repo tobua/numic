@@ -28,8 +28,7 @@ function getDevelopmentTeam(options: Options, log: PluginLog) {
   if (typeof options.xcode === 'object') {
     if (typeof options.xcode.developmentTeam === 'string') {
       developmentTeam = options.xcode.developmentTeam
-    }
-    if (options.xcode.developmentTeam === true) {
+    } else if (options.xcode.developmentTeam !== false) {
       developmentTeam = readDevelopmentTeam(log) ?? false
     }
   }
