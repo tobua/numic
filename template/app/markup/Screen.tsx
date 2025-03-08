@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
-import { SafeAreaView, StatusBar, View } from 'react-native'
+import { StatusBar, View } from 'react-native'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { createStyles } from 'responsive-react-native'
 import { Color, Space } from '../style'
 
@@ -17,9 +18,11 @@ const styles = createStyles({
 
 export function Screen({ children }: { children: ReactNode }) {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <View style={styles.wrapper}>{children}</View>
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <View style={styles.wrapper}>{children}</View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
