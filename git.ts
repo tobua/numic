@@ -10,6 +10,7 @@ const createGitShell =
   (...args: string[]) =>
     spawnSync('git', args, {
       cwd,
+      // biome-ignore lint/style/useNamingConvention: Standard naming for env variables.
       env: { ...process.env, HOME: 'numic' },
       maxBuffer: 1024 * 1024 * 100,
     })

@@ -77,7 +77,7 @@ export const additionalCliArguments = () =>
     .map((item) => `"${item}"`)
     .join(' ')
 
-export const filterIOS = (source: string) => {
+export const filterIos = (source: string) => {
   if (source.includes('/ios/Pods/') || source.includes('/ios/build/')) {
     return false
   }

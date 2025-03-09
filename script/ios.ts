@@ -46,9 +46,8 @@ export const ios = async (inputs: RunInputs) => {
         encoding: 'utf8',
         stdio: 'pipe',
       })
-    } catch (error: any) {
+    } catch (_error: any) {
       log('Failed to run "pod update" in /ios', 'warning')
-      console.log(error.stdout)
     }
   } else {
     log('Offline, skipping "pod update" in /ios')

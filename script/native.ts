@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { initializeRepository } from '../git'
-import { defaultNativeOptions, filterAndroid, filterIOS, getFolders, log } from '../helper'
+import { defaultNativeOptions, filterAndroid, filterIos, getFolders, log } from '../helper'
 import { cacheTemplate } from '../template-cache'
 import type { NativeOptions } from '../types'
 import { plugin } from './plugin'
@@ -36,13 +36,13 @@ export const native = async (nativeOptions: NativeOptions = { appName: '', versi
   cpSync(androidCache, folders.user.android, { recursive: true, filter: filterAndroid })
   cpSync(iosCache, folders.user.ios, {
     recursive: true,
-    filter: filterIOS,
+    filter: filterIos,
   })
 
   cpSync(androidCache, folders.plugin.android, { recursive: true, filter: filterAndroid })
   cpSync(iosCache, folders.plugin.ios, {
     recursive: true,
-    filter: filterIOS,
+    filter: filterIos,
   })
 
   // Install plugins (will not be included in patches).

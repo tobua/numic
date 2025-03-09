@@ -1,23 +1,5 @@
 import semverSort from 'semver-sort'
 
-// NOTE No longer used, can differ from compile and target SDK version.
-const findPlatformTools = (sdkManagerListOutput: string) => {
-  const matches = [...sdkManagerListOutput.matchAll(/platform-tools\s*\|\s(\d{1,3})/g)]
-
-  if (!(matches && Array.isArray(matches))) {
-    return undefined
-  }
-
-  // Newest version first.
-  const sortedVersions = matches
-    .map((match) => Number(match[1]))
-    .sort()
-    .reverse()
-
-  // Only major version required.
-  return sortedVersions[0]
-}
-
 const currentMajorAndroidVersion = '35'
 
 const findNewestBuildToolsVersion = (sdkManagerListOutput: string) => {

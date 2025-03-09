@@ -1,4 +1,5 @@
 export interface Options {
+  // biome-ignore lint/style/useNamingConvention: iOS general spelling.
   iOSBackground?: string
   icon?: string
   androidForeground?: string

@@ -1,6 +1,6 @@
 import { cpSync, existsSync, rmSync } from 'node:fs'
 import { createPatch } from '../git'
-import { filterAndroid, filterIOS, getFolders, log } from '../helper'
+import { filterAndroid, filterIos, getFolders, log } from '../helper'
 
 export const patch = () => {
   const folders = getFolders()
@@ -16,7 +16,7 @@ export const patch = () => {
     cpSync(folders.user.android, folders.plugin.android, { recursive: true, filter: filterAndroid })
     cpSync(folders.user.ios, folders.plugin.ios, {
       recursive: true,
-      filter: filterIOS,
+      filter: filterIos,
     })
   } catch (_error) {
     log('Failed to copy native files', 'error')
