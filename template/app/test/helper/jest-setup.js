@@ -1,4 +1,7 @@
 const { jest } = require('@jest/globals')
+import mockSafeAreaContext from 'react-native-safe-area-context/jest/mock'
+
+jest.mock('react-native-safe-area-context', () => mockSafeAreaContext)
 
 // Mocks turbo modules not available in jest.
 jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {

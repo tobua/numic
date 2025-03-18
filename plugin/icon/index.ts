@@ -99,7 +99,7 @@ export default async ({
   log = console.log,
   options = { icon: {} },
 }: Input) => {
-  const iconOptions = options.icon ?? {}
+  const iconOptions = { ...options.icon }
   const inputFile = getInput(projectPath, iconOptions)
   const sizes = getSizes(nativePath, log)
 

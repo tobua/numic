@@ -18,7 +18,7 @@ export default ({
   log = console.log,
   options = { 'android-sdk': {} },
 }: PluginInput) => {
-  const androidSdk = options['android-sdk'] ?? {}
+  const androidSdk = { ...options['android-sdk'] }
   const androidFolder = join(nativePath, 'android')
   const androidHome = execSync('echo $ANDROID_HOME').toString()
 

@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@types/bun": "^1.2.4",
+    "@types/bun": "^1.2.5",
     "@types/command-exists": "^1.2.3",
     "@types/get-pixels": "^3.3.4",
     "@types/parse-gitignore": "^1.0.2",
@@ -52,7 +52,7 @@
     "jest-fixture": "^4.1.0",
     "react-native": "^0.78.0",
     "typescript": "^5.8.2",
-    "zero-configuration": "^0.18.1"
+    "zero-configuration": "^0.18.2"
   },
   "peerDependencies": {
     "react-native": ">= 0.73"

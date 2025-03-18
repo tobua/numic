@@ -34,7 +34,7 @@
     "@types/react": "^19.0.10",
     "@types/react-test-renderer": "^19.0.0",
     "jest": "^29.7.0",
-    "numic": "^5.3.1",
+    "numic": "^5.3.2",
     "react-test-renderer": "^19.0.0",
     "typescript": "^5.8.2",
     "zero-configuration": "^0.18.1"
