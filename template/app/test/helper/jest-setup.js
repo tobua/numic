@@ -5,9 +5,7 @@ jest.mock('react-native-safe-area-context', () => mockSafeAreaContext)
 
 // Mocks turbo modules not available in jest.
 jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
-  const turboModuleRegistry = jest.requireActual(
-    'react-native/Libraries/TurboModule/TurboModuleRegistry'
-  )
+  const turboModuleRegistry = jest.requireActual('react-native/Libraries/TurboModule/TurboModuleRegistry')
   return {
     ...turboModuleRegistry,
     getEnforcing: (name) => {
@@ -74,9 +72,8 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
       }
       if (Object.hasOwn(modulesToMock, name)) {
         return modulesToMock[name]
-      } else {
-        console.warn(`Missing mock for native module "${name}" add in test/helper/jest-setup.js.`)
       }
+      console.warn(`Missing mock for native module "${name}" add in test/helper/jest-setup.js.`)
       return turboModuleRegistry.getEnforcing(name)
     },
   }

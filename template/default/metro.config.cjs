@@ -8,8 +8,7 @@ const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config')
  */
 const config = {
   resolver: {
-    // "true" currently results in a runtime error.
-    unstable_enablePackageExports: false,
+    unstable_enablePackageExports: true,
   },
 }
 
