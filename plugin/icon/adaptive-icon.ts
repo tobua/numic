@@ -50,7 +50,9 @@ const writeResFile = (nativePath: string, path: string, contents: string) => {
 export const generateAndroidAdaptiveIcons = async (nativePath: string, projectPath: string, options: Options, log: Log) => {
   const xmlFiles = androidXmlFiles()
 
-  if (!(options.androidForeground && (options.androidBackground || options.androidBackgroundColor))) {
+  const hasBackground = options.androidBackground || options.androidBackgroundColor
+
+  if (!(options.androidForeground && hasBackground)) {
     log('Not creating adaptive icons for Android')
     return
   }
