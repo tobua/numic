@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
 import { cpSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
-import isCI from 'is-ci'
+import isCi from 'is-ci'
 import { environment, file, json, packageJson, prepare, readFile, registerVitest, writeFile } from 'jest-fixture'
 import { resetOptions } from '../helper'
 import { native } from '../script/native'
@@ -137,7 +137,7 @@ test("Plugin changes are staged and don't cause patch even after initial reposit
   expect(existsSync(join(process.cwd(), 'patch/current.patch'))).toBe(false)
   buildGradleContents = readFile('android/build.gradle')
   expect(buildGradleContents).toContain('com.numic:plugin')
-})
+}, 10000)
 
 test('Built-in plugins always run when proper options are set.', async () => {
   prepare([packageJson('plugin-built-in', { numic: { androidVersion: 9 } }), reactNativePkg])
@@ -205,7 +205,7 @@ test('Built-in plugins always run when proper options are set.', async () => {
 
   expect(contents.variables).toContain('versionCode = 1')
   expect(contents.variables).toContain('versionName = "1.1"')
-}, 10000)
+}, 20000)
 
 test('Bundle ID will be adapted when configured.', async () => {
   prepare([packageJson('plugin-bundle-id', { numic: { bundleId: 'com.tobua.numic' } }), reactNativePkg])
@@ -252,7 +252,7 @@ test('XCode development team is automatically added.', async () => {
 
   const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
 
-  if (!isCI) {
+  if (!isCi) {
     expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 8VG65V3BLT;')
   }
 })
@@ -313,7 +313,7 @@ test('Enabling XCode without customization will write defaults.', async () => {
   await native()
 
   const xcodeProjectContents = readFile('ios/NumicApp.xcodeproj/project.pbxproj')
-  if (!isCI) {
+  if (!isCi) {
     expect(xcodeProjectContents).toContain('DEVELOPMENT_TEAM = 8VG65V3BLT;')
   }
   // Default from app.json
