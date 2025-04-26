@@ -22,6 +22,7 @@ const searchForFileAndReplace = (filePathGlob: string | string[], matcher: RegEx
   }
 }
 
+// Android's XML won't be able to parse strings unless " or ' are escaped.
 function escapeSelectedChars(text: string) {
   return text.replace(/['"\\]/g, '\\$&')
 }
@@ -91,7 +92,7 @@ export default ({ nativePath = process.cwd(), log = console.log, options = {}, v
     searchForFileAndReplace(
       'ios/*/Info.plist',
       /<key>CFBundleDisplayName<\/key>\s*<string>[\w\s\-']+<\/string>/g,
-      `<key>CFBundleDisplayName</key>\n\t<string>${escapeSelectedChars(displayName)}</string>`,
+      `<key>CFBundleDisplayName</key>\n\t<string>${displayName}</string>`,
       nativePath,
     )
   }
