@@ -10,8 +10,8 @@ beforeEach(resetOptions)
 environment('native')
 
 const rnVersion = readFile('package.json').devDependencies['react-native'].replace('^', '')
-const olderRNVersion = '0.69.0'
-const reactNativePkg = file('node_modules/react-native/package.json', `{ "version": "${olderRNVersion}" }`)
+const olderRnVersion = '0.69.0'
+const reactNativePkg = file('node_modules/react-native/package.json', `{ "version": "${olderRnVersion}" }`)
 
 test('Cache directory is emptied.', () => {
   clearTemplateCache()
@@ -54,14 +54,14 @@ test('Downloads and caches another template.', () => {
     appName: '',
   })
 
-  expect(options.version).toBe(olderRNVersion)
+  expect(options.version).toBe(olderRnVersion)
   expect(options.appName).toBe(appName)
   expect(options.debug).toBe(true)
 
   const templatePath = cacheTemplate(options)
 
   expect(existsSync(templatePath)).toBe(true)
-  expect(templatePath).toContain(`${olderRNVersion}/${appName}`)
+  expect(templatePath).toContain(`${olderRnVersion}/${appName}`)
   expect(existsSync(join(templatePath, 'android'))).toBe(true)
   expect(existsSync(join(templatePath, `ios/${appName}.xcodeproj`))).toBe(true)
 
@@ -136,5 +136,5 @@ test('Version sorting also works with prereleases.', () => {
   const templatePath = cacheTemplate(options)
 
   expect(existsSync(templatePath)).toBe(true)
-  expect(sortVersions(readdirSync(cacheDirectory))).toEqual([olderRNVersion, rnVersion, prereleaseVersion])
+  expect(sortVersions(readdirSync(cacheDirectory))).toEqual([olderRnVersion, prereleaseVersion, rnVersion])
 })

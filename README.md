@@ -135,8 +135,9 @@ Adding a `numic` property allows to configure script and plugin behaviour. This 
     // Set Android Version (versionCode & versionName) in /app/build.gradle.
     "androidVersion": 45,
     "androidVersion": [8, "2.31"],
-    // Customize the Bundle ID for iOS and Android.
+    // Customize the Bundle ID and display name for iOS and Android.
     "bundleId": "com.tobua.numic",
+    "displayName": "num'ic",
     // Switch back to use the old React Native architecture.
     "oldArchitecture": true,
     // XCode customizations.

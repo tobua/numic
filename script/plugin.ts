@@ -4,14 +4,14 @@ import { commitChanges, resetRepository } from '../git'
 import { basePath, getAppJsonName, getFolders, log, options } from '../helper'
 import androidSdk from '../plugin/android-sdk/index'
 import androidVersion from '../plugin/android-version'
-import bundleId from '../plugin/bundle-id'
 import icon from '../plugin/icon/index'
 import launchscreen from '../plugin/launchscreen'
 import newArchitecture from '../plugin/new-architecture'
+import various from '../plugin/various'
 import xcode from '../plugin/xcode'
 import type { PluginInput } from '../types'
 
-const builtInPlugins = [androidVersion, bundleId, newArchitecture, xcode, launchscreen, androidSdk, icon]
+const builtInPlugins = [androidVersion, various, newArchitecture, xcode, launchscreen, androidSdk, icon]
 
 type PluginFunction = (options?: PluginInput) => void
 type Plugin = string | PluginFunction

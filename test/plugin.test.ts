@@ -207,8 +207,8 @@ test('Built-in plugins always run when proper options are set.', async () => {
   expect(contents.variables).toContain('versionName = "1.1"')
 }, 20000)
 
-test('Bundle ID will be adapted when configured.', async () => {
-  prepare([packageJson('plugin-bundle-id', { numic: { bundleId: 'com.tobua.numic' } }), reactNativePkg])
+test('Bundle ID and display name will be adapted when configured.', async () => {
+  prepare([packageJson('plugin-various', { numic: { bundleId: 'com.tobua.numic', displayName: "break'a'bit" } }), reactNativePkg])
 
   await native()
 
@@ -234,6 +234,13 @@ test('Bundle ID will be adapted when configured.', async () => {
   const gradlePropertiesContents = readFile('android/gradle.properties')
   // New architecture enabled by default.
   expect(gradlePropertiesContents).toContain('newArchEnabled=true')
+
+  // Display name (with escaping)
+  const stringsXml = readFile('android/app/src/main/res/values/strings.xml')
+  expect(stringsXml).toContain("break\\'a\\'bit")
+
+  const infoPlist = readFile('ios/NumicApp/Info.plist')
+  expect(infoPlist).toContain("break\\'a\\'bit")
 })
 
 test('New architecture can optionally be disabled.', async () => {
