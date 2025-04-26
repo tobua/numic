@@ -240,7 +240,7 @@ test('Bundle ID and display name will be adapted when configured.', async () => 
   expect(stringsXml).toContain("break\\'a\\'bit")
 
   const infoPlist = readFile('ios/NumicApp/Info.plist')
-  expect(infoPlist).toContain("break\\'a\\'bit")
+  expect(infoPlist).toContain("break'a'bit")
 })
 
 test('New architecture can optionally be disabled.', async () => {
