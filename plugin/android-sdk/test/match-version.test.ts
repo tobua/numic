@@ -46,3 +46,12 @@ test('Extracts the correct versions for Android 15.', async () => {
   expect(compileSdkVersion).toBe(35)
   expect(targetSdkVersion).toBe(35)
 })
+
+test('Extracts the correct versions for Android 16.', async () => {
+  const macScriptOutput = await Bun.file('test/script/q2-2025-installed.txt').text()
+  const { buildToolsVersion, compileSdkVersion, targetSdkVersion } = matchVersion(macScriptOutput)
+
+  expect(buildToolsVersion).toEqual('36.0.0')
+  expect(compileSdkVersion).toBe(36)
+  expect(targetSdkVersion).toBe(36)
+})
