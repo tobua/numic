@@ -45,9 +45,9 @@ export default ({
   const matchedInstalledVersions = matchVersion(output)
 
   // Unless user explicitly specifies versions, use installed version or current defaults.
-  androidSdk.buildToolsVersion ||= matchedInstalledVersions.buildToolsVersion ?? '35.0.0'
-  androidSdk.compileSdkVersion ||= matchedInstalledVersions.compileSdkVersion ?? 35
-  androidSdk.targetSdkVersion ||= matchedInstalledVersions.targetSdkVersion ?? 35
+  androidSdk.buildToolsVersion ||= matchedInstalledVersions.buildToolsVersion ?? '36.0.0'
+  androidSdk.compileSdkVersion ||= matchedInstalledVersions.compileSdkVersion ?? 36
+  androidSdk.targetSdkVersion ||= matchedInstalledVersions.targetSdkVersion ?? 36
   androidSdk.minSdkVersion ||= 24
 
   if (androidSdk.ndkVersion === true || androidSdk.ndkVersion === undefined) {

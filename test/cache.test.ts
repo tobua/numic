@@ -69,18 +69,20 @@ test('Downloads and caches another template.', () => {
 }, 10000)
 
 const sortVersions = (versions: string[]): string[] => {
-  return versions.sort((a, b) => {
-    const versionA = a.split('.').map(Number)
-    const versionB = b.split('.').map(Number)
-    for (let i = 0; i < Math.max(versionA.length, versionB.length); i++) {
-      const numA = versionA[i] || 0
-      const numB = versionB[i] || 0
-      if (numA !== numB) {
-        return numA - numB
-      }
-    }
-    return 0
-  })
+  return versions.sort(sortVersionsPrereleaseFirst)
+}
+
+const sortVersionsPrereleaseFirst = (a, b) => {
+  const baseA = a.split('-')[0];
+  const baseB = b.split('-')[0];
+  if (baseA === baseB) {
+    const aIsPre = a.includes('-');
+    const bIsPre = b.includes('-');
+    if (aIsPre && !bIsPre) return -1;
+    if (!aIsPre && bIsPre) return 1;
+    return a.localeCompare(b);
+  }
+  return baseA.localeCompare(baseB, undefined, { numeric: true });
 }
 
 test('Removes expired templates added manually and adds new appName template.', () => {

@@ -1,4 +1,4 @@
-import React, { LegacyRef, useRef } from 'react'
+import React, { useRef } from 'react'
 import { PanResponder, Text, View } from 'react-native'
 import { createStyles } from 'responsive-react-native'
 import { Color, Font, Space } from '../style'
@@ -17,7 +17,7 @@ const styles = createStyles({
 })
 
 export function Gesture() {
-  const box = useRef<View>()
+  const box = useRef<View>(null)
   const panResponder = React.useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -40,7 +40,7 @@ export function Gesture() {
 
   return (
     <View style={styles.wrapper}>
-      <View ref={box as LegacyRef<View>} {...panResponder.panHandlers} style={styles.box}>
+      <View ref={box} {...panResponder.panHandlers} style={styles.box}>
         <Text style={Font.bold}>Drag around!</Text>
       </View>
     </View>

@@ -1,4 +1,4 @@
-import React, { LegacyRef, MutableRefObject, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Text, View, Animated } from 'react-native'
 import { createStyles } from 'responsive-react-native'
 import { Color, Space } from '../style'
@@ -19,7 +19,7 @@ const styles = createStyles({
   },
 })
 
-function animateNativeProps(view?: MutableRefObject<View | undefined>) {
+function animateNativeProps(view: React.RefObject<View | null>) {
   if (!view?.current) {
     return null
   }
@@ -47,7 +47,7 @@ function animateNativeProps(view?: MutableRefObject<View | undefined>) {
 }
 
 export function Animation() {
-  const firstBox = useRef<View>()
+  const firstBox = useRef<View>(null)
   const opacityValue = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export function Animation() {
 
   return (
     <View style={styles.wrapper}>
-      <View ref={firstBox as LegacyRef<View>} style={styles.box}>
+      <View ref={firstBox} style={styles.box}>
         <Text style={styles.text}>setNativeProps</Text>
       </View>
       <Animated.View style={[styles.box, { opacity: opacityValue }]}>
