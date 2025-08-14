@@ -13,33 +13,32 @@ import type { PluginInput } from '../types'
 
 const builtInPlugins = [androidVersion, various, newArchitecture, xcode, launchscreen, androidSdk, icon]
 
-type PluginFunction = (options?: PluginInput) => void
+type PluginFunction = (pluginOptions?: PluginInput) => void
 type Plugin = string | PluginFunction
 
 const runPluginsIn = async (plugins: Plugin[], location: string, silent = false) => {
-  const promises = plugins.map(async (plugin) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let runner: PluginFunction = (..._args: any) => undefined
+  const promises = plugins.map(async (currentPlugin) => {
+    let runner: PluginFunction = (..._args: any) => null
 
-    if (typeof plugin === 'function') {
-      runner = plugin
+    if (typeof currentPlugin === 'function') {
+      runner = currentPlugin
     } else {
       try {
-        runner = await import(plugin)
+        runner = await import(currentPlugin)
         if ((runner as any).default) {
           runner = (runner as any).default
         }
       } catch (_error) {
-        log(`Failed to load plugin ${plugin}`)
+        log(`Failed to load plugin ${currentPlugin}`)
       }
     }
 
     return runner({
       projectPath: basePath(),
       nativePath: location,
-      log: silent ? () => undefined : log,
+      log: silent ? () => null : log,
       // @ts-ignore
-      options: typeof plugin === 'function' ? options() : (options()[basename(plugin)] ?? {}),
+      options: typeof currentPlugin === 'function' ? options() : (options()[basename(currentPlugin)] ?? {}),
       version: options().reactNativeVersion,
       name: getAppJsonName() ?? options().pkg.name,
     })

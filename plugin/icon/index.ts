@@ -95,7 +95,7 @@ const getSizes = (nativePath: string, log: Log) => {
 export default async ({
   projectPath = process.cwd(),
   nativePath = process.cwd(),
-  // eslint-disable-next-line no-console
+  // biome-ignore lint/suspicious/noConsole: For plugin to print logs.
   log = console.log,
   options = { icon: {} },
 }: Input) => {

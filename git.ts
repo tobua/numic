@@ -90,13 +90,7 @@ export const createPatch = () => {
   resetRepository()
 }
 
-export const apply = ({
-  skipEmpty,
-  location = basePath(),
-}: {
-  skipEmpty?: boolean
-  location?: string
-}) => {
+export const apply = ({ skipEmpty, location = basePath() }: { skipEmpty?: boolean; location?: string }) => {
   const git = createGitShell(location)
   let temporaryGitCreated = false
 

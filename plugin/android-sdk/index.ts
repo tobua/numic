@@ -14,7 +14,7 @@ interface PluginInput {
 
 export default ({
   nativePath = process.cwd(),
-  // eslint-disable-next-line no-console
+  // biome-ignore lint/suspicious/noConsole: For plugin to print logs.
   log = console.log,
   options = { 'android-sdk': {} },
 }: PluginInput) => {

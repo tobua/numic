@@ -84,6 +84,7 @@ interface PluginInput {
   name: string
 }
 
+// biome-ignore lint/suspicious/noConsole: For plugin to print logs.
 export default ({ nativePath = process.cwd(), log = console.log, options = { launchscreen: {} }, name }: PluginInput) => {
   const { launchscreen } = options
   if (typeof launchscreen !== 'object') {

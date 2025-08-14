@@ -16,6 +16,7 @@ interface PluginInput {
   version?: string
 }
 
+// biome-ignore lint/suspicious/noConsole: For plugin to print logs.
 export default ({ nativePath = process.cwd(), log = console.log, options = {} }: PluginInput) => {
   const { oldArchitecture } = options
   const gradlePropertiesFilePath = join(nativePath, 'android/gradle.properties')

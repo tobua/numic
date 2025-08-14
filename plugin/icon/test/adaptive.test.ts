@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
 import { cpSync, existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
+import process from 'node:process'
 import { environment, file, listFilesMatching, packageJson, prepare, readFile, registerVitest } from 'jest-fixture'
 import { getFileType } from '../adaptive-icon'
 import plugin from '../index'

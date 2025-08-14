@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
 import { cpSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
+import process from 'node:process'
 import { environment, packageJson, prepare, readFile, registerVitest } from 'jest-fixture'
 import plugin from '../index'
 
@@ -65,5 +66,5 @@ test('Uses newest available ndk version.', () => {
   expect(buildGradleContents).not.toContain(`ndkVersion = "${currentNdkVersion}"`)
   const updatedNdkVersion = buildGradleContents.match(/(ndkVersion\s*=\s*")(\d{1,3}\.\d{1,3}\.\d{1,10})(")/)[2]
 
-  expect(Number.parseInt(updatedNdkVersion.split('.')[0])).toBeGreaterThan(27)
+  expect(Number.parseInt(updatedNdkVersion.split('.')[0], 10)).toBeGreaterThan(27)
 })

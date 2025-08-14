@@ -6,25 +6,25 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "check": "biome check --write . && biome check --write --config-path=test ./test/* && biome check --write --config-path=test ./plugin/*/test/*",
+    "check": "biome check --write .",
     "postinstall": "bun installation.ts",
     "templates": "folders './template/*' 'update --no-install' --output",
     "test": "bun test test/cache test/configuration test/native test/patch test/plugin",
     "types": "tsc && tsc --project ./test/tsconfig.json"
   },
   "dependencies": {
-    "@react-native-community/cli": "^18.0.0",
-    "@react-native-community/cli-platform-android": "^18.0.0",
-    "@react-native-community/cli-platform-ios": "^18.0.0",
-    "@react-native/babel-preset": "^0.80.0",
-    "@react-native/eslint-config": "^0.80.0",
-    "@react-native/metro-config": "^0.80.0",
-    "@react-native/typescript-config": "^0.80.0",
+    "@react-native-community/cli": "^20.0.0",
+    "@react-native-community/cli-platform-android": "^20.0.0",
+    "@react-native-community/cli-platform-ios": "^20.0.0",
+    "@react-native/babel-preset": "^0.81.0",
+    "@react-native/eslint-config": "^0.81.0",
+    "@react-native/metro-config": "^0.81.0",
+    "@react-native/typescript-config": "^0.81.0",
     "arg": "^5.0.2",
     "command-exists": "^1.2.9",
     "deepmerge": "^4.3.1",
     "eslint": "8.57.0",
-    "eslint-plugin-prettier": "^5.4.1",
+    "eslint-plugin-prettier": "^5.5.4",
     "fast-glob": "^3.3.3",
     "global-cache-dir": "^6.0.1",
     "is-ci": "^4.1.0",
@@ -32,16 +32,16 @@
     "logua": "^3.0.3",
     "pakag": "^3.1.4",
     "parse-gitignore": "^2.0.0",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "prompts": "^2.4.2",
     "semver": "^7.7.2",
     "semver-sort": "^1.0.0",
-    "sharp": "^0.34.2",
+    "sharp": "^0.34.3",
     "svg2vectordrawable": "^2.9.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/bun": "^1.2.16",
+    "@biomejs/biome": "^2.2.0",
+    "@types/bun": "^1.2.20",
     "@types/command-exists": "^1.2.3",
     "@types/get-pixels": "^3.3.4",
     "@types/parse-gitignore": "^1.0.2",
@@ -50,9 +50,9 @@
     "@types/semver-sort": "^0.0.5",
     "get-pixels": "^3.3.3",
     "jest-fixture": "^4.1.0",
-    "react-native": "^0.80.0",
-    "typescript": "^5.8.3",
-    "zero-configuration": "^0.19.0"
+    "react-native": "^0.81.0",
+    "typescript": "^5.9.2",
+    "zero-configuration": "^1.0.6"
   },
   "peerDependencies": {
     "react-native": ">= 0.73"
@@ -110,25 +110,29 @@
           }
         },
         "files": {
-          "ignore": [
-            "template",
-            "test",
-            "website",
-            "*.d.ts"
+          "includes": [
+            "**/*",
+            "!template",
+            "!test",
+            "!website",
+            "!**/*.d.ts"
           ]
         }
       },
       {
         "folder": "test",
-        "extends": "test"
+        "extends": "test",
+        "root": false
       },
       {
         "folder": "plugin/android-sdk/test",
-        "extends": "test"
+        "extends": "test",
+        "root": false
       },
       {
         "folder": "plugin/icon/test",
-        "extends": "test"
+        "extends": "test",
+        "root": false
       }
     ],
     "typescript": [

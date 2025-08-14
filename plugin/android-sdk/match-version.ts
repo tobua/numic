@@ -27,7 +27,7 @@ export const matchVersion = (sdkManagerListOutput: string) => {
   const majorSdkVersion = getMajorFromVersion(buildToolsVersion)
 
   return {
-    buildToolsVersion: buildToolsVersion,
+    buildToolsVersion,
     compileSdkVersion: majorSdkVersion,
     targetSdkVersion: majorSdkVersion,
   }

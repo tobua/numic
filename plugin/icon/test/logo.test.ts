@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, spyOn, test } from 'bun:test'
 import { cpSync, existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
+import process from 'node:process'
 import getPixels from 'get-pixels'
 import { environment, listFilesMatching, packageJson, prepare, readFile, registerVitest } from 'jest-fixture'
 import plugin from '../index'

@@ -110,11 +110,9 @@ export const checkCommandVersion = (command: string, version: string) => {
     return true
   }
 
-  if (semver.valid(commandOutput)) {
-    if (!semver.gt(commandOutput, version)) {
-      // Outdated.
-      return false
-    }
+  if (semver.valid(commandOutput) && !semver.gt(commandOutput, version)) {
+    // Outdated.
+    return false
   }
 
   return true

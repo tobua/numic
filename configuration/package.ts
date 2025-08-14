@@ -16,7 +16,7 @@ export const packageJson = (isFirstInstall: boolean) => {
       pkg.scripts = {}
     }
 
-    pkg.scripts = Object.assign({ start: 'numic' }, pkg.scripts)
+    pkg.scripts = { start: 'numic', ...pkg.scripts }
   }
 
   // Essential to plugin lifecycle.

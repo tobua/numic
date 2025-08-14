@@ -17,7 +17,8 @@ interface PluginInput {
   version?: string
 }
 
-export default async ({ nativePath = process.cwd(), log = console.log, options = {} }: PluginInput) => {
+// biome-ignore lint/suspicious/noConsole: For plugin to print logs.
+export default ({ nativePath = process.cwd(), log = console.log, options = {} }: PluginInput) => {
   // Android version only customized when explicitly configured by user.
   if (!options.androidVersion) {
     return

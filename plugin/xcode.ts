@@ -61,6 +61,7 @@ interface PluginInput {
   version?: string
 }
 
+// biome-ignore lint/suspicious/noConsole: For plugin to print logs.
 export default ({ projectPath = process.cwd(), nativePath = process.cwd(), log = console.log, options = {} }: PluginInput) => {
   const { xcode } = options
   // Needs to be set to true or explicitly configured.

@@ -24,7 +24,7 @@ const scripts = {
   prompt,
 }
 
-const script = (process.argv.slice(2)[0] ?? 'prompt') as keyof typeof scripts
+const script = (process.argv.at(2)?.[0] ?? 'prompt') as keyof typeof scripts
 
 if (!Object.keys(scripts).includes(script)) {
   log('Please provide a valid script', 'error')

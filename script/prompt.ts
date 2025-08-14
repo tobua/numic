@@ -350,7 +350,7 @@ export const prompt = async () => {
         ).device
       }
 
-      ios({ location, mode, device, simulator })
+      await ios({ location, mode, device, simulator })
     }
 
     if (script === 'android') {
@@ -359,7 +359,7 @@ export const prompt = async () => {
         spawn('emulator', ['-avd', emulator], { shell: true, detached: true })
       }
 
-      android({ location, mode, device, simulator, emulator })
+      await android({ location, mode, device, simulator, emulator })
     }
   }
 
