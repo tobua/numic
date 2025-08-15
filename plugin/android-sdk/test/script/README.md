@@ -1,0 +1,1 @@
+Run `$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list_installed` to generate and add additional test with link to file.
