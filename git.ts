@@ -5,6 +5,8 @@ import { applyPatch } from './apply'
 import { pluginGitignore } from './configuration/gitignore'
 import { basePath, log, replaceIndexLinesFromPatch } from './helper'
 
+// biome-ignore lint/style/noMagicNumbers: Easiest way to represent 100MB in bytes.
+const maxBuffer = 1024 * 1024 * 100
 const createGitShell =
   (cwd = join(basePath(), '.numic')) =>
   (...args: string[]) =>
@@ -12,7 +14,7 @@ const createGitShell =
       cwd,
       // biome-ignore lint/style/useNamingConvention: Standard naming for env variables.
       env: { ...process.env, HOME: 'numic' },
-      maxBuffer: 1024 * 1024 * 100,
+      maxBuffer,
     })
 
 export const initializeRepository = () => {

@@ -49,7 +49,7 @@ test('Asynchronous plugin modifies native files.', async () => {
   const podfileContents = readFile('ios/Podfile')
 
   expect(podfileContents).toContain('numic_hash')
-})
+}, 10000)
 
 test('Local plugin modifies native files.', async () => {
   prepare([

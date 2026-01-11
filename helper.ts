@@ -9,6 +9,7 @@ import semver from 'semver'
 import type { NativeOptions, Options, Package } from './types'
 
 export const log = create('numic', 'green')
+const additialArgumentPosition = 3
 
 export const basePath = () => {
   // CWD during postinstall is in package, otherwise in project.
@@ -49,7 +50,7 @@ export const cliOptions = (script: string) => {
 
   const parsed = arg(optionsSpecificationByScript[script as keyof typeof optionsSpecificationByScript], {
     permissive: false,
-    argv: process.argv.slice(3),
+    argv: process.argv.slice(additialArgumentPosition),
   })
   for (const option of Object.keys(parsed)) {
     // @ts-ignore
@@ -73,7 +74,7 @@ export const getFolders = () => ({
 
 export const additionalCliArguments = () =>
   [...process.argv]
-    .splice(3)
+    .splice(additialArgumentPosition)
     .map((item) => `"${item}"`)
     .join(' ')
 

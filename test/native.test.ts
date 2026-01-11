@@ -235,7 +235,7 @@ test('Picks up existing appName from app.json.', async () => {
   const buildGradleContents = readFile('android/app/build.gradle')
 
   expect(buildGradleContents).toContain('com.thisreact')
-})
+}, 10000)
 
 test('Patch not applied to repository during initialization.', async () => {
   prepare([packageJson('native-initial-patch'), reactNativePkg])

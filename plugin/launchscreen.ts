@@ -4,11 +4,20 @@ import glob from 'fast-glob'
 import type { PluginLog } from '../types'
 
 function hexToRgbColor(hex: string) {
+  const HexBase = 16
+  const MaxColorValue = 255
+  const HexComponentLength = 2
+  const FullOpacity = 1
+
   const cleanHex = hex.replace('#', '').trim()
-  const r = Number.parseInt(cleanHex.substring(0, 2), 16) / 255
-  const g = Number.parseInt(cleanHex.substring(2, 4), 16) / 255
-  const b = Number.parseInt(cleanHex.substring(4, 6), 16) / 255
-  return `red="${r}" green="${g}" blue="${b}" alpha="1" colorSpace="calibratedRGB"`
+  const redStart = 0
+  const greenStart = HexComponentLength
+  const blueStart = HexComponentLength * 2
+
+  const r = Number.parseInt(cleanHex.substring(redStart, redStart + HexComponentLength), HexBase) / MaxColorValue
+  const g = Number.parseInt(cleanHex.substring(greenStart, greenStart + HexComponentLength), HexBase) / MaxColorValue
+  const b = Number.parseInt(cleanHex.substring(blueStart, blueStart + HexComponentLength), HexBase) / MaxColorValue
+  return `red="${r}" green="${g}" blue="${b}" alpha="${FullOpacity}" colorSpace="calibratedRGB"`
 }
 
 const templateApple = (

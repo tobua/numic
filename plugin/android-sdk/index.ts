@@ -12,6 +12,9 @@ interface PluginInput {
   options?: { 'android-sdk': Options }
 }
 
+const currentAndroidSdkVersion = 36
+const currentMinSdkVersion = 24
+
 export default ({
   nativePath = process.cwd(),
   // biome-ignore lint/suspicious/noConsole: For plugin to print logs.
@@ -46,9 +49,9 @@ export default ({
 
   // Unless user explicitly specifies versions, use installed version or current defaults.
   androidSdk.buildToolsVersion ||= matchedInstalledVersions.buildToolsVersion ?? '36.0.0'
-  androidSdk.compileSdkVersion ||= matchedInstalledVersions.compileSdkVersion ?? 36
-  androidSdk.targetSdkVersion ||= matchedInstalledVersions.targetSdkVersion ?? 36
-  androidSdk.minSdkVersion ||= 24
+  androidSdk.compileSdkVersion ||= matchedInstalledVersions.compileSdkVersion ?? currentAndroidSdkVersion
+  androidSdk.targetSdkVersion ||= matchedInstalledVersions.targetSdkVersion ?? currentAndroidSdkVersion
+  androidSdk.minSdkVersion ||= currentMinSdkVersion
 
   if (androidSdk.ndkVersion === true || androidSdk.ndkVersion === undefined) {
     androidSdk.ndkVersion = latestNdkVersion(androidHome)
