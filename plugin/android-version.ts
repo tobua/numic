@@ -60,7 +60,9 @@ export default ({ nativePath = process.cwd(), log = console.log, options = {} }:
   if (!(hasVersionCodeVariable && hasVersionNameVariable)) {
     let extensionStartLine = buildGradleLines.findIndex((content) => content.includes('ext {'))
 
-    if (extensionStartLine !== -1) {
+    if (extensionStartLine === -1) {
+      log('Unable to parse build.gradle file', 'warning')
+    } else {
       if (!hasVersionCodeVariable) {
         buildGradleLines.splice(extensionStartLine + 1, 0, `        versionCode = ${versionCode}`)
         extensionStartLine += 1
@@ -70,8 +72,6 @@ export default ({ nativePath = process.cwd(), log = console.log, options = {} }:
       }
 
       writeFileSync(buildGradleFilePath, buildGradleLines.join(EOL))
-    } else {
-      log('Unable to parse build.gradle file', 'warning')
     }
   }
 

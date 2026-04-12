@@ -14,9 +14,9 @@ function hexToRgbColor(hex: string) {
   const greenStart = HexComponentLength
   const blueStart = HexComponentLength * 2
 
-  const r = Number.parseInt(cleanHex.substring(redStart, redStart + HexComponentLength), HexBase) / MaxColorValue
-  const g = Number.parseInt(cleanHex.substring(greenStart, greenStart + HexComponentLength), HexBase) / MaxColorValue
-  const b = Number.parseInt(cleanHex.substring(blueStart, blueStart + HexComponentLength), HexBase) / MaxColorValue
+  const r = Number.parseInt(cleanHex.slice(redStart, redStart + HexComponentLength), HexBase) / MaxColorValue
+  const g = Number.parseInt(cleanHex.slice(greenStart, greenStart + HexComponentLength), HexBase) / MaxColorValue
+  const b = Number.parseInt(cleanHex.slice(blueStart, blueStart + HexComponentLength), HexBase) / MaxColorValue
   return `red="${r}" green="${g}" blue="${b}" alpha="${FullOpacity}" colorSpace="calibratedRGB"`
 }
 
