@@ -22,7 +22,7 @@
     "mobx": "^6.15.0",
     "mobx-react-lite": "^4.1.1",
     "react": "19.1.1",
-    "react-native": "^0.85.0",
+    "react-native": "^0.85.2",
     "react-native-safe-area-context": "^5.7.0",
     "reactigation": "^6.1.3",
     "responsive-react-native": "^1.0.7"
@@ -36,7 +36,7 @@
     "jest": "^30.3.0",
     "numic": "^5.6.0",
     "react-test-renderer": "19.1.1",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "zero-configuration": "^1.1.2"
   },
   "trustedDependencies": [
@@ -61,7 +61,7 @@
       "react-dom": "react-native",
       "\\.(png|jpg|ico|jpeg|gif|svg|woff|woff2|mp4)$": "<rootDir>/test/helper/ImageMock.tsx"
     },
-    "preset": "react-native",
+    "preset": "@react-native/jest-preset",
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect",
       "./test/helper/jest-setup.js"
