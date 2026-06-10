@@ -190,7 +190,7 @@ test('Properly configures typescript when dependency detected.', async () => {
   expect(gitignoreContents).toContain('tsconfig.json')
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config')
 })
 
 test('Properly configures typescript when tsconfig detected.', async () => {
@@ -215,7 +215,7 @@ test('Properly configures typescript when tsconfig detected.', async () => {
   const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config')
   expect(tsconfigContents.compilerOptions.skipLibCheck).toBe(true)
   // Extended excludes removed.
   expect(tsconfigContents.exclude).toEqual(['babel.config.js'])
@@ -245,7 +245,7 @@ test('Extended tsconfig properties are removed.', async () => {
   const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config')
   // Always added.
   expect(tsconfigContents.compilerOptions.module).toBe('ESNext')
   expect(tsconfigContents.compilerOptions.moduleResolution).toBe(undefined)
@@ -281,7 +281,7 @@ test('tsconfig from package.json is merged in.', async () => {
   const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config')
   // Always added.
   expect(tsconfigContents.compilerOptions.skipLibCheck).toBe(false)
   expect(tsconfigContents.compilerOptions.moduleResolution).toBe(undefined)
@@ -317,7 +317,7 @@ test("Tsconfig array properties aren't duplicated upon merge.", async () => {
   const tsconfigContents = contents.find((content) => content.name === 'tsconfig.json').contents as any
 
   // Always extend RN template config.
-  expect(tsconfigContents.extends).toBe('@react-native/typescript-config/tsconfig.json')
+  expect(tsconfigContents.extends).toBe('@react-native/typescript-config')
   expect(tsconfigContents.compilerOptions.types.length).toBe(2)
   expect(tsconfigContents.compilerOptions.types).toContain('node')
   expect(tsconfigContents.compilerOptions.types).toContain('jest')

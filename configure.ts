@@ -40,7 +40,7 @@ export const configureTsConfig = () => {
   }
 
   // Always extend RN config.
-  configuration.extends = '@react-native/typescript-config/tsconfig.json'
+  configuration.extends = '@react-native/typescript-config'
 
   if (typeof configuration.compilerOptions !== 'object') {
     configuration.compilerOptions = {}
