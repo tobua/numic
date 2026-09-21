@@ -82,9 +82,6 @@
     "ios",
     "android"
   ],
-  "publishConfig": {
-    "provenance": true
-  },
   "configuration": {
     "gitignore": [
       "extends:bundle",
