@@ -3,5 +3,5 @@ export type Options = {
   targetSdkVersion?: string | number
   minSdkVersion?: string | number
   buildToolsVersion?: string
-  ndkVersion?: boolean | string
+  ndkVersion?: boolean | string | undefined
 }

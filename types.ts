@@ -31,7 +31,7 @@ export interface PluginInput {
   nativePath?: string
   log?: (message: string, type?: 'error' | 'warning') => void
   options?: object
-  version?: string
+  version?: string | undefined
   name: string
 }
 
@@ -48,9 +48,9 @@ export enum RunMode {
 export type RunInputs = {
   location: RunLocation
   mode: RunMode
-  device?: string // iOS or Android device.
-  simulator?: string
-  emulator?: string
+  device?: string | undefined // iOS or Android device.
+  simulator?: string | undefined
+  emulator?: string | undefined
 }
 
 export type PluginLog = (message: string, type?: 'error' | 'warning') => void
